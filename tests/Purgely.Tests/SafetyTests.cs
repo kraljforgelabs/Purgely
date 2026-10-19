@@ -419,3 +419,63 @@ public class DriverCatalogTests
     public void Vendor_is_read_from_both_title_styles(string title, string vendor) =>
         Assert.Equal(vendor, new CatalogDriver("x", title, "Windows 11", "Drivers", null, "1.0", "1 MB", "id", true).Vendor);
 }
+
+public class ReleaseVersionTests
+{
+    [Theory]
+    [InlineData("v0.9.0", "0.9.0")]
+    [InlineData("0.9.1-beta", "0.9.1")]
+    [InlineData("v1.0", "1.0.0")]
+    [InlineData("V2.3.4", "2.3.4")]
+    public void Release_tags_are_read_as_versions(string tag, string expected) =>
+        Assert.Equal(Version.Parse(expected), UpdateCheck.Parse(tag));
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("latest")]
+    [InlineData("vNext")]
+    public void Odd_tags_are_ignored(string tag) => Assert.Null(UpdateCheck.Parse(tag));
+}
+
+public class PathVariableTests
+{
+    [Theory]
+    [InlineData(@"C:\Tools\Foo\bin", @"c:\tools\foo\bin\")]
+    [InlineData(@"%ProgramFiles%\Foo", @"%PROGRAMFILES%\Foo")]
+    [InlineData(@" C:\Foo ", @"C:\Foo")]
+    public void Same_entry_ignores_case_spaces_and_trailing_backslash(string a, string b) =>
+        Assert.True(PathVariable.SameEntry(a, b));
+
+    [Fact]
+    public void Different_entries_are_not_the_same() =>
+        Assert.False(PathVariable.SameEntry(@"C:\Foo", @"C:\Foo\bin"));
+}
+
+public class NewLeftoverKindTests
+{
+    [Theory]
+    [InlineData(LeftoverKind.ContextMenu, true)]
+    [InlineData(LeftoverKind.FileType, true)]
+    [InlineData(LeftoverKind.AppPath, true)]
+    [InlineData(LeftoverKind.RegistryKey, true)]
+    [InlineData(LeftoverKind.FirewallRule, false)]
+    [InlineData(LeftoverKind.PathEntry, false)]
+    [InlineData(LeftoverKind.Folder, false)]
+    public void Registration_kinds_are_removed_as_registry_keys(LeftoverKind kind, bool isKey) =>
+        Assert.Equal(isKey, new LeftoverItem { Kind = kind, Location = @"HKLM\SOFTWARE\Classes\Foo.File" }.IsRegistryKeyKind);
+
+    [Theory]
+    [InlineData(@"HKLM\SOFTWARE\Classes\*\shell\Open with Foo")]
+    [InlineData(@"HKLM\SOFTWARE\Classes\Foo.Document")]
+    [InlineData(@"HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\foo.exe")]
+    [InlineData(@"HKCU\Software\Classes\Directory\shellex\ContextMenuHandlers\FooMenu")]
+    public void Registration_keys_of_a_program_are_deletable(string key) =>
+        Assert.False(Cleaner.IsCriticalKey(key));
+
+    [Theory]
+    [InlineData(@"HKLM\SOFTWARE\Classes\*\shell")]
+    [InlineData(@"HKLM\SOFTWARE\Classes\Directory\shellex\ContextMenuHandlers")]
+    [InlineData(@"HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths")]
+    public void Registration_parents_are_never_deletable(string key) =>
+        Assert.True(Cleaner.IsCriticalKey(key));
+}

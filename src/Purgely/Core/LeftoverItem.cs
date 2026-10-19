@@ -2,14 +2,21 @@ using System.ComponentModel;
 
 namespace Purgely.Core;
 
-public enum LeftoverKind { Folder, File, Shortcut, RegistryKey, RegistryValue, StartupEntry, Service, Driver, ScheduledTask }
+public enum LeftoverKind
+{
+    Folder, File, Shortcut, RegistryKey, RegistryValue, StartupEntry, Service, Driver, ScheduledTask,
+    // 0.9 – removed like a registry key (exported first, then deleted):
+    ContextMenu, FileType, AppPath,
+    // 0.9 – one value or one entry inside a value:
+    FirewallRule, PathEntry,
+}
 
 /// <summary>One thing a program left behind, with the evidence that links it to the program.</summary>
 public sealed class LeftoverItem : INotifyPropertyChanged
 {
     public required LeftoverKind Kind { get; init; }
 
-    /// <summary>Folder/file path, registry key path, service name or task path.</summary>
+    /// <summary>Folder/file path, registry key path, service name or task path. Unique per item.</summary>
     public required string Location { get; init; }
 
     /// <summary>Friendly name (service display name, task name…).</summary>
@@ -65,6 +72,11 @@ public sealed class LeftoverItem : INotifyPropertyChanged
         LeftoverKind.Service => "Service",
         LeftoverKind.Driver => "Driver",
         LeftoverKind.ScheduledTask => "Scheduled task",
+        LeftoverKind.ContextMenu => "Right-click menu",
+        LeftoverKind.FileType => "File type",
+        LeftoverKind.AppPath => "Win+R path",
+        LeftoverKind.FirewallRule => "Firewall rule",
+        LeftoverKind.PathEntry => "PATH entry",
         _ => Kind.ToString(),
     };
 
@@ -82,12 +94,18 @@ public sealed class LeftoverItem : INotifyPropertyChanged
             Detail.Length > 0 && Detail != Location ? $"{Detail}  ({Location})" : Location,
         LeftoverKind.StartupEntry => $"{RegistryKeyPath}  →  {ValueName}",
         LeftoverKind.RegistryValue => $"{RegistryKeyPath}  →  {(ValueName.Length == 0 ? "(Default)" : ValueName)}",
+        LeftoverKind.FirewallRule => $"{(Detail.Length > 0 ? Detail : ValueName)}  →  {TargetPath}",
+        LeftoverKind.PathEntry => $"{(RegistryKeyPath.StartsWith("HKCU", StringComparison.OrdinalIgnoreCase) ? "Your PATH" : "System PATH")}  →  {Detail}",
+        LeftoverKind.ContextMenu or LeftoverKind.FileType or LeftoverKind.AppPath when Detail.Length > 0 => $"{Detail}  ({Location})",
         _ => Location,
     };
 
     public string Why => IsShared
         ? $"Also used by {SharedWith} – keeping it."
         : string.Join("  •  ", Evidence);
+
+    /// <summary>Removed by exporting and deleting the registry key in <see cref="Location"/>.</summary>
+    public bool IsRegistryKeyKind => Kind is LeftoverKind.RegistryKey or LeftoverKind.ContextMenu or LeftoverKind.FileType or LeftoverKind.AppPath;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 }

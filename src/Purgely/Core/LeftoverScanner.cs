@@ -81,11 +81,13 @@ public sealed partial class LeftoverScanner
             .Select(i => i.Location).ToList();
         var loc = _t.InstallLocation.Trim('"', ' ');
         if (loc.Length > 3 && IsSafeFolder(loc) && !IsVendorFolder(loc)) folders.Add(PathUtil.Normalize(loc));
-        folders = folders.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        // A folder another installed program still uses is no proof (council 0.9).
+        folders = folders.Distinct(StringComparer.OrdinalIgnoreCase).Where(f => !UsedByOtherProgram(f)).ToList();
 
         ScanServices(folders);
         ScanTasks(folders);
         ScanStartup(folders);
+        ScanRegistrations(folders); // right-click menu, file types, Win+R paths, firewall rules, PATH (0.9)
         AddLinkEvidence();
         AddPublisherAndTimeEvidence();
         MarkShared();
@@ -117,6 +119,15 @@ public sealed partial class LeftoverScanner
         return _all.Any(p => p.InstallLocation.Length > 3 &&
                              !string.Equals(p.RegistryKey, _t.UninstallKey, StringComparison.OrdinalIgnoreCase) &&
                              PathUtil.IsUnder(PathUtil.Normalize(p.InstallLocation), location));
+    }
+
+    private bool UsedByOtherProgram(string folder)
+    {
+        var location = PathUtil.Normalize(folder);
+        return _all.Any(p => !p.IsOrphan && !p.IsRemovedEarlier && p.InstallLocation.Length > 3 && Path.IsPathRooted(p.InstallLocation) &&
+                             !string.Equals(p.RegistryKey, _t.UninstallKey, StringComparison.OrdinalIgnoreCase) &&
+                             (PathUtil.SameOrUnder(location, PathUtil.Normalize(p.InstallLocation)) ||
+                              PathUtil.IsUnder(PathUtil.Normalize(p.InstallLocation), location)));
     }
 
     private HashSet<string>? _allPublishers;
@@ -622,9 +633,12 @@ public sealed partial class LeftoverScanner
                         if (PathUtil.SameOrUnder(loc, item.Location) || PathUtil.IsUnder(item.Location, loc))
                             users.Add(name);
                     break;
-                case LeftoverKind.Service or LeftoverKind.Driver or LeftoverKind.ScheduledTask or LeftoverKind.StartupEntry:
+                case LeftoverKind.Service or LeftoverKind.Driver or LeftoverKind.ScheduledTask or LeftoverKind.StartupEntry
+                     or LeftoverKind.ContextMenu or LeftoverKind.FileType or LeftoverKind.AppPath or LeftoverKind.FirewallRule
+                     or LeftoverKind.PathEntry:
                     foreach (var (loc, name) in locations)
-                        if (PathUtil.IsUnder(item.TargetPath, loc)) users.Add(name);
+                        if (PathUtil.IsUnder(item.TargetPath, loc) ||
+                            (item.Kind == LeftoverKind.PathEntry && PathUtil.SameOrUnder(item.TargetPath, loc))) users.Add(name);
                     // Made by a company that still has other programs installed → could be theirs.
                     var company = CompanyOf(item.TargetPath);
                     if (company.Length >= 3)

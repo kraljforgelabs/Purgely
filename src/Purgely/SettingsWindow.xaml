@@ -1,0 +1,172 @@
+<Window x:Class="Purgely.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Purgely – Settings" Height="740" Width="1100" MinHeight="480" MinWidth="760">
+    <Window.Resources>
+        <Style x:Key="SettingTitle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongText}"/>
+        <Style x:Key="SettingText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+        <!-- One setting: icon · title + description · control on the right -->
+        <Style x:Key="SettingRow" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Padding" Value="16,12"/>
+        </Style>
+        <Style x:Key="SettingIcon" TargetType="TextBlock" BasedOn="{StaticResource IconText}">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Margin" Value="0,0,14,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,16">
+            <Button x:Name="HomeButton" DockPanel.Dock="Left" Visibility="Collapsed" Padding="10,8" Margin="0,4,16,0"
+                    VerticalAlignment="Top" ToolTip="Back to the home screen (Esc)" AutomationProperties.Name="Back to home">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE72B;"/>
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Home"/>
+                </StackPanel>
+            </Button>
+            <StackPanel>
+                <TextBlock Text="Settings" Style="{StaticResource PageTitle}"/>
+                <TextBlock Style="{StaticResource PageSubtitle}"
+                           Text="How Purgely behaves, where it keeps its backups – and how to remove Purgely itself."/>
+            </StackPanel>
+        </DockPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+            <StackPanel MaxWidth="980" HorizontalAlignment="Left" Margin="0,0,8,0">
+
+                <!-- ============ Updates ============ -->
+                <TextBlock Style="{StaticResource SectionHeader}" Text="Updates" FontSize="16" Margin="0,0,0,8"/>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE895;"/>
+                        <CheckBox x:Name="UpdatesBox" DockPanel.Dock="Right" VerticalAlignment="Center" Content="On"
+                                  Click="UpdatesBox_Click" AutomationProperties.Name="Check for new versions of Purgely"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="Check for new versions of Purgely"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Once a day Purgely asks GitHub whether a newer version was released and tells you on the home screen. Nothing about your PC is sent, and nothing is downloaded or installed by itself."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE946;"/>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="CheckNowButton" Click="CheckNow_Click" Padding="12,5" Content="Check now"/>
+                            <Button x:Name="DownloadButton" Click="Download_Click" Padding="12,5" Margin="8,0,0,0"
+                                    Style="{StaticResource AccentButton}" Content="Open download page" Visibility="Collapsed"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock x:Name="VersionTitle" Style="{StaticResource SettingTitle}" Text="Purgely"/>
+                            <TextBlock x:Name="UpdateStatus" Style="{StaticResource SettingText}" Text="Not checked yet."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- ============ History and backups ============ -->
+                <TextBlock Style="{StaticResource SectionHeader}" Text="History and backups" FontSize="16" Margin="0,18,0,8"/>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE81C;"/>
+                        <ComboBox x:Name="TimelineBox" DockPanel.Dock="Right" Width="170" VerticalAlignment="Center"
+                                  SelectionChanged="TimelineBox_Changed" AutomationProperties.Name="Keep Timeline history for">
+                            <ComboBoxItem Content="Forever" Tag="0"/>
+                            <ComboBoxItem Content="1 year" Tag="365"/>
+                            <ComboBoxItem Content="90 days" Tag="90"/>
+                            <ComboBoxItem Content="30 days" Tag="30"/>
+                        </ComboBox>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="Keep Timeline history"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Older events are removed when Purgely starts. What Purgely needs to find leftovers of recently removed programs is always kept."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE7A7;"/>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Click="OpenUndo_Click" Padding="12,5" Content="Open Undo center"/>
+                            <Button Click="OpenDataFolder_Click" Padding="12,5" Margin="8,0,0,0" Content="Show folder"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="Undo backups"/>
+                            <TextBlock x:Name="UndoStatus" Style="{StaticResource SettingText}" Text="Counting…"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE72E;"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="Protected data folder"/>
+                            <TextBlock x:Name="ProtectStatus" Style="{StaticResource SettingText}"
+                                       Text="Purgely's backups can only be changed by administrators, so nobody can slip their own changes into an Undo package."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- ============ Help ============ -->
+                <TextBlock Style="{StaticResource SectionHeader}" Text="Help" FontSize="16" Margin="0,18,0,8"/>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE897;"/>
+                        <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                            <Button Click="Welcome_Click" Padding="12,5" Content="Show the welcome tour"/>
+                            <Button Click="Guide_Click" Padding="12,5" Margin="8,0,0,0" Content="User guide"/>
+                            <Button Click="Report_Click" Padding="12,5" Margin="8,0,0,0" Content="Report a problem"/>
+                        </WrapPanel>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="Learn and get help"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="The welcome tour explains Purgely in three steps. Problems and ideas go to GitHub (you need a free account)."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE8D7;"/>
+                        <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                            <Button Click="Privacy_Click" Padding="12,5" Content="Privacy"/>
+                            <Button Click="Source_Click" Padding="12,5" Margin="8,0,0,0" Content="Source code"/>
+                        </WrapPanel>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="About"/>
+                            <TextBlock x:Name="AboutText" Style="{StaticResource SettingText}"
+                                       Text="Purgely by KraljForge Labs · free and open source (MIT License) · no ads, no tracking."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- ============ Remove Purgely ============ -->
+                <TextBlock Style="{StaticResource SectionHeader}" Text="Remove Purgely" FontSize="16" Margin="0,18,0,8"/>
+                <Border Style="{StaticResource InfoBarWarning}" Padding="16,12" Margin="0,0,0,12">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE74D;"
+                                   Foreground="{StaticResource AttentionBrush}"/>
+                        <Button x:Name="RemoveButton" DockPanel.Dock="Right" Click="Remove_Click" Padding="12,5"
+                                VerticalAlignment="Center" Content="Remove Purgely…"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="Remove Purgely and its data"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Deletes Purgely's backups, history and settings – and Purgely.exe if you want. What you changed with Purgely (ads turned off, startup items) stays as it is. Restore anything you want back from the Undo center first: afterwards it can't be undone."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9 (public beta) – 2026-10
+- **Settings** page (gear button on the home screen): update check, Timeline history length, Undo storage, help links
+- **New version notice** – once a day Purgely asks GitHub for a newer release and shows a notice; nothing is downloaded
+  or installed by itself, dismissing skips that version (can be turned off)
+- **Welcome tour** on the first start (three steps, part of the home screen – not a pop-up)
+- **Remove Purgely and its data** – shows exactly what goes (backups, history, settings, optionally Purgely.exe) and
+  warns when cleanups could still be undone
+- **More leftovers found** – right-click menu entries and shell extensions, file types and "Open with" entries, Win+R
+  program paths, firewall rules and PATH entries. Offered only when they point into the program's own folder, or when
+  their name matches and the target is gone; one PATH entry is removed without touching the rest; all undoable
+- Security: Purgely's data folders (`C:\ProgramData\Purgely`, `X:\Purgely Undo`) are now writable by administrators only,
+  so a standard user can't plant a fake Undo package; a linked "Purgely Undo" folder is never used
+- Notice when Purgely runs under a different account than the signed-in user (UAC with another admin's password)
+- Releases before 1.0 are marked as Pre-release on GitHub
+
 ## 0.4 – 2026-10
 - **Uninstall several programs at once** – queue, quiet mode (Windows Installer, Inno Setup, NSIS, quiet uninstall
   strings), skip a stuck one, one combined leftover scan

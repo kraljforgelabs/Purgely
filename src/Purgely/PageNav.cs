@@ -11,6 +11,9 @@ namespace Purgely;
 /// </summary>
 public static class PageNav
 {
+    /// <summary>Purgely is closing on purpose (e.g. after "Remove Purgely") – pages must not bring other windows back.</summary>
+    public static bool Exiting { get; set; }
+
     public static void Open(Window from, Window page, Action? onBack = null)
     {
         var bounds = from.WindowState == WindowState.Normal ? new Rect(from.Left, from.Top, from.Width, from.Height) : from.RestoreBounds;
@@ -61,7 +64,7 @@ public static class PageNav
         page.Closing += (_, e) =>
         {
             if (e.Cancel) { exitRequested = false; return; } // BusyGuard said "wait" – nothing closes
-            if (exitRequested) return;
+            if (exitRequested || Exiting) return;
             // Show the previous window BEFORE this one disappears: if it were shown afterwards, Windows would
             // already have given the focus to some other program's window.
             var back = page.WindowState == WindowState.Normal
@@ -77,6 +80,7 @@ public static class PageNav
 
         page.Closed += (_, _) =>
         {
+            if (Exiting) return;
             if (exitRequested)
             {
                 Application.Current.Shutdown();

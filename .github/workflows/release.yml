@@ -55,3 +55,5 @@ jobs:
         with:
           files: release/*
           generate_release_notes: true
+          # Everything before 1.0 is published as a beta (GitHub "Pre-release").
+          prerelease: ${{ startsWith(github.ref_name, 'v0.') }}

@@ -50,8 +50,9 @@ public static class Cleaner
         var folder = Path.Combine(sourceRoot, DriveUndoFolderName);
         try
         {
-            var dir = Directory.CreateDirectory(folder);
-            dir.Attributes |= FileAttributes.Hidden;
+            // Only a folder that is (or can be made) administrators-only – never a link, never one a user prepared.
+            if (!DataFolders.PrepareDriveUndoFolder(folder)) return Path.Combine(package, "files");
+            new DirectoryInfo(folder).Attributes |= FileAttributes.Hidden;
             File.WriteAllText(Path.Combine(folder, "README.txt"),
                 "Backups made by Purgely (Undo center). Restore or discard them from Purgely – don't delete by hand.");
         }
@@ -151,14 +152,17 @@ public static class Cleaner
             catch (Exception ex) { report.Failures.Add($"{r.DisplayLocation}: {ex.Message}"); }
         }
 
+        var firewallAfterRestart = false;
         // 3b. Registry values (Trial Mode): remove added values, put back changed or deleted ones.
-        foreach (var v in items.Where(i => i.Kind == LeftoverKind.RegistryValue))
+        // Firewall rules are single values too: removed (OldValue null), the exact value saved for Undo.
+        foreach (var v in items.Where(i => i.Kind is LeftoverKind.RegistryValue or LeftoverKind.FirewallRule))
         {
             Step(v);
             try
             {
                 using var key = RegistryPath.Create(v.RegistryKeyPath);
                 var exists = key.GetValueNames().Contains(v.ValueName, StringComparer.OrdinalIgnoreCase);
+                if (!exists && v.Kind == LeftoverKind.FirewallRule) { v.Removed = true; continue; } // already gone
                 var current = exists ? RegValue.Read(key, v.ValueName) : null;
                 if (exists && (current is null || !current.CanRoundTrip))
                 {
@@ -170,16 +174,41 @@ public static class Cleaner
                     report.Failures.Add($"{v.DisplayLocation}: unsupported value type, nothing changed");
                     continue;
                 }
-                if (v.OldValue is null) key.DeleteValue(v.ValueName, false);
+                if (v.Kind == LeftoverKind.FirewallRule)
+                {
+                    // Through the firewall itself, so the rule stops at once; the registry only if that is refused.
+                    if (!RemoveFirewallRule(v.ValueName)) { key.DeleteValue(v.ValueName, false); firewallAfterRestart = true; }
+                }
+                else if (v.OldValue is null) key.DeleteValue(v.ValueName, false);
                 else v.OldValue.WriteTo(key, v.ValueName);
                 Done(v, new UndoAction
                 {
-                    Type = "Value", Original = v.RegistryKeyPath, Extra = v.ValueName,
+                    Type = v.Kind == LeftoverKind.FirewallRule ? "FirewallRule" : "Value", Original = v.RegistryKeyPath, Extra = v.ValueName,
                     Backup = current is null ? "" : System.Text.Json.JsonSerializer.Serialize(current),
                 });
             }
             catch (Exception ex) { report.Failures.Add($"{v.DisplayLocation}: {ex.Message}"); }
         }
+
+        // 3c. PATH entries – only the one entry is taken out of the value; Undo puts it back.
+        foreach (var p in items.Where(i => i.Kind == LeftoverKind.PathEntry))
+        {
+            Step(p);
+            try
+            {
+                if (!PathVariable.RemoveEntry(p.RegistryKeyPath, p.Detail, out var wasThere, out var position))
+                {
+                    report.Failures.Add($"{p.DisplayLocation}: PATH has an unusual type, nothing changed");
+                    continue;
+                }
+                if (!wasThere) { p.Removed = true; continue; }
+                Done(p, new UndoAction { Type = "PathEntry", Original = p.RegistryKeyPath, Extra = p.Detail, Extra2 = PathVariable.ValueName,
+                                         Backup = position.ToString() });
+            }
+            catch (Exception ex) { report.Failures.Add($"{p.DisplayLocation}: {ex.Message}"); }
+        }
+        if (firewallAfterRestart)
+            report.Notes.Add("Some firewall rules are removed from Windows Firewall after the next restart.");
 
         // 4. Stop programs still running from the folders we are about to remove.
         var folders = items.Where(i => i.Kind == LeftoverKind.Folder && SafePaths.IsRemovableFolder(i.Location, out _))
@@ -220,7 +249,7 @@ public static class Cleaner
         }
 
         // 6. Registry keys – exported first, then deleted.
-        foreach (var k in items.Where(i => i.Kind == LeftoverKind.RegistryKey))
+        foreach (var k in items.Where(i => i.IsRegistryKeyKind))
         {
             Step(k);
             if (!RegistryPath.Exists(k.Location)) { k.Removed = true; continue; }
@@ -251,6 +280,16 @@ public static class Cleaner
         if (manifest.Actions.Count == 0) FileMover.DeleteBestEffort(package, true);
         else Timeline.Log(TimelineEventType.Cleaned, title, $"{report.Removed} leftover item(s) removed – can be undone");
         return report;
+    }
+
+    /// <summary>Removes one firewall rule by its ID (the registry value name) through Windows Firewall.</summary>
+    private static bool RemoveFirewallRule(string id)
+    {
+        if (id.Length == 0 || id.Any(c => c is '"' or '\0' or '\r' or '\n')) return false;
+        var quoted = "'" + id.Replace("'", "''") + "'";
+        var (code, _) = Shell.Run("powershell.exe",
+            $"-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"Remove-NetFirewallRule -Name {quoted} -ErrorAction Stop\"", 60_000);
+        return code == 0;
     }
 
     private static void StopProcessesIn(List<string> folders, CleanReport report)

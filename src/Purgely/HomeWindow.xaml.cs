@@ -10,7 +10,7 @@ using Purgely.Core.Trial;
 namespace Purgely;
 
 /// <summary>What a notice's action button does.</summary>
-public enum NoticeKind { Bundleware, NewStartupItems, KeptOff, ShouldBeOn, ClutterBack, Info }
+public enum NoticeKind { Bundleware, NewStartupItems, KeptOff, ShouldBeOn, ClutterBack, Info, UpdateAvailable, DifferentUser }
 
 /// <summary>
 /// One calm alert in the Notices panel. Icon is a Segoe Fluent Icons glyph.
@@ -37,7 +37,8 @@ public partial class HomeWindow : Window
     private int _generation;
     private int _steps;
     private static bool _backgroundChecksDone;
-    private static bool _bloatChecked; // "Windows brought it back" notice: once per Purgely session // Timeline sync + startup checks: once per Purgely session
+    private static bool _bloatChecked; // "Windows brought it back" notice: once per Purgely session
+    private static bool _sessionChecked; // update check and "different account" notice: once per Purgely session
 
     public HomeWindow()
     {
@@ -51,6 +52,8 @@ public partial class HomeWindow : Window
         Loaded += async (_, _) =>
         {
             TileUninstall.Focus();
+            if (!AppSettings.Current.WelcomeSeen) ShowWelcome();
+            _ = SessionChecksAsync();
             await RefreshAsync();
         };
     }
@@ -267,6 +270,97 @@ public partial class HomeWindow : Window
 
     private async Task<List<InstalledProgram>> ProgramsAsync() => _programs ??= await Task.Run(ProgramInventory.LoadWithRecentlyRemoved);
 
+    /// <summary>Once per session: is a newer Purgely out, and does Purgely run under the signed-in account?</summary>
+    private async Task SessionChecksAsync()
+    {
+        if (_sessionChecked) return;
+        _sessionChecked = true;
+        try
+        {
+            if (await Task.Run(DataFolders.DifferentUser) is { } users)
+                Notices.Add(new Notice(Warning,
+                    $"Purgely runs as {users.Running}, but {users.SignedIn} is signed in. Programs installed for everyone are " +
+                    "shown, but settings, AppData and startup items are the ones of the administrator account, not yours.",
+                    "What to do", NoticeKind.DifferentUser, IsWarning: true));
+
+            if (await UpdateCheck.CheckIfDueAsync() is { } release)
+                Notices.Insert(0, new Notice(Info,
+                    $"Purgely {release.Version}{(release.IsPreview ? " (beta)" : "")} is available – you have {UpdateCheck.CurrentVersion}. " +
+                    "Download it and replace your Purgely.exe. Dismiss to skip this version.",
+                    "Open download page", NoticeKind.UpdateAvailable, Payload: release));
+        }
+        catch (Exception) { /* background checks never disturb the home screen */ }
+    }
+
+    // ================================================================== welcome tour
+    private static readonly (string Icon, string Title, string Text)[] WelcomePages =
+    {
+        ("\uE80F", "Welcome to Purgely",
+         "One free tool that removes programs cleanly – leftovers included – gets rid of bloatware and ads, and keeps " +
+         "your programs and drivers up to date. No ads, no subscriptions, no tracking.\n\n" +
+         "This is a beta version. If something looks wrong, tell us: the gear button at the top right → Report a problem."),
+        ("\uE7B3", "Nothing changes until you say so",
+         "Purgely looks first and shows you what it found – and how sure it is, in words (\"Very sure · 88%\"). " +
+         "Only what it is sure about is ticked. Anything another program still uses is marked \"Keep (shared)\" and never removed."),
+        ("\uE7A7", "Almost everything can be undone",
+         "Before Purgely removes or changes anything, it saves a backup. The Undo center puts it back in one click.\n\n" +
+         "A good first step: Checkup looks at the whole PC at once and fixes only what Purgely is sure about."),
+    };
+
+    private int _welcomePage;
+
+    private void ShowWelcome()
+    {
+        _welcomePage = 0;
+        WelcomeOverlay.Visibility = Visibility.Visible;
+        ShowWelcomePage();
+    }
+
+    private void ShowWelcomePage()
+    {
+        var (icon, title, text) = WelcomePages[_welcomePage];
+        WelcomeIcon.Text = icon;
+        WelcomeTitle.Text = title;
+        WelcomeText.Text = UpdateCheck.CurrentVersion.Major >= 1 ? text.Split("\n\nThis is a beta")[0] : text;
+        WelcomeStep.Text = $"{_welcomePage + 1} of {WelcomePages.Length}";
+        WelcomeBack.Visibility = _welcomePage == 0 ? Visibility.Collapsed : Visibility.Visible;
+        var last = _welcomePage == WelcomePages.Length - 1;
+        WelcomeNext.Content = last ? "Run Checkup" : "Next";
+        WelcomeSkip.Content = last ? "Close" : "Skip tour";
+        WelcomeDots.Children.Clear();
+        for (var i = 0; i < WelcomePages.Length; i++)
+            WelcomeDots.Children.Add(new System.Windows.Shapes.Ellipse
+            {
+                Width = i == _welcomePage ? 22 : 8, Height = 8, Margin = new Thickness(0, 0, 6, 0),
+                Fill = (System.Windows.Media.Brush)FindResource(i == _welcomePage ? "AccentBrush" : "CardPressedBrush"),
+            });
+        Dispatcher.BeginInvoke(() => WelcomeNext.Focus(), System.Windows.Threading.DispatcherPriority.Input);
+    }
+
+    private void CloseWelcome()
+    {
+        WelcomeOverlay.Visibility = Visibility.Collapsed;
+        AppSettings.Current.WelcomeSeen = true;
+        AppSettings.Save();
+        TileUninstall.Focus();
+    }
+
+    private void WelcomeSkip_Click(object sender, RoutedEventArgs e) => CloseWelcome();
+
+    private void WelcomeBack_Click(object sender, RoutedEventArgs e)
+    {
+        if (_welcomePage > 0) { _welcomePage--; ShowWelcomePage(); }
+    }
+
+    private void WelcomeNext_Click(object sender, RoutedEventArgs e)
+    {
+        if (_welcomePage < WelcomePages.Length - 1) { _welcomePage++; ShowWelcomePage(); return; }
+        CloseWelcome();
+        OpenPage(new CheckupWindow());
+    }
+
+    private bool WelcomeOpen => WelcomeOverlay.Visibility == Visibility.Visible;
+
     // ================================================================== tiles
     /// <summary>
     /// Opens a feature as a "page": it takes the home window's place (same position, size and state) and the home
@@ -316,6 +410,13 @@ public partial class HomeWindow : Window
 
     private void Move_Click(object sender, RoutedEventArgs e) => OpenPage(new MoveWindow());
 
+    private void Settings_Click(object sender, RoutedEventArgs e)
+    {
+        var page = new SettingsWindow();
+        OpenPage(page);
+        page.Closed += (_, _) => { if (page.WelcomeRequested) ShowWelcome(); };
+    }
+
     private void Bloatware_Click(object sender, RoutedEventArgs e) => OpenPage(new BloatwareWindow());
 
     private void Drivers_Click(object sender, RoutedEventArgs e) => OpenPage(new HardwareWindow());
@@ -356,6 +457,19 @@ public partial class HomeWindow : Window
             case NoticeKind.ClutterBack:
                 OpenPage(new BloatwareWindow());
                 break;
+            case NoticeKind.UpdateAvailable when notice.Payload is PurgelyRelease release:
+                UpdateCheck.OpenReleasePage(release.PageUrl);
+                return; // stays until the new version is running or the user skips it
+            case NoticeKind.DifferentUser:
+                Dialog.Show(this,
+                    "Purgely runs under another account than the one signed in.\n\n" +
+                    "This happens when you start Purgely from a standard account and type an administrator's password. " +
+                    "Programs installed for all users are handled normally, but your own settings, AppData folders and " +
+                    "startup items belong to the account you are signed in with, and Purgely can't see them from here.\n\n" +
+                    "For a complete cleanup, sign in with an administrator account and start Purgely there – or give your own " +
+                    "account administrator rights for the cleanup.",
+                    "Different account", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             case NoticeKind.KeptOff when notice.Payload is List<StartupItem> items:
                 var count = await Task.Run(() => StartupManager.TurnOffAgain(items));
                 FooterStatus.Text = $"Turned {count} startup item(s) off again";
@@ -373,12 +487,24 @@ public partial class HomeWindow : Window
             StartupManager.ForgetKeepOff(items);
         if (notice is { Kind: NoticeKind.ClutterBack, Payload: ValueTuple<List<ClutterTweak>, List<InstalledProgram>> back })
             Bloatware.Forget(back.Item1, back.Item2);
+        if (notice is { Kind: NoticeKind.UpdateAvailable, Payload: PurgelyRelease skipped })
+        {
+            AppSettings.Current.SkippedVersion = skipped.Tag;
+            AppSettings.Save();
+        }
         Notices.Remove(notice);
     }
 
     // ================================================================== keyboard
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
+        if (WelcomeOpen)
+        {
+            if (e.Key == Key.Escape) { CloseWelcome(); e.Handled = true; }
+            // Alt+letter must not open a tile behind the tour (Alt+F4 and Alt+Space keep working).
+            else if (e.Key == Key.System && e.SystemKey is >= Key.A and <= Key.Z or >= Key.D0 and <= Key.D9) e.Handled = true;
+            return;
+        }
         if (e.Key == Key.F5)
         {
             Refresh_Click(sender, e);
@@ -394,6 +520,7 @@ public partial class HomeWindow : Window
     /// <summary>Typing a letter opens the program list with it already in the search box.</summary>
     private void Window_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
+        if (WelcomeOpen) { e.Handled = true; return; }
         if (string.IsNullOrEmpty(e.Text) || !char.IsLetterOrDigit(e.Text[0])) return;
         if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) return;
         OpenMain(MainView.All, e.Text);

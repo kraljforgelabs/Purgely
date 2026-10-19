@@ -49,3 +49,14 @@ Purgely deletes and changes things on real Windows PCs. A wrong delete can break
 - Store apps: the package name is validated before it reaches PowerShell; the "Appx" Undo action can only reopen the Store page – say so in the UI.
 - Known-program rules (`Core/KnownPrograms.cs`) must never point into the user's own files; user-data paths are offered, never ticked.
 - Suggestions are hints only – they never tick or remove anything.
+
+## Rules added with 0.9 (2026-10-19)
+- Purgely's shared data (`C:\ProgramData\Purgely`, `X:\Purgely Undo`) must stay administrators-only (`DataFolders.Protect`);
+  never follow a link when choosing a backup folder.
+- Registrations (right-click menu, file types, App Paths, firewall rules, PATH) are offered only when they point into a
+  folder that clearly belongs to the program, or when the name matches **and** the target is gone. Nothing that points
+  into Windows is offered. Extension keys (`.mp4`) and the user's default-app choices are never touched.
+- PATH: remove one entry, keep the value type (REG_EXPAND_SZ) and every other entry unexpanded; Undo adds the entry back.
+- The update check only reads GitHub's public release list, at most once a day, can be turned off, and never downloads
+  or runs anything. Only URLs under the project's own releases page are opened.
+- "Remove Purgely" deletes only folders with Purgely's exact names (never through a link) and only `Purgely.exe` itself.

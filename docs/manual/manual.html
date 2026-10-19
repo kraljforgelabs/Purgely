@@ -55,7 +55,7 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
       <span class="pill">Free</span><span class="pill">No ads</span><span class="pill">Open source (MIT)</span><span class="pill">Portable – no installation</span><span class="pill">Undo for everything</span>
     </div>
   </div>
-  <div class="foot">Version 0.4 · KraljForge Labs – Practical tools forged for the future · github.com/kraljforgelabs/Purgely</div>
+  <div class="foot">Version 0.9 (beta) · KraljForge Labs – Practical tools forged for the future · github.com/kraljforgelabs/Purgely</div>
 </div>
 
 <h2 style="margin-top:0">Contents</h2>
@@ -66,7 +66,7 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
   <div><span>10</span>Updates</div><div><span>11</span>Drivers</div><div><span>12</span>Startup</div>
   <div><span>13</span>Install &amp; Track</div><div><span>14</span>Checkup</div><div><span>15</span>Move to a new PC</div>
   <div><span>16</span>Timeline and notices</div><div><span>17</span>The Undo center</div><div><span>18</span>Safety promises</div>
-  <div><span>19</span>Questions and problems</div><div><span>20</span>Help make Purgely better</div>
+  <div><span>19</span>Settings and removing Purgely</div><div><span>20</span>Questions and problems</div><div><span>21</span>Help make Purgely better</div>
 </div>
 
 <h2 style="margin-top:16pt"><span class="num">1</span>What Purgely is</h2>
@@ -87,11 +87,14 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
   <li>Download <span class="kbd">Purgely.exe</span> from the project's GitHub <i>Releases</i> page. The file <span class="kbd">SHA256SUMS.txt</span> next to it lets you check that the download is genuine.</li>
   <li>Double-click it. Windows asks for administrator rights – Purgely needs them to clean programs installed for all users, services and the registry.</li>
   <li>If Windows shows "Windows protected your PC", click <i>More info → Run anyway</i>. This appears for new programs that are not yet widely downloaded.</li>
+  <li>The first time, a short <b>welcome tour</b> (three steps) explains how Purgely works. You can see it again any time in <b>Settings</b> (the gear button at the top right).</li>
 </ol>
 <h3>Requirements</h3>
 <p>Windows 11 (Windows 10 works for most features). For updates and "Move to a new PC" Windows needs <i>App Installer</i> (winget), which is part of Windows 11.</p>
 <h3>Your data</h3>
-<p>Purgely keeps its records on your PC only: settings and history in <span class="kbd">%LOCALAPPDATA%\Purgely</span> and <span class="kbd">C:\ProgramData\Purgely</span>, backups in <span class="kbd">Purgely Undo</span> folders. It sends nothing anywhere. It only goes online when you ask for updates, drivers or a VirusTotal lookup.</p>
+<p>Purgely keeps its records on your PC only: settings and history in <span class="kbd">%LOCALAPPDATA%\Purgely</span> and <span class="kbd">C:\ProgramData\Purgely</span>, backups in <span class="kbd">Purgely Undo</span> folders. Only administrators can change these folders, so nobody can slip their own changes into a backup. Purgely sends nothing about you anywhere. It goes online when you ask for updates, drivers or a VirusTotal lookup – and once a day it asks GitHub whether a newer Purgely exists (you can turn this off in Settings).</p>
+<h3>Signed in with a standard account?</h3>
+<p>If you start Purgely from a standard account and type an administrator's password, Purgely runs as that administrator. Programs installed for everyone are handled normally, but your own settings and AppData folders belong to your account – the home screen tells you when this is the case. For a complete cleanup, sign in with an administrator account.</p>
 
 <h2 style="margin-top:12pt"><span class="num">3</span>The home screen</h2>
 <div class="fig"><img class="shot" src="img/home.png" alt="Home screen"><div class="cap">The home screen: ten tiles with a live summary, Notices on the right. (Version 0.4 adds the Checkup and Move to new PC buttons at the top.)</div></div>
@@ -139,6 +142,7 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
   <tr><td><b>Maybe</b> (45–69 %)</td><td>Only the name matches – offered, never ticked. Tick it yourself if you agree.</td></tr>
   <tr><td><b>Keep (shared)</b></td><td>Another installed program uses it. Never removed.</td></tr>
 </table>
+<p>Besides files and the registry, Purgely finds the program's <b>right-click menu entries</b>, <b>file types</b> (for example ".mp4 opens with…"), <b>Win+R program paths</b>, <b>firewall rules</b> and <b>PATH entries</b>. They are offered only when they point into the program's own folder, or when their name matches and what they point at is gone. Your own choice of default apps is never changed. A PATH entry is taken out on its own – the rest of PATH stays exactly as it was.</p>
 <p>Purgely also knows popular programs that leave things where a name search can't find them (OneDrive, Teams, Chrome, Steam, Adobe and more). Their <i>settings and saves</i> are offered but never ticked – remove them only if you don't need them.</p>
 <p>The scan compares what it found with the size Windows recorded. If a big part seems missing (for example a game on another drive), it warns you and lets you add the folder with <b>Add folder…</b>.</p>
 <div class="fig"><img class="shot" src="img/list.png" alt="Clean leftovers" style="margin-top:4pt"><div class="cap">Clean leftovers lists removed programs that left traces. "Find leftovers by name" works for programs removed long ago.</div></div>
@@ -258,7 +262,22 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
 
 </section>
 <section>
-<h2><span class="num">19</span>Questions and problems</h2>
+<h2><span class="num">19</span>Settings and removing Purgely</h2>
+<p class="lead">The gear button at the top right of the home screen opens <b>Settings</b>.</p>
+<table>
+  <tr><th style="width:32%">Setting</th><th>What it does</th></tr>
+  <tr><td><b>Check for new versions</b></td><td>Once a day Purgely asks GitHub whether a newer version was released and shows a notice on the home screen. Nothing is downloaded or installed by itself – you open the release page and replace <span class="kbd">Purgely.exe</span>. Dismissing the notice skips that version.</td></tr>
+  <tr><td><b>Keep Timeline history</b></td><td>Forever, 1 year, 90 days or 30 days. What Purgely needs to find leftovers of recently removed programs is always kept.</td></tr>
+  <tr><td><b>Undo backups</b></td><td>How much space Purgely's backups use, with a shortcut to the Undo center.</td></tr>
+  <tr><td><b>Help</b></td><td>The welcome tour, this guide, and "Report a problem".</td></tr>
+</table>
+<h3>Remove Purgely and its data</h3>
+<p>A tool that cleans up after programs should leave nothing behind itself. <b>Settings → Remove Purgely…</b> shows exactly what will be deleted – Purgely's backups, history and settings, and <span class="kbd">Purgely.exe</span> if you want – and asks before doing anything.</p>
+<div class="box warn"><b>Restore first</b>After Purgely is removed, its backups are gone and nothing it removed can be put back. Restore what you want from the Undo center first. What you changed with Purgely (ads turned off, startup items) stays as you set it.</div>
+</section>
+
+<section>
+<h2><span class="num">20</span>Questions and problems</h2>
 <table>
   <tr><th style="width:38%">Question</th><th>Answer</th></tr>
   <tr><td>I removed something I need.</td><td>Open the <b>Undo center</b>, select the package and click <b>Restore</b>.</td></tr>
@@ -266,18 +285,20 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
   <tr><td>"Windows protects this switch".</td><td>Some settings (like the Widgets button) can only be changed in Windows Settings – Purgely tells you where.</td></tr>
   <tr><td>An uninstaller seems stuck.</td><td>Wait a moment – some work silently. Then use <b>Force uninstall</b>, or <b>Skip this one</b> in bulk mode.</td></tr>
   <tr><td>"winget not found".</td><td>Install or update <i>App Installer</i> from the Microsoft Store.</td></tr>
-  <tr><td>Some items need a restart.</td><td>Locked files are removed at the next restart – they are already backed up.</td></tr>
+  <tr><td>Some items need a restart.</td><td>Locked files are removed at the next restart – they are already backed up. Removed firewall rules also disappear after a restart.</td></tr>
+  <tr><td>"A newer Purgely is available".</td><td>Click <b>Open download page</b>, download the new <span class="kbd">Purgely.exe</span> and replace the old one. Your backups and history stay.</td></tr>
 </table>
 </section>
 
 <section>
-<h2><span class="num">20</span>Help make Purgely better</h2>
+<h2><span class="num">21</span>Help make Purgely better</h2>
 <p>Purgely is open source under the MIT license: free to use, free to share, and anyone can read every line of what it does.</p>
 <ul>
   <li><b>Knowledge base</b> – what Purgely knows about bloatware and popular programs lives in readable files (<span class="kbd">src/Purgely/Knowledge</span>). Found an app that should be on the list, or a folder a program leaves behind? Suggest it on GitHub – <span class="kbd">CONTRIBUTING.md</span> explains how. Every suggestion is reviewed before it reaches anyone.</li>
-  <li><b>Bugs and ideas</b> – open an issue at github.com/kraljforgelabs/Purgely.</li>
+  <li><b>Bugs and ideas</b> – open an issue at github.com/kraljforgelabs/Purgely, or use <b>Settings → Report a problem</b>.</li>
+  <li><b>Beta testers</b> – version 0.9 is a public beta. <span class="kbd">BETA.md</span> on GitHub lists what to try and how to report it.</li>
 </ul>
 <div class="box tip"><b>KraljForge Labs</b>Practical tools forged for the future. Purgely is free and ad-free and will stay that way.</div>
-<p class="small" style="margin-top:20pt">Screenshots show version 0.3/0.4 on Windows 11; your screens may differ slightly. © 2026 KraljForge Labs · MIT License.</p>
+<p class="small" style="margin-top:20pt">Screenshots show versions 0.3–0.4 on Windows 11; your screens may differ slightly. © 2026 KraljForge Labs · MIT License.</p>
 </section>
 </body></html>

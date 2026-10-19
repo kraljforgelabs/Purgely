@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Purgely – the ultimate PC tool for Windows 11</title>
+<meta name="description" content="Free, ad-free Windows 11 tool: uninstall programs completely, remove leftovers, bloatware and Windows ads, update programs and drivers – with an Undo for almost everything.">
+<link rel="icon" href="purgely-icon.png">
+<style>
+:root {
+  --bg: #f6f8fb; --surface: #ffffff; --ink: #0f1a2a; --soft: #4b5a6e; --line: #dfe5ee;
+  --accent: #1f6cd3; --accent-2: #2f7de1; --accent-soft: #e7f0fc; --ok: #16a34a; --warn: #b45309;
+  --radius: 14px; --shadow: 0 10px 30px rgba(15, 26, 42, .08);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --surface: #151b23; --ink: #e8edf4; --soft: #9aa7b8; --line: #262f3b;
+          --accent: #5b9df0; --accent-2: #2f7de1; --accent-soft: #15243a; --ok: #3fb96a; --warn: #e0a24a;
+          --shadow: 0 10px 30px rgba(0, 0, 0, .35); }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+       font: 16px/1.6 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif; }
+a { color: var(--accent); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+header.top { position: sticky; top: 0; z-index: 5; backdrop-filter: blur(10px);
+             background: color-mix(in srgb, var(--bg) 85%, transparent); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; gap: 12px; height: 60px; }
+header.top img { width: 30px; height: 30px; border-radius: 7px; }
+header.top b { font-size: 18px; }
+header.top nav { margin-left: auto; display: flex; gap: 20px; font-size: 15px; }
+header.top nav a { color: var(--soft); text-decoration: none; }
+header.top nav a:hover { color: var(--ink); }
+
+.hero { padding: 72px 0 40px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
+.badge { display: inline-block; font-size: 13px; font-weight: 600; color: var(--warn);
+         border: 1px solid color-mix(in srgb, var(--warn) 45%, transparent); border-radius: 999px; padding: 2px 12px; }
+h1 { font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; font-size: clamp(36px, 5vw, 54px);
+     line-height: 1.08; letter-spacing: -.02em; margin: 16px 0 16px; }
+h1 span { color: var(--accent); }
+.lead { font-size: 19px; color: var(--soft); max-width: 34em; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 14px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 10px; font-weight: 600;
+       text-decoration: none; border: 1px solid var(--line); color: var(--ink); background: var(--surface); }
+.btn.primary { background: var(--accent-2); border-color: var(--accent-2); color: #fff; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:hover { border-color: var(--accent); }
+.fine { font-size: 14px; color: var(--soft); }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.pills span { font-size: 13px; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.shot { width: 100%; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); display: block; }
+
+section { padding: 56px 0; }
+h2 { font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; font-size: 32px; letter-spacing: -.01em; margin: 0 0 8px; }
+.sub { color: var(--soft); margin: 0 0 30px; max-width: 46em; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+.card h3 { margin: 10px 0 6px; font-size: 18px; }
+.card p { margin: 0; color: var(--soft); font-size: 15px; }
+.icon { width: 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); color: var(--accent);
+        display: grid; place-items: center; }
+.icon svg { width: 22px; height: 22px; }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.list { list-style: none; padding: 0; margin: 0; }
+.list li { padding: 10px 0 10px 32px; position: relative; border-bottom: 1px solid var(--line); }
+.list li:last-child { border-bottom: 0; }
+.list li::before { content: "✓"; position: absolute; left: 0; top: 11px; width: 20px; height: 20px; border-radius: 50%;
+                   background: var(--ok); color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+.conf { display: grid; gap: 8px; }
+.conf div { display: flex; justify-content: space-between; gap: 12px; background: var(--surface); border: 1px solid var(--line);
+            border-radius: 10px; padding: 10px 14px; font-size: 15px; }
+.conf b { white-space: nowrap; }
+.conf .t { color: var(--soft); text-align: right; }
+
+.steps { counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.steps .card { counter-increment: s; }
+.steps .card::before { content: counter(s); display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+                       background: var(--accent-2); color: #fff; font-weight: 700; }
+code { font-family: "Cascadia Mono", Consolas, monospace; font-size: .9em; background: var(--accent-soft); padding: 1px 6px; border-radius: 5px; }
+
+footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--soft); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+@media (max-width: 860px) {
+  .hero, .split { grid-template-columns: 1fr; gap: 28px; }
+  .grid, .steps { grid-template-columns: 1fr; }
+  header.top nav { display: none; }
+  .hero { padding-top: 40px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <img src="purgely-icon.png" alt="">
+    <b>Purgely</b>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#safety">Safety</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/kraljforgelabs/Purgely">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <span class="badge">Public beta 0.9</span>
+      <h1>Clean your PC <span>without the fear</span> of breaking it.</h1>
+      <p class="lead">Purgely removes programs completely, clears what they leave behind, gets rid of bloatware and Windows ads,
+        and keeps programs and drivers up to date. Every item explains itself – and almost everything can be undone.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/kraljforgelabs/Purgely/releases">Download for Windows 11</a>
+        <a class="btn" href="Purgely-User-Guide.pdf">User guide (PDF)</a>
+      </div>
+      <div class="fine">One file, no installation · Free and open source (MIT) · No ads, no account, no tracking</div>
+    </div>
+    <img class="shot" src="manual/img/home.png" alt="Purgely home screen with ten feature tiles and a notices panel">
+  </div>
+
+  <section id="features">
+    <h2>One tool instead of five</h2>
+    <p class="sub">Uninstaller, cleaner, debloater, updater and startup manager – built around one idea: understand what a file
+      or setting is before touching it.</p>
+    <div class="grid">
+      <div class="card"><div class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 3h6l1 2h4v2H4V5h4l1-2Zm-3 6h12l-1 12H7L6 9Z"/></svg></div>
+        <h3>Uninstall completely</h3><p>Programs, Store apps and portable apps – also many at once, quietly where possible. Then one scan finds what they left behind.</p></div>
+      <div class="card"><div class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v2H3V5Zm2 4h14v2H5V9Zm3 4h8v2H8v-2Zm2 4h4v2h-4v-2Z"/></svg></div>
+        <h3>Leftovers, found properly</h3><p>Folders on every drive, registry, services, tasks, startup entries, right-click menus, file types, firewall rules and PATH.</p></div>
+      <div class="card"><div class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 3 6v6c0 5 3.8 9.7 9 10 5.2-.3 9-5 9-10V6l-9-4Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg></div>
+        <h3>Bloatware, ads &amp; AI</h3><p>Preinstalled apps with a clear verdict, ads in Start and on the lock screen, Recall and Copilot switches, browser extensions.</p></div>
+      <div class="card"><div class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 3h2v10.2l3.6-3.6L18 11l-6 6-6-6 1.4-1.4 3.6 3.6V3Zm-6 16h14v2H5v-2Z"/></svg></div>
+        <h3>Updates you can trust</h3><p>Programs through Windows Package Manager. Drivers only signed, only from Microsoft or your PC's maker – never driver sites.</p></div>
+      <div class="card"><div class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7V3Zm-1 4v6l5 3 .8-1.3-4.3-2.6V7H12Z"/></svg></div>
+        <h3>Faster start-up</h3><p>See what starts with Windows and how heavy it is. Turn off or delay items – Purgely only optimizes what it knows is safe.</p></div>
+      <div class="card"><div class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7Z"/></svg></div>
+        <h3>Undo center</h3><p>Before anything is removed it is backed up – on the same drive, so even big games are quick. One click puts it back.</p></div>
+    </div>
+  </section>
+
+  <section id="safety">
+    <div class="split">
+      <div>
+        <h2>Safe by default</h2>
+        <p class="sub">People click whatever a cleaner recommends. So Purgely only ticks what it can prove – and says how sure it is, in words.</p>
+        <ul class="list">
+          <li>Never removes your own files, or anything another program still uses</li>
+          <li>Weak evidence (only a matching name) is offered, never ticked</li>
+          <li>Never follows links out of a folder, never deletes structural Windows keys</li>
+          <li>Backup first, verified – then remove</li>
+          <li>Every release is built by GitHub Actions with tests and a safety audit</li>
+        </ul>
+      </div>
+      <div class="conf">
+        <div><b>Very sure · 88%</b><span class="t">Install folder, and services run from it</span></div>
+        <div><b>Likely · 74%</b><span class="t">Strong proof – ticked when the program is gone</span></div>
+        <div><b>Maybe · 50%</b><span class="t">Only the name matches – offered, not ticked</span></div>
+        <div><b>Keep (shared)</b><span class="t">Another installed program uses it – never removed</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <h2>Get started in a minute</h2>
+    <p class="sub">Purgely is a single file. Nothing is installed, nothing runs in the background.</p>
+    <div class="steps">
+      <div class="card"><h3>Download</h3><p>Get <code>Purgely.exe</code> from <a href="https://github.com/kraljforgelabs/Purgely/releases">Releases</a>. <code>SHA256SUMS.txt</code> lets you check it.</p></div>
+      <div class="card"><h3>Start it</h3><p>Windows asks for administrator rights. During the beta Windows may warn about an unknown app – <i>More info → Run anyway</i>.</p></div>
+      <div class="card"><h3>Run Checkup</h3><p>One look at the whole PC. Purgely fixes only what it is sure about – and you can undo it.</p></div>
+    </div>
+    <p class="fine" style="margin-top:22px">Testing the beta? <a href="https://github.com/kraljforgelabs/Purgely/blob/main/BETA.md">What to try and how to report it</a>.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 KraljForge Labs · Practical tools forged for the future · MIT License</span>
+    <span><a href="https://github.com/kraljforgelabs/Purgely/blob/main/PRIVACY.md">Privacy</a> ·
+      <a href="https://github.com/kraljforgelabs/Purgely/blob/main/SECURITY.md">Security</a> ·
+      <a href="https://github.com/kraljforgelabs/Purgely/issues">Report a problem</a></span>
+    <span style="flex-basis:100%">Purgely is an independent project, not affiliated with Microsoft or any company whose software it detects. Product names are trademarks of their owners.</span>
+  </div>
+</footer>
+</body>
+</html>
