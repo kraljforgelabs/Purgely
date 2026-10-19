@@ -43,6 +43,16 @@ https://kraljforgelabs.github.io/Purgely/
   welcome tour, and **Remove Purgely and its data**
 - **Open knowledge base** – `src/Purgely/Knowledge/*.json`, see `CONTRIBUTING.md`
 
+## Code signing policy
+Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by
+[SignPath Foundation](https://signpath.org/) – applied for; until approved, releases are unsigned (check them with
+`SHA256SUMS.txt`).
+
+- Committers and reviewers: [KraljForge Labs](https://github.com/kraljforgelabs)
+- Approvers: [KraljForge Labs](https://github.com/kraljforgelabs)
+- Only builds made by GitHub Actions from this repository are signed – never a build made on someone's PC.
+- Privacy: Purgely sends nothing about you; see [PRIVACY.md](PRIVACY.md).
+
 ## Trust
 Releases are built by GitHub Actions from this source (`.github/workflows/release.yml`) with SHA-256 checksums – nobody
 builds them by hand. Code signing through the SignPath Foundation is being applied for (`SIGNING.md`); a winget listing
