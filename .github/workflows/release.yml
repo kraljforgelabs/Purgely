@@ -1,0 +1,57 @@
+# Builds a release when a version tag is pushed (git tag v0.4.0 && git push --tags):
+# tests + safety audit, then a self-contained and a small (.NET required) Purgely.exe, a ZIP and SHA-256 checksums,
+# attached to a GitHub Release. Signing (SignPath Foundation, free for open source) plugs in at the marked step.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Tests
+        run: dotnet test tests/Purgely.Tests/Purgely.Tests.csproj -c Release -nologo
+
+      - name: Safety audit
+        shell: pwsh
+        run: |
+          ./tools/safety-audit.ps1
+          if ($LASTEXITCODE -ne 0) { Write-Error "Safety audit is not OK - review before releasing"; exit 1 }
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          dotnet publish src/Purgely/Purgely.csproj -c Release -r win-x64 --self-contained true  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o out/full -nologo
+          dotnet publish src/Purgely/Purgely.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o out/small -nologo
+          New-Item -ItemType Directory -Force release | Out-Null
+          Copy-Item out/full/Purgely.exe  release/Purgely.exe
+          Copy-Item out/small/Purgely.exe release/Purgely-needs-dotnet10.exe
+          Copy-Item docs/Purgely-User-Guide.pdf release/ -ErrorAction SilentlyContinue
+
+      # - name: Sign (SignPath Foundation) – add once the project is accepted, see SIGNING.md
+
+      - name: Zip and checksums
+        shell: pwsh
+        run: |
+          Compress-Archive -Path release/Purgely.exe, LICENSE, README.md -DestinationPath release/Purgely-portable.zip
+          Get-ChildItem release -File | Where-Object Name -ne 'SHA256SUMS.txt' | ForEach-Object {
+            "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name
+          } | Set-Content release/SHA256SUMS.txt -Encoding ascii
+          Get-Content release/SHA256SUMS.txt
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true

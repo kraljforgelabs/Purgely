@@ -1,0 +1,72 @@
+<Window x:Class="Purgely.MoveWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Purgely – Move to a new PC" Height="720" Width="1100" MinHeight="480" MinWidth="760">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Margin="0,0,0,16">
+            <Button x:Name="HomeButton" DockPanel.Dock="Left" Visibility="Collapsed" Padding="10,8" Margin="0,4,16,0"
+                    VerticalAlignment="Top" ToolTip="Back to the home screen (Esc)" AutomationProperties.Name="Back to home">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE72B;"/>
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Home"/>
+                </StackPanel>
+            </Button>
+            <StackPanel>
+                <TextBlock Text="Move to a new PC" Style="{StaticResource PageTitle}"/>
+                <TextBlock Style="{StaticResource PageSubtitle}" TextWrapping="Wrap"
+                           Text="Save the list of your programs on this PC, copy the file to the new one (USB stick, OneDrive), and let Purgely install them all there – with Windows Package Manager, from the publishers' official sources."/>
+            </StackPanel>
+        </DockPanel>
+
+        <UniformGrid Grid.Row="1" Columns="2" Margin="0,0,0,12">
+            <Border Style="{StaticResource Card}" Margin="0,0,6,0" Padding="18,16">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="1. On the old PC"/>
+                    <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Margin="0,6,0,12"
+                               Text="Saves a list of your programs (a small .json file) and a text file with the ones you have to install yourself."/>
+                    <Button x:Name="ExportButton" Style="{StaticResource AccentButton}" Click="Export_Click" Padding="14,6" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconText}" Text="&#xE74E;"/>
+                            <TextBlock Style="{StaticResource ButtonLabel}" Text="Save my program list…"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}" Margin="6,0,0,0" Padding="18,16">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionHeader}" Text="2. On the new PC"/>
+                    <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Margin="0,6,0,12"
+                               Text="Opens the list and installs every program that isn't installed yet. Programs already there are skipped."/>
+                    <Button x:Name="ImportButton" Click="Import_Click" Padding="14,6" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconText}" Text="&#xE896;"/>
+                            <TextBlock Style="{StaticResource ButtonLabel}" Text="Install from a list…"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <Border Grid.Row="2" Style="{StaticResource ListCard}">
+            <DockPanel Margin="12">
+                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <TextBlock x:Name="StatusText" Style="{StaticResource BodyStrongText}" Text="Nothing running."/>
+                    <ProgressBar x:Name="Busy" IsIndeterminate="True" Height="4" MinHeight="4" Margin="0,8,0,0" Visibility="Collapsed"/>
+                </StackPanel>
+                <ListBox x:Name="LogList" BorderThickness="0" Background="Transparent" FontFamily="Cascadia Mono, Consolas"
+                         FontSize="12.5" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

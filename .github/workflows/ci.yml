@@ -1,0 +1,43 @@
+# Builds and tests Purgely on a real Windows machine for every push and pull request.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build (Release)
+        run: dotnet build src/Purgely/Purgely.csproj -c Release -nologo
+
+      - name: Unit and safety tests
+        run: dotnet test tests/Purgely.Tests/Purgely.Tests.csproj -c Release -nologo --logger "trx;LogFileName=results.trx" --logger "console;verbosity=normal"
+
+      - name: Safety audit (destructive calls vs. reviewed baseline)
+        shell: pwsh
+        run: |
+          ./tools/safety-audit.ps1
+          if ($LASTEXITCODE -eq 1) { Write-Error "Safety audit: MUST FIX"; exit 1 }
+          if ($LASTEXITCODE -eq 2) { Write-Warning "Safety audit: new destructive calls need council review (CHECK)"; exit 0 }
+
+      - name: Publish single-file exe
+        run: dotnet publish src/Purgely/Purgely.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o dist -nologo
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: purgely-${{ github.sha }}
+          path: |
+            dist/Purgely.exe
+            tests/Purgely.Tests/TestResults/*.trx
+          if-no-files-found: ignore

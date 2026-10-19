@@ -1,0 +1,215 @@
+<Window x:Class="Purgely.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Purgely" Height="760" Width="1280" MinHeight="500" MinWidth="900"
+        WindowStartupLocation="CenterScreen"
+        PreviewKeyDown="Window_PreviewKeyDown" PreviewTextInput="Window_PreviewTextInput">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,16">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
+                <Border Style="{StaticResource Badge}" Margin="0,0,12,0">
+                    <TextBlock x:Name="AdminBadge" Style="{StaticResource CaptionText}"/>
+                </Border>
+            </StackPanel>
+            <Button DockPanel.Dock="Left" Click="Home_Click" Padding="10,8" Margin="0,4,16,0" VerticalAlignment="Top"
+                    ToolTip="Back to the home screen (Esc)" AutomationProperties.Name="Back to home">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE72B;"/>
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Home"/>
+                </StackPanel>
+            </Button>
+            <StackPanel>
+                <TextBlock x:Name="PageTitleText" Text="Uninstall programs" Style="{StaticResource PageTitle}"/>
+                <TextBlock x:Name="PageSubtitleText" Style="{StaticResource PageSubtitle}"
+                           Text="Select a program to uninstall it, update it or clean up what it left behind. Double-click to uninstall."/>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Search & filters -->
+        <DockPanel Grid.Row="1" Margin="0,0,0,12">
+            <Grid Width="340">
+                <TextBox x:Name="SearchBox" TextChanged="Search_TextChanged"
+                         AutomationProperties.Name="Search programs"
+                         ToolTip="Just start typing, or press Ctrl+F. Ctrl+V pastes here. Esc clears."/>
+                <TextBlock Text="Search programs" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text.Length, ElementName=SearchBox}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+            <CheckBox x:Name="OrphansOnly" Content="Removed programs only (leftovers)"
+                      Margin="16,0,0,0" VerticalAlignment="Center"
+                      Checked="Filter_Changed" Unchecked="Filter_Changed"/>
+            <CheckBox x:Name="UpdatesOnly" Content="Only with updates"
+                      Margin="16,0,0,0" VerticalAlignment="Center"
+                      Checked="Filter_Changed" Unchecked="Filter_Changed"/>
+            <CheckBox x:Name="SuggestedOnly" Content="Suggestions"
+                      ToolTip="Programs you haven't used for months, and several programs doing the same job"
+                      Margin="16,0,0,0" VerticalAlignment="Center"
+                      Checked="Filter_Changed" Unchecked="Filter_Changed"/>
+            <TextBlock x:Name="StatusHint" Margin="16,0,0,0" Style="{StaticResource SecondaryText}"/>
+        </DockPanel>
+
+        <!-- Program list -->
+        <Border Grid.Row="2" Style="{StaticResource ListCard}">
+        <Grid>
+        <DataGrid x:Name="ProgramsGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Single" HeadersVisibility="Column" GridLinesVisibility="None"
+                  CanUserResizeRows="False" MouseDoubleClick="ProgramsGrid_MouseDoubleClick"
+                  Background="Transparent" BorderThickness="0" MinRowHeight="36"
+                  ColumnHeaderStyle="{StaticResource GridHeader}">
+            <DataGrid.Resources>
+                <Style x:Key="OrphanText" TargetType="TextBlock" BasedOn="{StaticResource GridText}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsOrphan}" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource AttentionBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="40">
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox x:Name="CheckAllBox" Click="CheckAll_Click" Margin="6,0,0,0"
+                                  ToolTip="Tick or untick every program shown in the list"
+                                  AutomationProperties.Name="Tick all shown"/>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"
+                                      Click="Check_Click" AutomationProperties.Name="Select for bulk uninstall"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Program" Binding="{Binding Name}" Width="3*" ElementStyle="{StaticResource OrphanText}"/>
+                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="2*" ElementStyle="{StaticResource GridText}"/>
+                <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="*" ElementStyle="{StaticResource GridText}"/>
+                <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" SortMemberPath="SizeKb" Width="90" ElementStyle="{StaticResource GridText}"/>
+                <DataGridTextColumn Header="Installed" Binding="{Binding InstallDateText}" SortMemberPath="InstallDate" Width="100" ElementStyle="{StaticResource GridText}"/>
+                <DataGridTextColumn Header="Update" Binding="{Binding UpdateText}" Width="130" ElementStyle="{StaticResource GridText}"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="2*" ElementStyle="{StaticResource OrphanText}"/>
+                <DataGridTextColumn Header="Dependencies" Binding="{Binding UsedByText}" Width="2*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource GridText}">
+                            <Setter Property="ToolTip" Value="{Binding UsedByTooltip}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+            <!-- No match for the search or filter -->
+            <StackPanel x:Name="NoMatchState" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        MaxWidth="520" Margin="20" IsHitTestVisible="False">
+                <TextBlock Style="{StaticResource IconText}" Text="&#xE721;" FontSize="26" HorizontalAlignment="Center" Opacity="0.6"/>
+                <TextBlock x:Name="NoMatchText" Style="{StaticResource BodyStrongText}" HorizontalAlignment="Center" Margin="0,10,0,4"
+                           TextWrapping="Wrap" TextAlignment="Center"/>
+                <TextBlock x:Name="NoMatchHint" Style="{StaticResource SecondaryText}" TextWrapping="Wrap" TextAlignment="Center"/>
+            </StackPanel>
+            <!-- Empty state (Clean leftovers with nothing to check) -->
+            <StackPanel x:Name="EmptyState" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        MaxWidth="520" Margin="20">
+                <TextBlock Style="{StaticResource IconText}" Text="&#xE73E;" FontSize="28" HorizontalAlignment="Center"
+                           Foreground="{StaticResource OkBrush}"/>
+                <TextBlock Style="{StaticResource BodyStrongText}" HorizontalAlignment="Center" Margin="0,10,0,4"
+                           Text="No removed program is waiting to be checked."/>
+                <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" TextAlignment="Center"
+                           Text="Programs removed long ago can still leave traces: shortcuts and startup entries that point nowhere, dead services and tasks, empty folders. Sweep the whole PC for them – nothing is removed before you review the list."/>
+                <Button Click="Sweep_Click" Style="{StaticResource AccentButton}" HorizontalAlignment="Center" Margin="0,14,0,0" Padding="14,6">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE773;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Sweep for orphaned leftovers"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+        </Border>
+
+        <!-- Actions & status -->
+        <DockPanel Grid.Row="3" Margin="0,12,0,0">
+            <StackPanel x:Name="ActionsPanel" Orientation="Horizontal" DockPanel.Dock="Left">
+                <Button x:Name="UninstallButton" Style="{StaticResource AccentButton}" Click="Uninstall_Click" Padding="14,6" AutomationProperties.Name="Uninstall">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE74D;"/>
+                        <TextBlock x:Name="UninstallText" Style="{StaticResource ButtonLabel}" Text="Uninstall"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="ClearChecksButton" Click="ClearChecks_Click" Padding="9,6" Margin="8,0,0,0" Visibility="Collapsed"
+                        ToolTip="Untick all programs" AutomationProperties.Name="Untick all">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE894;"/>
+                </Button>
+                <Button x:Name="ScanButton" Click="Scan_Click" Padding="12,6" Margin="8,0,0,0" AutomationProperties.Name="Scan leftovers">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE721;"/>
+                        <TextBlock x:Name="ScanText" Style="{StaticResource ButtonLabel}" Text="Scan leftovers"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="ScanByNameButton" Click="ScanByName_Click" Padding="12,6" Margin="8,0,0,0" AutomationProperties.Name="Find leftovers by name"
+                        ToolTip="Type the name of an already removed program in the Search box, then click here">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE71E;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Find leftovers by name"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="SweepButton" Click="Sweep_Click" Padding="12,6" Margin="8,0,0,0" Visibility="Collapsed"
+                        AutomationProperties.Name="Sweep for orphaned leftovers"
+                        ToolTip="Look for traces of programs removed long ago – no program needs to be selected">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE773;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Sweep whole PC"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="UpdateButton" Click="Update_Click" Padding="12,6" Margin="8,0,0,0" AutomationProperties.Name="Update"
+                        ToolTip="Update the selected program with winget (Windows Package Manager)">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE896;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Update"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="UpdateAllButton" Click="UpdateAll_Click" Padding="12,6" Margin="8,0,0,0" Visibility="Collapsed"
+                        Style="{StaticResource AccentButton}" AutomationProperties.Name="Update all"
+                        ToolTip="Update every program in this list, one after another">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE895;"/>
+                        <TextBlock x:Name="UpdateAllText" Style="{StaticResource ButtonLabel}" Text="Update all"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="DriversButton" Click="Drivers_Click" Padding="12,6" Margin="8,0,0,0" Visibility="Collapsed"
+                        AutomationProperties.Name="Driver updates"
+                        ToolTip="Driver updates from Windows Update (signed and tested by Microsoft)">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE964;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Driver updates"/>
+                    </StackPanel>
+                </Button>
+                <Button Click="Refresh_Click" Padding="9,6" Margin="8,0,0,0" ToolTip="Refresh the list"
+                        AutomationProperties.Name="Refresh">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE72C;"/>
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <StackPanel x:Name="BusyPanel" Orientation="Horizontal" Visibility="Collapsed" Margin="0,0,16,0">
+                    <ProgressBar x:Name="BusyBar" Width="150" Height="4" MinHeight="4" Minimum="0" Maximum="100"
+                                 VerticalAlignment="Center"/>
+                    <TextBlock x:Name="BusyText" Margin="12,0,0,0" Style="{StaticResource SecondaryText}"/>
+                </StackPanel>
+                <TextBlock x:Name="StatusText" Style="{StaticResource SecondaryText}"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

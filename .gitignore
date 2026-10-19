@@ -1,0 +1,24 @@
+bin/
+obj/
+dist/
+
+# test results and local backups
+TestResults/
+*.trx
+_design_backup/
+.vs/
+*.user
+dist-sandbox/
+sandbox-results/
+
+# Private project records (never published)
+private/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+dist-uitest/

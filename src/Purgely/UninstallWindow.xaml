@@ -1,0 +1,60 @@
+<Window x:Class="Purgely.UninstallWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Purgely – Uninstall" Width="620" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="24,20,24,20">
+        <TextBlock x:Name="TitleText" Style="{StaticResource PageTitle}" FontSize="22" TextWrapping="Wrap"/>
+        <TextBlock Style="{StaticResource PageSubtitle}" Margin="0,4,0,16"
+                   Text="Purgely runs the program's own uninstaller and follows it until it is done – even when it has no window."/>
+
+        <!-- Steps -->
+        <Border Style="{StaticResource Card}" Padding="16,12">
+            <StackPanel>
+                <DockPanel Margin="0,4">
+                    <TextBlock x:Name="Step1Icon" Style="{StaticResource IconText}" Width="24" Text="&#xE9F5;"/>
+                    <TextBlock x:Name="Step1Text" Style="{StaticResource BodyStrongText}" Text="Run the official uninstaller"/>
+                </DockPanel>
+                <DockPanel Margin="0,4">
+                    <TextBlock x:Name="Step2Icon" Style="{StaticResource IconText}" Width="24" Text="&#xEA3A;" Opacity="0.5"/>
+                    <TextBlock x:Name="Step2Text" Style="{StaticResource SecondaryText}" Text="Check that the program is gone"/>
+                </DockPanel>
+                <DockPanel Margin="0,4">
+                    <TextBlock x:Name="Step3Icon" Style="{StaticResource IconText}" Width="24" Text="&#xEA3A;" Opacity="0.5"/>
+                    <TextBlock x:Name="Step3Text" Style="{StaticResource SecondaryText}" Text="Look for leftovers (you choose what to remove)"/>
+                </DockPanel>
+                <ProgressBar x:Name="ProgressLine" IsIndeterminate="True" Height="4" MinHeight="4" Margin="0,12,0,4"/>
+                <DockPanel>
+                    <TextBlock x:Name="ElapsedText" DockPanel.Dock="Right" Style="{StaticResource CaptionText}"/>
+                    <TextBlock x:Name="StatusText" Style="{StaticResource SecondaryText}" TextWrapping="Wrap"/>
+                </DockPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Shown when something needs a decision -->
+        <Border x:Name="AttentionBar" Style="{StaticResource InfoBarWarning}" Margin="0,12,0,0" Visibility="Collapsed">
+            <DockPanel>
+                <TextBlock Style="{StaticResource InfoBarIconWarning}"/>
+                <TextBlock x:Name="AttentionText" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button x:Name="ForceButton" Click="Force_Click" Padding="14,6" Visibility="Collapsed"
+                    ToolTip="Stop the uninstaller (if it still runs) and remove the program's files and registry entries yourself – everything goes to an Undo package first">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE7BA;"/>
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Force uninstall"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="ScanButton" Click="Scan_Click" Padding="14,6" Margin="8,0,0,0" Visibility="Collapsed"
+                    Style="{StaticResource AccentButton}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE721;"/>
+                    <TextBlock x:Name="ScanButtonText" Style="{StaticResource ButtonLabel}" Text="Scan for leftovers"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="CloseButton" Click="Close_Click" Padding="14,6" Margin="8,0,0,0" Content="Cancel" MinWidth="96"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

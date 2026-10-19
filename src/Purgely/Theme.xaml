@@ -1,0 +1,495 @@
+<!--
+    Purgely shared theme (Windows 11 / Fluent look on top of the built-in WPF Fluent theme).
+
+    How to use:
+      1. Copy this file to src/Purgely/Theme.xaml (the WPF SDK compiles every .xaml as a Page automatically).
+      2. Merge it in App.xaml (see WINDOW-CHANGES.md, section 0).
+
+    Rules this file follows (learned on this project):
+      * No style here is BasedOn a Fluent style (no BasedOn="{StaticResource {x:Type Button}}" etc.).
+      * The ONLY keyed styles for real controls (Button, DataGridColumnHeader, Thumb) define their complete
+        ControlTemplate, because a keyed style without BasedOn replaces the Fluent look entirely.
+      * Everything else targets TextBlock / Border, which the Fluent theme does not restyle.
+      * DataGrid, DataGridRow and DataGridCell are NOT restyled. Their Fluent styles (incl. row hover and
+        selection) stay in charge; the DataGrid is tuned with plain properties set inline in each window.
+      * Text colours use DynamicResource TextFillColorPrimaryBrush / TextFillColorSecondaryBrush so light and
+        dark both work. Surfaces use translucent neutrals (#..808080) that work on both themes and on Mica.
+      * Keys already defined in HomeWindow.xaml (AccentBrush, CardBrush, ...) have identical values here, so the
+        window-local copies keep working and can be deleted later.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===================================================================== -->
+    <!-- Palette                                                               -->
+    <!-- ===================================================================== -->
+
+    <!-- Brand accent (same values as HomeWindow) -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#2F7DE1"/>
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#1F2F7DE1"/>
+    <SolidColorBrush x:Key="AccentBorderBrush" Color="#662F7DE1"/>
+
+    <!-- Status colours -->
+    <SolidColorBrush x:Key="AttentionBrush" Color="#D97706"/>
+    <SolidColorBrush x:Key="AttentionBorderBrush" Color="#80D97706"/>
+    <SolidColorBrush x:Key="OkBrush" Color="#16A34A"/>
+    <SolidColorBrush x:Key="DangerBrush" Color="#DC2626"/>
+
+    <!-- Neutral surfaces (translucent: readable on light, dark and Mica) -->
+    <SolidColorBrush x:Key="CardBrush" Color="#0F808080"/>
+    <SolidColorBrush x:Key="CardHoverBrush" Color="#1F808080"/>
+    <SolidColorBrush x:Key="CardPressedBrush" Color="#2E808080"/>
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#2E808080"/>
+    <SolidColorBrush x:Key="DividerBrush" Color="#33808080"/>
+    <SolidColorBrush x:Key="DisabledFillBrush" Color="#29808080"/>
+    <SolidColorBrush x:Key="DisabledTextBrush" Color="#99808080"/>
+
+    <!-- Accent button: slightly darker than the brand accent so white text reaches 4.5:1 contrast -->
+    <SolidColorBrush x:Key="AccentButtonBrush" Color="#1F6CD3"/>
+    <SolidColorBrush x:Key="AccentButtonHoverBrush" Color="#2B76DB"/>
+    <SolidColorBrush x:Key="AccentButtonPressedBrush" Color="#1A5BB5"/>
+    <SolidColorBrush x:Key="AccentButtonBorderBrush" Color="#1A5BB5"/>
+
+    <!-- InfoBar tints (background / border / icon) -->
+    <SolidColorBrush x:Key="InfoBarInfoBackground" Color="#1A2F7DE1"/>
+    <SolidColorBrush x:Key="InfoBarInfoBorder" Color="#552F7DE1"/>
+    <SolidColorBrush x:Key="InfoBarWarningBackground" Color="#1FD97706"/>
+    <SolidColorBrush x:Key="InfoBarWarningBorder" Color="#66D97706"/>
+    <SolidColorBrush x:Key="InfoBarSuccessBackground" Color="#1A16A34A"/>
+    <SolidColorBrush x:Key="InfoBarSuccessBorder" Color="#5516A34A"/>
+    <SolidColorBrush x:Key="InfoBarErrorBackground" Color="#1FDC2626"/>
+    <SolidColorBrush x:Key="InfoBarErrorBorder" Color="#66DC2626"/>
+
+    <!-- Busy overlay (deliberately dark in both themes; text on it is white) -->
+    <SolidColorBrush x:Key="ScrimBrush" Color="#B3000000"/>
+    <SolidColorBrush x:Key="BusyCardBrush" Color="#F2202024"/>
+    <SolidColorBrush x:Key="BusyCardBorderBrush" Color="#33FFFFFF"/>
+
+    <!-- Fonts -->
+    <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+    <FontFamily x:Key="DisplayFont">Segoe UI Variable Display, Segoe UI</FontFamily>
+
+    <!-- Shape and spacing tokens -->
+    <CornerRadius x:Key="CardCornerRadius">8</CornerRadius>
+    <CornerRadius x:Key="ControlCornerRadius">4</CornerRadius>
+    <Thickness x:Key="PageMargin">20</Thickness>
+
+    <!-- ===================================================================== -->
+    <!-- Text (TextBlock styles are safe: Fluent does not restyle TextBlock)  -->
+    <!-- ===================================================================== -->
+
+    <!-- Page header: "Title" in the Windows 11 type ramp (28 / SemiBold) -->
+    <Style x:Key="PageTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DisplayFont}"/>
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+
+    <!-- One-line subtitle under the page title -->
+    <Style x:Key="PageSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Margin" Value="0,4,0,0"/>
+    </Style>
+
+    <!-- Section header inside a page ("Subtitle" ramp: 20 / SemiBold) -->
+    <Style x:Key="SectionHeader" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DisplayFont}"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+
+    <!-- Small "Body strong" label (14 / SemiBold), e.g. card titles -->
+    <Style x:Key="BodyStrongText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- Secondary / helper text (status lines, counts, hints) -->
+    <Style x:Key="SecondaryText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+
+    <!-- Caption (12) for tiny labels and badges -->
+    <Style x:Key="CaptionText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Segoe Fluent Icons glyph. No Foreground on purpose: it inherits from the button / parent,
+         so the same icon works on a normal button, an accent button and in an InfoBar. -->
+    <Style x:Key="IconText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Label next to an icon inside a button -->
+    <Style x:Key="ButtonLabel" TargetType="TextBlock">
+        <Setter Property="Margin" Value="8,0,0,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Cell text for DataGrid columns (use as ElementStyle, or BasedOn it from a window-local cell style).
+         Gives every grid the same horizontal padding and vertical centring. -->
+    <Style x:Key="GridText" TargetType="TextBlock">
+        <Setter Property="Margin" Value="8,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+
+    <!-- Same, but wrapping (for long "Why" / "Details" columns). Rows grow; keep MinRowHeight="36". -->
+    <Style x:Key="GridWrapText" TargetType="TextBlock">
+        <Setter Property="Margin" Value="8,6"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- Group header text for grouped DataGrids (Startup, Timeline) -->
+    <Style x:Key="GroupHeaderText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="Margin" Value="8,16,0,6"/>
+    </Style>
+
+    <!-- ===================================================================== -->
+    <!-- Surfaces (Border styles are safe: Fluent does not restyle Border)    -->
+    <!-- ===================================================================== -->
+
+    <!-- Card: wraps a list, a form or a group of settings -->
+    <Style x:Key="Card" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <!-- Card that holds a DataGrid edge to edge (small padding keeps rows inside the rounded corners) -->
+    <Style x:Key="ListCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <!-- Pill badge (e.g. "Administrator") -->
+    <Style x:Key="Badge" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="10,3"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- InfoBar-like banner. Content pattern (see WINDOW-CHANGES.md):
+         <Border Style="{StaticResource InfoBarWarning}">
+           <Grid>
+             <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+             <TextBlock Style="{StaticResource InfoBarIconWarning}"/>
+             <StackPanel Grid.Column="1">
+               <TextBlock Style="{StaticResource InfoBarTitle}" Text="..."/>
+               <TextBlock Style="{StaticResource InfoBarMessage}" Text="..."/>
+             </StackPanel>
+           </Grid>
+         </Border> -->
+    <Style x:Key="InfoBarInfo" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource InfoBarInfoBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource InfoBarInfoBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+    <Style x:Key="InfoBarWarning" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource InfoBarWarningBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource InfoBarWarningBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+    <Style x:Key="InfoBarSuccess" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource InfoBarSuccessBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource InfoBarSuccessBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+    <Style x:Key="InfoBarError" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource InfoBarErrorBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource InfoBarErrorBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}"/>
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <!-- InfoBar icons (glyph + colour baked in) -->
+    <Style x:Key="InfoBarIconInfo" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="&#xE946;"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="0,2,12,0"/>
+    </Style>
+    <Style x:Key="InfoBarIconWarning" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="&#xE7BA;"/>
+        <Setter Property="Foreground" Value="{StaticResource AttentionBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="0,2,12,0"/>
+    </Style>
+    <Style x:Key="InfoBarIconSuccess" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="&#xE73E;"/>
+        <Setter Property="Foreground" Value="{StaticResource OkBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="0,2,12,0"/>
+    </Style>
+    <Style x:Key="InfoBarIconError" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Text" Value="&#xEA39;"/>
+        <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="0,2,12,0"/>
+    </Style>
+    <Style x:Key="InfoBarTitle" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style x:Key="InfoBarMessage" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Margin" Value="0,2,0,0"/>
+    </Style>
+
+    <!-- Busy overlay: full-window scrim + centred card. Put it last in the root Grid with Grid.RowSpan
+         covering all rows, so it sits on top. Text inside uses BusyTitleText / BusyDetailText. -->
+    <Style x:Key="BusyScrim" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource ScrimBrush}"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+    </Style>
+    <Style x:Key="BusyCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource BusyCardBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BusyCardBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CardCornerRadius}"/>
+        <Setter Property="Padding" Value="28,24"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="BusyTitleText" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource DisplayFont}"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    <Style x:Key="BusyDetailText" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="#CCFFFFFF"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+
+    <!-- ===================================================================== -->
+    <!-- Controls with a COMPLETE template (safe to apply explicitly)          -->
+    <!-- ===================================================================== -->
+
+    <!-- Keyboard focus ring (shown only for keyboard navigation) -->
+    <Style x:Key="FocusRing">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border Margin="-3" CornerRadius="7" BorderThickness="2"
+                            BorderBrush="{DynamicResource TextFillColorPrimaryBrush}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Primary action button ("Accent" button in WinUI). One per window. -->
+    <Style x:Key="AccentButton" TargetType="Button">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource AccentButtonBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource AccentButtonBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="16,6"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="MinWidth" Value="96"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Root"
+                            CornerRadius="{StaticResource ControlCornerRadius}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="Content"
+                                          RecognizesAccessKey="True"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="{StaticResource AccentButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="{StaticResource AccentButtonPressedBrush}"/>
+                            <Setter TargetName="Content" Property="Opacity" Value="0.85"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Background" Value="{StaticResource DisabledFillBrush}"/>
+                            <Setter TargetName="Root" Property="BorderBrush" Value="Transparent"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- Style-level so the content (text and icon) inherits it -->
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource DisabledTextBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Column resize gripper used by GridHeader (full template, invisible hit area) -->
+    <Style x:Key="GridHeaderGripper" TargetType="Thumb">
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Cursor" Value="SizeWE"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Subtle DataGrid column header (full template: text, sort chevron, resize grippers, hover).
+         Apply with ColumnHeaderStyle="{StaticResource GridHeader}" on the DataGrid. -->
+    <Style x:Key="GridHeader" TargetType="DataGridColumnHeader">
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FontSize" Value="12.5"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="MinHeight" Value="36"/>
+        <Setter Property="Padding" Value="12,0,8,0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <Border x:Name="HeaderBg"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{StaticResource DividerBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="{TemplateBinding Padding}">
+                            <DockPanel>
+                                <TextBlock x:Name="SortGlyph" DockPanel.Dock="Right"
+                                           FontFamily="{StaticResource IconFont}" FontSize="10"
+                                           Margin="6,0,0,0" VerticalAlignment="Center"
+                                           Visibility="Collapsed"/>
+                                <ContentPresenter RecognizesAccessKey="True"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </DockPanel>
+                        </Border>
+                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left"
+                               Style="{StaticResource GridHeaderGripper}"/>
+                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right"
+                               Style="{StaticResource GridHeaderGripper}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="HeaderBg" Property="Background" Value="{StaticResource CardBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="HeaderBg" Property="Background" Value="{StaticResource CardHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Ascending">
+                            <Setter TargetName="SortGlyph" Property="Text" Value="&#xE70E;"/>
+                            <Setter TargetName="SortGlyph" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="SortDirection" Value="Descending">
+                            <Setter TargetName="SortGlyph" Property="Text" Value="&#xE70D;"/>
+                            <Setter TargetName="SortGlyph" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- Page tabs as clear "pills" (the default Fluent tabs look like plain text). Use: TabItem Style="{StaticResource PillTab}". -->
+    <Style x:Key="PillTab" TargetType="TabItem">
+        <!-- Font settings live on the header presenter only: TabItem font properties would be inherited by the whole page. -->
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Margin" Value="0,0,8,0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="Pill" CornerRadius="17" Padding="18,8" BorderThickness="1"
+                            Background="{StaticResource CardHoverBrush}" BorderBrush="{StaticResource DividerBrush}">
+                        <ContentPresenter x:Name="Label" ContentSource="Header" RecognizesAccessKey="True"
+                                          TextElement.FontSize="14" TextElement.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Pill" Property="Background" Value="{StaticResource CardPressedBrush}"/>
+                            <Setter TargetName="Pill" Property="BorderBrush" Value="{StaticResource AccentBorderBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Pill" Property="Background" Value="{StaticResource AccentButtonBrush}"/>
+                            <Setter TargetName="Pill" Property="BorderBrush" Value="{StaticResource AccentButtonBorderBrush}"/>
+                            <Setter TargetName="Label" Property="TextElement.Foreground" Value="White"/>
+                            <Setter TargetName="Label" Property="TextElement.FontWeight" Value="SemiBold"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Pill" Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

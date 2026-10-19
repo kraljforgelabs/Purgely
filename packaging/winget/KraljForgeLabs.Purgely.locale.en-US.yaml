@@ -1,0 +1,23 @@
+# Description fields for the winget manifest (wingetcreate fills in the rest)
+PackageIdentifier: KraljForgeLabs.Purgely
+PackageLocale: en-US
+Publisher: KraljForge Labs
+PublisherUrl: https://github.com/kraljforgelabs
+PackageName: Purgely
+License: MIT
+LicenseUrl: https://github.com/kraljforgelabs/Purgely/blob/main/LICENSE
+ShortDescription: Free, ad-free Windows 11 PC tool – uninstall cleanly, remove bloatware and ads, update programs and drivers, with undo for everything.
+Description: |-
+  Purgely uninstalls programs and Store apps completely (also several at once), finds leftovers with an explanation and a
+  confidence for every item, removes bloatware, Windows ads and optional data collection, updates programs through winget,
+  checks drivers from Microsoft and the PC maker, manages startup, and records installs so they can be undone. Almost
+  everything goes to an Undo center first. No ads, no subscriptions, open source.
+Tags:
+  - uninstaller
+  - debloat
+  - cleaner
+  - bloatware
+  - privacy
+  - winget
+ManifestType: defaultLocale
+ManifestVersion: 1.9.0

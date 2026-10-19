@@ -1,0 +1,185 @@
+{
+  "_about": "Hand-checked places where popular programs leave things. programPaths may be ticked; userDataPaths (settings, saves) are offered but never ticked. Never list the user's own files (OneDrive/Dropbox folders, Documents). name is a regular expression matched against the program's display name.",
+  "rules": [
+    {
+      "program": "OneDrive",
+      "name": "^Microsoft OneDrive\\b",
+      "programPaths": [
+        "%LOCALAPPDATA%\\Microsoft\\OneDrive",
+        "%PROGRAMDATA%\\Microsoft OneDrive",
+        "HKCU\\Software\\Microsoft\\OneDrive"
+      ],
+      "userDataPaths": []
+    },
+    {
+      "program": "Microsoft Teams",
+      "name": "^(Microsoft )?Teams\\b( classic| \\(work or school\\)| Machine-Wide Installer)?$",
+      "programPaths": [
+        "%LOCALAPPDATA%\\Microsoft\\Teams",
+        "%LOCALAPPDATA%\\Microsoft\\TeamsMeetingAddin",
+        "%LOCALAPPDATA%\\Microsoft\\TeamsPresenceAddin"
+      ],
+      "userDataPaths": [
+        "%APPDATA%\\Microsoft\\Teams"
+      ]
+    },
+    {
+      "program": "Google Chrome",
+      "name": "^Google Chrome$",
+      "programPaths": [
+        "%PROGRAMFILES%\\Google\\Chrome",
+        "%PROGRAMFILES(X86)%\\Google\\Chrome",
+        "HKCU\\Software\\Google\\Chrome"
+      ],
+      "userDataPaths": [
+        "%LOCALAPPDATA%\\Google\\Chrome"
+      ]
+    },
+    {
+      "program": "Mozilla Firefox",
+      "name": "^(Mozilla )?Firefox\\b",
+      "programPaths": [
+        "%PROGRAMFILES%\\Mozilla Firefox",
+        "%PROGRAMFILES(X86)%\\Mozilla Firefox",
+        "%LOCALAPPDATA%\\Mozilla\\Firefox"
+      ],
+      "userDataPaths": [
+        "%APPDATA%\\Mozilla\\Firefox"
+      ]
+    },
+    {
+      "program": "Steam",
+      "name": "^Steam$",
+      "programPaths": [
+        "%PROGRAMFILES(X86)%\\Steam\\bin",
+        "%PROGRAMFILES(X86)%\\Steam\\package",
+        "%LOCALAPPDATA%\\Steam",
+        "HKCU\\Software\\Valve\\Steam"
+      ],
+      "userDataPaths": [
+        "%PROGRAMFILES(X86)%\\Steam\\userdata"
+      ]
+    },
+    {
+      "program": "Epic Games Launcher",
+      "name": "^Epic Games Launcher$",
+      "programPaths": [
+        "%LOCALAPPDATA%\\EpicGamesLauncher",
+        "%PROGRAMDATA%\\Epic\\EpicGamesLauncher",
+        "%PROGRAMFILES(X86)%\\Epic Games\\Launcher"
+      ],
+      "userDataPaths": []
+    },
+    {
+      "program": "Discord",
+      "name": "^Discord$",
+      "programPaths": [
+        "%LOCALAPPDATA%\\Discord"
+      ],
+      "userDataPaths": [
+        "%APPDATA%\\discord"
+      ]
+    },
+    {
+      "program": "Spotify",
+      "name": "^Spotify\\b",
+      "programPaths": [
+        "%LOCALAPPDATA%\\Spotify"
+      ],
+      "userDataPaths": [
+        "%APPDATA%\\Spotify"
+      ]
+    },
+    {
+      "program": "Zoom",
+      "name": "^Zoom( Workplace)?\\b",
+      "programPaths": [
+        "%APPDATA%\\Zoom\\bin",
+        "%APPDATA%\\Zoom\\installer"
+      ],
+      "userDataPaths": [
+        "%APPDATA%\\Zoom\\data"
+      ]
+    },
+    {
+      "program": "Adobe Acrobat Reader",
+      "name": "^Adobe Acrobat( Reader)?\\b",
+      "programPaths": [
+        "%PROGRAMDATA%\\Adobe\\ARM",
+        "%LOCALAPPDATA%\\Adobe\\Acrobat",
+        "HKCU\\Software\\Adobe\\Acrobat Reader"
+      ],
+      "userDataPaths": [
+        "%APPDATA%\\Adobe\\Acrobat"
+      ]
+    },
+    {
+      "program": "Adobe Creative Cloud",
+      "name": "^Adobe Creative Cloud$",
+      "programPaths": [
+        "%PROGRAMFILES(X86)%\\Common Files\\Adobe\\Adobe Desktop Common",
+        "%PROGRAMFILES%\\Common Files\\Adobe\\Adobe Desktop Common",
+        "%LOCALAPPDATA%\\Adobe\\OOBE",
+        "%PROGRAMDATA%\\Adobe\\AdobeGCClient"
+      ],
+      "userDataPaths": []
+    },
+    {
+      "program": "NVIDIA app / GeForce Experience",
+      "name": "^NVIDIA (app|GeForce Experience)\\b",
+      "programPaths": [
+        "%LOCALAPPDATA%\\NVIDIA Corporation\\NVIDIA app",
+        "%LOCALAPPDATA%\\NVIDIA Corporation\\GeForce Experience",
+        "%PROGRAMDATA%\\NVIDIA Corporation\\GeForce Experience"
+      ],
+      "userDataPaths": []
+    },
+    {
+      "program": "WinRAR",
+      "name": "^WinRAR\\b",
+      "programPaths": [
+        "%APPDATA%\\WinRAR"
+      ],
+      "userDataPaths": []
+    },
+    {
+      "program": "7-Zip",
+      "name": "^7-Zip\\b",
+      "programPaths": [
+        "HKCU\\Software\\7-Zip"
+      ],
+      "userDataPaths": []
+    },
+    {
+      "program": "VLC media player",
+      "name": "^VLC media player$",
+      "programPaths": [
+        "%APPDATA%\\vlc"
+      ],
+      "userDataPaths": []
+    },
+    {
+      "program": "Dropbox",
+      "name": "^Dropbox$",
+      "programPaths": [
+        "%LOCALAPPDATA%\\Dropbox\\Update",
+        "%PROGRAMFILES(X86)%\\Dropbox\\Client"
+      ],
+      "userDataPaths": [
+        "%LOCALAPPDATA%\\Dropbox\\instance1"
+      ]
+    },
+    {
+      "program": "SolidWorks",
+      "name": "^SOLIDWORKS\\b",
+      "programPaths": [
+        "%PROGRAMDATA%\\SOLIDWORKS",
+        "%LOCALAPPDATA%\\SOLIDWORKS",
+        "HKCU\\Software\\SolidWorks"
+      ],
+      "userDataPaths": [
+        "%APPDATA%\\SOLIDWORKS"
+      ]
+    }
+  ]
+}

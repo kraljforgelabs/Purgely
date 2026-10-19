@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Purgely – User Guide</title>
+<style>
+@page { size: A4; margin: 18mm 17mm 18mm 17mm; }
+@page :first { margin: 0; }
+:root { --ink:#16202c; --soft:#4a5a6c; --line:#dfe6ee; --accent:#1f6cd3; --teal:#14b8a6; --tint:#eef5fd; --warn:#b45309; --warnbg:#fff7ec; --ok:#15803d; --okbg:#eefaf2; }
+* { box-sizing:border-box; }
+body { font-family: Inter, "DejaVu Sans", sans-serif; color:var(--ink); font-size:10.4pt; line-height:1.55; margin:0; }
+h1,h2,h3 { font-family:"Inter Display", Inter, sans-serif; line-height:1.2; }
+h2 { font-size:19pt; margin:0 0 4pt; letter-spacing:-0.2pt; }
+h2 .num { color:var(--accent); margin-right:6pt; }
+h2, h3 { break-after:avoid; page-break-after:avoid; }
+h3 { font-size:12pt; margin:14pt 0 4pt; }
+p { margin:0 0 7pt; }
+.lead { color:var(--soft); font-size:11pt; margin-bottom:10pt; }
+section { page-break-before: always; }
+.cover { height: 297mm; width:210mm; display:flex; flex-direction:column; justify-content:space-between; page-break-after:always;
+  background: linear-gradient(135deg, #1f6cd3 0%, #14b8a6 100%); color:white; margin:0; padding:30mm 24mm; }
+.cover img { width:34mm; border-radius:8mm; box-shadow:0 6mm 14mm rgba(0,0,0,.25); }
+.cover h1 { font-size:46pt; margin:12mm 0 2mm; letter-spacing:-1pt; }
+.cover .tag { font-size:17pt; opacity:.92; font-weight:500; }
+.cover .sub { font-size:11.5pt; opacity:.9; max-width:140mm; margin-top:8mm; }
+.cover .foot { font-size:10pt; opacity:.85; }
+.pill { display:inline-block; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35); border-radius:20pt; padding:3pt 10pt; margin:0 5pt 5pt 0; font-size:9.5pt; }
+.fig { break-inside:avoid; page-break-inside:avoid; }
+.box, table, .card, ol, ul { break-inside:avoid; page-break-inside:avoid; }
+.shot { display:block; max-width:100%; max-height:80mm; margin-left:auto !important; margin-right:auto !important; width:auto; border:1px solid var(--line); border-radius:6pt; margin:6pt 0 4pt; box-shadow:0 2pt 8pt rgba(20,40,70,.12); }
+.cap { font-size:8.8pt; color:var(--soft); margin-bottom:10pt; }
+.box { border-radius:6pt; padding:8pt 11pt; margin:8pt 0 10pt; border-left:3.5pt solid; }
+.box b { display:block; margin-bottom:2pt; }
+.safe { background:var(--okbg); border-color:var(--ok); }
+.tip { background:var(--tint); border-color:var(--accent); }
+.warn { background:var(--warnbg); border-color:var(--warn); }
+ol, ul { margin:0 0 8pt; padding-left:16pt; } li { margin-bottom:3pt; }
+table { width:100%; border-collapse:collapse; margin:6pt 0 10pt; font-size:9.6pt; }
+th { text-align:left; background:var(--tint); color:var(--ink); font-weight:600; }
+th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:top; }
+.toc { columns:2; column-gap:12mm; margin-top:6pt; }
+.toc div { break-inside:avoid; padding:4pt 0; border-bottom:1px dotted var(--line); }
+.toc span { color:var(--accent); font-weight:600; display:inline-block; width:18pt; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8pt; }
+.card { border:1px solid var(--line); border-radius:6pt; padding:8pt 10pt; }
+.card b { color:var(--accent); }
+.kbd { font-family:"DejaVu Sans Mono", monospace; font-size:9pt; background:#f1f4f8; border:1px solid var(--line); border-radius:3pt; padding:0 4pt; }
+.small { font-size:9pt; color:var(--soft); }
+</style></head><body>
+
+<div class="cover">
+  <div>
+    <img src="img/icon.png" alt="">
+    <h1>Purgely</h1>
+    <div class="tag">The ultimate PC tool for Windows 11 – User Guide</div>
+    <div class="sub">Uninstall completely, clean what programs leave behind, remove bloatware and Windows ads, keep programs and drivers up to date – with a plain explanation for every item and an Undo for almost everything.</div>
+    <div style="margin-top:9mm">
+      <span class="pill">Free</span><span class="pill">No ads</span><span class="pill">Open source (MIT)</span><span class="pill">Portable – no installation</span><span class="pill">Undo for everything</span>
+    </div>
+  </div>
+  <div class="foot">Version 0.4 · KraljForge Labs – Practical tools forged for the future · github.com/kraljforgelabs/Purgely</div>
+</div>
+
+<h2 style="margin-top:0">Contents</h2>
+<div class="toc">
+  <div><span>1</span>What Purgely is</div><div><span>2</span>Getting started</div><div><span>3</span>The home screen</div>
+  <div><span>4</span>Uninstalling programs</div><div><span>5</span>Several programs at once</div><div><span>6</span>Leftovers and how sure Purgely is</div>
+  <div><span>7</span>Installer junk and the PC sweep</div><div><span>8</span>Bloatware, ads, AI and privacy</div><div><span>9</span>Browser extensions</div>
+  <div><span>10</span>Updates</div><div><span>11</span>Drivers</div><div><span>12</span>Startup</div>
+  <div><span>13</span>Install &amp; Track</div><div><span>14</span>Checkup</div><div><span>15</span>Move to a new PC</div>
+  <div><span>16</span>Timeline and notices</div><div><span>17</span>The Undo center</div><div><span>18</span>Safety promises</div>
+  <div><span>19</span>Questions and problems</div><div><span>20</span>Help make Purgely better</div>
+</div>
+
+<h2 style="margin-top:16pt"><span class="num">1</span>What Purgely is</h2>
+<p class="lead">Windows' own uninstaller removes a program's main files and leaves the rest: folders in AppData, registry keys, scheduled tasks, startup entries, services. Over the years a PC fills up with things nobody remembers installing.</p>
+<p>Purgely is one tool for keeping a Windows 11 PC tidy. It understands programs instead of deleting by name alone: every item it finds comes with the reason it belongs to the program and how sure Purgely is. Things other programs still use are never touched. Before anything is removed it is copied to the <b>Undo center</b>, so a mistake can be put back with one click.</p>
+<div class="grid2">
+  <div class="card"><b>Clean</b><br>Uninstall programs, Store apps and portable programs completely – also many at once – and clean what removed programs left behind.</div>
+  <div class="card"><b>Declutter</b><br>Remove bloatware, turn off ads, suggestions, AI features and optional data collection, check browser extensions.</div>
+  <div class="card"><b>Maintain</b><br>Update programs (winget) and drivers (only signed, from Microsoft or your PC's maker), control what starts with Windows.</div>
+  <div class="card"><b>Protect</b><br>Check installers before you run them, record what they change, notice bundled extra software, and undo it all later.</div>
+</div>
+<div class="box safe"><b>Nothing changes until you confirm</b>Purgely only looks until you click a button that says what will happen. Almost everything can be undone.</div>
+
+<section>
+<h2><span class="num">2</span>Getting started</h2>
+<p class="lead">Purgely is a single file, <span class="kbd">Purgely.exe</span>. There is nothing to install.</p>
+<ol>
+  <li>Download <span class="kbd">Purgely.exe</span> from the project's GitHub <i>Releases</i> page. The file <span class="kbd">SHA256SUMS.txt</span> next to it lets you check that the download is genuine.</li>
+  <li>Double-click it. Windows asks for administrator rights – Purgely needs them to clean programs installed for all users, services and the registry.</li>
+  <li>If Windows shows "Windows protected your PC", click <i>More info → Run anyway</i>. This appears for new programs that are not yet widely downloaded.</li>
+</ol>
+<h3>Requirements</h3>
+<p>Windows 11 (Windows 10 works for most features). For updates and "Move to a new PC" Windows needs <i>App Installer</i> (winget), which is part of Windows 11.</p>
+<h3>Your data</h3>
+<p>Purgely keeps its records on your PC only: settings and history in <span class="kbd">%LOCALAPPDATA%\Purgely</span> and <span class="kbd">C:\ProgramData\Purgely</span>, backups in <span class="kbd">Purgely Undo</span> folders. It sends nothing anywhere. It only goes online when you ask for updates, drivers or a VirusTotal lookup.</p>
+
+<h2 style="margin-top:12pt"><span class="num">3</span>The home screen</h2>
+<div class="fig"><img class="shot" src="img/home.png" alt="Home screen"><div class="cap">The home screen: ten tiles with a live summary, Notices on the right. (Version 0.4 adds the Checkup and Move to new PC buttons at the top.)</div></div>
+<p>Each tile shows a short summary that Purgely counts in the background. An orange dot means "worth a look". The <b>Notices</b> panel collects things Purgely noticed – for example a program that switched itself back on at startup, or Windows bringing back an app you removed. Notices never change anything by themselves.</p>
+<p><b>Shortcuts:</b> start typing a program's name anywhere on the home screen to jump to it; <span class="kbd">F5</span> counts everything again, <span class="kbd">Esc</span> goes back from any page.</p>
+</section>
+
+<section>
+<h2><span class="num">4</span>Uninstalling programs</h2>
+<p class="lead">Open <b>Uninstall programs</b>, pick a program and click <b>Uninstall</b> (or double-click it).</p>
+<ol>
+  <li>Purgely starts the program's own, official uninstaller and follows it – also uninstallers that have no window (like OneDrive) and helpers they start.</li>
+  <li>If the uninstaller asks questions, its window is shown and Purgely waits. If it seems stuck, Purgely tells you.</li>
+  <li>When the program is gone, Purgely scans for leftovers and shows them for review (see chapter 6).</li>
+  <li>Programs that came together (a "suite", e.g. several parts of one product) are offered for removal as well.</li>
+</ol>
+<h3>Special cases</h3>
+<table>
+  <tr><th>Situation</th><th>What Purgely does</th></tr>
+  <tr><td><b>Microsoft Store apps</b></td><td>Listed with your programs. Removed for your account by Windows itself. The Undo entry opens the app's Store page, so you can reinstall it.</td></tr>
+  <tr><td><b>Portable programs</b></td><td>Folders with a program that was never installed (unzipped tools, games). "Uninstall" shows the folder and its traces for review. A folder directly on a drive is never pre-ticked.</td></tr>
+  <tr><td><b>Broken uninstaller</b></td><td><b>Force uninstall</b> – after your confirmation Purgely stops the uninstaller and removes the program's parts itself, everything to the Undo center first.</td></tr>
+  <tr><td><b>Runtimes</b> (Visual C++, .NET)</td><td>The <i>Dependencies</i> column shows which programs need them. Purgely warns before you remove one that is used.</td></tr>
+  <tr><td><b>Suggestions</b></td><td>Tick <i>Suggestions</i> to see programs with no sign of use for six months, or several programs that do the same job (two antivirus programs, three PDF readers). These are hints only.</td></tr>
+</table>
+
+<h2 style="margin-top:16pt"><span class="num">5</span>Several programs at once</h2>
+<p>Tick the boxes in front of the programs and click <b>Uninstall N ticked</b>. Purgely removes them <b>one after another</b> – never two at the same time, because Windows Installer allows only one.</p>
+<ul>
+  <li><b>Quiet mode</b> (on by default): programs that support it are removed without questions – Windows Installer packages, Inno Setup and NSIS uninstallers, and programs that offer their own quiet uninstall. The others still show their window; answer it and Purgely continues by itself.</li>
+  <li>A slow or stuck uninstaller can be skipped – it is never killed. You can finish it later on its own.</li>
+  <li>At the end one leftover scan covers all removed programs together.</li>
+</ul>
+<div class="box warn"><b>Before you start</b>Close the programs you remove and save your work in them. An uninstaller can't be undone by Purgely – only the leftovers Purgely removes go to the Undo center.</div>
+</section>
+
+<section>
+<h2><span class="num">6</span>Leftovers and how sure Purgely is</h2>
+<p class="lead">After an uninstall – or for a program removed long ago (<b>Clean leftovers</b>) – Purgely searches files, folders on every drive, the registry, services, drivers, scheduled tasks and startup entries.</p>
+<div class="fig"><img class="shot" src="img/leftovers.png" alt="Leftover scan"><div class="cap">Every item says what it is, where it is, why it belongs to the program, and how sure Purgely is.</div></div>
+<table>
+  <tr><th style="width:26%">Confidence</th><th>Meaning</th></tr>
+  <tr><td><b>Very sure</b> (85 % and up)</td><td>Several strong proofs, e.g. the install folder and items that run from it.</td></tr>
+  <tr><td><b>Likely</b> (70–84 %)</td><td>Strong proof. Ticked when the program is gone.</td></tr>
+  <tr><td><b>Maybe</b> (45–69 %)</td><td>Only the name matches – offered, never ticked. Tick it yourself if you agree.</td></tr>
+  <tr><td><b>Keep (shared)</b></td><td>Another installed program uses it. Never removed.</td></tr>
+</table>
+<p>Purgely also knows popular programs that leave things where a name search can't find them (OneDrive, Teams, Chrome, Steam, Adobe and more). Their <i>settings and saves</i> are offered but never ticked – remove them only if you don't need them.</p>
+<p>The scan compares what it found with the size Windows recorded. If a big part seems missing (for example a game on another drive), it warns you and lets you add the folder with <b>Add folder…</b>.</p>
+<div class="fig"><img class="shot" src="img/list.png" alt="Clean leftovers" style="margin-top:4pt"><div class="cap">Clean leftovers lists removed programs that left traces. "Find leftovers by name" works for programs removed long ago.</div></div>
+</section>
+
+<section>
+<h2><span class="num">7</span>Installer junk and the PC sweep</h2>
+<p><b>Installer junk</b> finds cached setup files that no installed program needs any more – often hundreds of megabytes in <span class="kbd">C:\Windows\Installer</span> and <span class="kbd">Package Cache</span>.</p>
+<div class="fig"><img class="shot" src="img/junk.png" alt="Installer junk"><div class="cap">Only installers of programs that are no longer installed are offered.</div></div>
+<p><b>Sweep whole PC</b> (on the Clean leftovers page) looks for traces of programs removed long ago: shortcuts and startup entries that point to nothing, scheduled tasks and services whose program file is gone, and completely empty folders. Only provably dead items are ticked.</p>
+</section>
+
+<section>
+<h2><span class="num">8</span>Bloatware, ads, AI and privacy</h2>
+<p class="lead">The <b>Bloatware</b> tile opens a page with three tabs.</p>
+<h3>Preinstalled apps</h3>
+<div class="fig"><img class="shot" src="img/bloat.png" alt="Bloatware"><div class="cap">Every app has a verdict and a reason.</div></div>
+<table>
+  <tr><th style="width:24%">Verdict</th><th>Meaning</th></tr>
+  <tr><td><b>Safe to remove</b></td><td>Ads, trials and promotions (news apps, "Tips", the maker's welcome apps). Ticked.</td></tr>
+  <tr><td><b>Check</b></td><td>Some people use these – Xbox and Game Bar, Phone Link, Copilot, Teams, OneNote, Get Help. Never ticked.</td></tr>
+  <tr><td><b>Keep</b></td><td>Microsoft Store, App Installer, Windows Security, codecs, your hardware's control panels. Hidden unless you ask; Purgely warns before removing.</td></tr>
+</table>
+<h3>Ads, AI &amp; privacy</h3>
+<div class="fig"><img class="shot" src="img/ads.png" alt="Ads and suggestions"><div class="cap">Switches for ads in Start and on the lock screen, apps installed without asking, Bing in search, tips and nags.</div></div>
+<p>Three groups: <b>Ads and suggestions</b>, <b>AI features</b> (Recall snapshots, Click to Do, Copilot, Copilot in Edge – your choice, only Recall is ticked) and <b>Privacy</b> (optional diagnostic data, typing data, activity history, feedback requests). Before each change the old value is saved; restore <i>"Windows clutter"</i> in the Undo center to put everything back exactly as it was.</p>
+<div class="box tip"><b>Windows brought it back?</b>Big Windows updates sometimes reinstall apps or switch ads back on. Purgely remembers what you removed and shows a notice on the home screen when that happens.</div>
+</section>
+
+<section>
+<h2><span class="num">9</span>Browser extensions</h2>
+<p>The third Bloatware tab lists the extensions of Chrome, Edge, Brave, Vivaldi and Firefox for each browser profile. For every extension Purgely shows:</p>
+<ul>
+  <li><b>Where it came from</b> – the browser's store, or <i>outside the store</i> (installed by another program – the most common way adware arrives).</li>
+  <li><b>What it may do</b>, in plain words – "can read and change every website", "can watch your web traffic", "can read your cookies".</li>
+</ul>
+<p>Click <b>Manage in browser</b> to open the browser's own extension page and remove or turn it off there – that way browser sync doesn't bring it back. <b>Store page</b> shows what the extension is and its reviews.</p>
+
+<h2 style="margin-top:18pt"><span class="num">10</span>Updates</h2>
+<div class="fig"><img class="shot" src="img/updates.png" alt="Updates"><div class="cap">Updates run hidden; Purgely shows the download, the check and the installation.</div></div>
+<p>Purgely asks Windows Package Manager (winget) which programs have a newer version. <b>Update</b> installs one, <b>Update all</b> goes through the list and gives a short report. Downloads come from the publishers' official sources and are verified before installing. If a program must be updated with its own updater, Purgely says so.</p>
+</section>
+
+<section>
+<h2><span class="num">11</span>Drivers</h2>
+<div class="fig"><img class="shot" src="img/hardware.png" alt="Drivers"><div class="cap">Your PC's parts with their drivers. Built-in Windows drivers are hidden by default.</div></div>
+<ul>
+  <li><b>Check for newer drivers</b> looks each device up by its hardware ID in Windows Update and Microsoft's Update Catalog.</li>
+  <li>A driver is installed only when it is <b>signed by Microsoft (WHQL)</b>, its checksum matches and it lists your exact device. A restore point is made first, and the Undo center can remove the new driver again.</li>
+  <li>The <b>maker's driver page</b> button opens the support page of your PC's brand (or your motherboard). <b>Install downloaded driver</b> checks the digital signature of a file you downloaded there.</li>
+  <li>Graphics cards: NVIDIA, AMD and Intel's own apps are the best source – Purgely tells you when they are installed.</li>
+</ul>
+<div class="box safe"><b>Never from driver websites</b>Purgely never uses third-party "driver updater" sites. Firmware and BIOS are never touched.</div>
+
+<h2 style="margin-top:14pt"><span class="num">12</span>Startup</h2>
+<p>Everything that starts with Windows, grouped by program, with its impact and whether it is safe to turn off. <b>Turn off</b> never deletes anything. <b>Start 2 min later</b> keeps a program but lets Windows get ready first. <b>Keep off</b> turns it off again if the program switches itself back on. <b>Optimize</b> turns off only what Purgely's knowledge base marks as safe – and <b>Undo optimize</b> reverses it. The page shows your boot time before and after.</p>
+</section>
+
+<section>
+<h2><span class="num">13</span>Install &amp; Track</h2>
+<p class="lead">Try a new program without worrying: Purgely records what its installer changes and can put your PC back exactly as it was.</p>
+<ol>
+  <li>Click <b>Choose installer and start…</b> and pick the setup file.</li>
+  <li><b>Check before you install</b> – Purgely shows who signed the file, which website it was downloaded from, what kind of installer it is, and whether it contains a known advertising "offer" toolkit. <b>VirusTotal report</b> looks the file up by its fingerprint (nothing is uploaded).</li>
+  <li><b>Install and track</b> – Purgely saves a snapshot (registry, files, optional restore point) and starts the installer.</li>
+  <li>When the installer is finished, click <b>The installer has finished</b>. Purgely shows what was added – and warns if programs from <i>other</i> publishers came along (bundleware).</li>
+  <li>Use the program as long as you like. Then choose <b>Keep</b>, or <b>Revert</b> to remove everything the installer added.</li>
+</ol>
+
+<h2 style="margin-top:16pt"><span class="num">14</span>Checkup</h2>
+<p>The <b>Checkup</b> button on the home screen looks at the whole PC at once: installer junk, dead leftovers, startup programs known to be safe to turn off, ads and privacy settings, ad apps, program updates and drivers. Each finding is a card with a summary and a <b>Review</b> button that opens the full page.</p>
+<p>Only what Purgely is sure about is ticked. <b>Fix ticked</b> uses exactly the same code as each page – so everything goes to the Undo center.</p>
+
+<h2 style="margin-top:16pt"><span class="num">15</span>Move to a new PC</h2>
+<ol>
+  <li>On the old PC: <b>Move to new PC → Save my program list…</b> Purgely saves a small list (.json) and a text file with programs you have to install yourself (programs winget doesn't know, portable folders).</li>
+  <li>Copy the file to the new PC (USB stick, OneDrive, e-mail).</li>
+  <li>On the new PC: <b>Install from a list…</b> – every program that isn't installed yet is downloaded from its official source and installed, one by one.</li>
+</ol>
+</section>
+
+<section>
+<h2><span class="num">16</span>Timeline and notices</h2>
+<div class="fig"><img class="shot" src="img/timeline.png" alt="Timeline"><div class="cap">When programs arrived, changed or left – and what came bundled.</div></div>
+<p>The <b>Timeline</b> records installs, updates and removals, also those done outside Purgely. When programs from different publishers appear at the same moment, Purgely flags possible <b>bundleware</b> – software an installer slipped in.</p>
+
+</section>
+<section>
+<h2><span class="num">17</span>The Undo center</h2>
+<div class="fig"><img class="shot" src="img/undo.png" alt="Undo center"><div class="cap">Every cleanup is a package that can be restored.</div></div>
+<ul>
+  <li><b>Restore</b> puts everything in a package back where it was. Newer files are never overwritten.</li>
+  <li>If something could not be put back, the package says so and Restore can be tried again later.</li>
+  <li>Backups stay on the same drive as the original (in a <span class="kbd">Purgely Undo</span> folder), so a big game on D: is never copied to C:.</li>
+  <li><b>Discard</b> deletes a package and frees the disk space – do it once you are sure everything works.</li>
+  <li>Store apps can't be copied back – their package opens the Microsoft Store page instead.</li>
+</ul>
+</section>
+
+<section>
+<h2><span class="num">18</span>Safety promises</h2>
+<p class="lead">These rules are built into Purgely and checked by automatic tests and a safety audit on every change.</p>
+<table>
+  <tr><th style="width:42%">Purgely never…</th><th>Why</th></tr>
+  <tr><td>removes your own files (Documents, Desktop, Downloads, OneDrive, Dropbox)</td><td>Your work is not a leftover.</td></tr>
+  <tr><td>touches anything another installed program uses</td><td>Removing a shared folder breaks the other program.</td></tr>
+  <tr><td>ticks an item on weak evidence (only a matching name)</td><td>People click whatever is recommended – it must be safe on its own.</td></tr>
+  <tr><td>follows links (junctions) out of a leftover folder</td><td>A link could lead to your Documents.</td></tr>
+  <tr><td>deletes structural Windows registry keys or Windows files</td><td>They keep Windows running.</td></tr>
+  <tr><td>removes a file before its backup copy is verified</td><td>A full disk must not lose data.</td></tr>
+  <tr><td>kills a program you didn't confirm, or any browser or Explorer</td><td>Only the uninstaller you chose to stop.</td></tr>
+  <tr><td>installs drivers from third-party sites, or unsigned drivers</td><td>Drivers run with full power over the PC.</td></tr>
+  <tr><td>loads cleaning rules from disk at run time</td><td>Only reviewed, built-in rules can tell Purgely what to remove.</td></tr>
+  <tr><td>shows ads, bundles software or sends your data anywhere</td><td>That is what Purgely protects you from.</td></tr>
+</table>
+<p class="small">Every new version is tested with fake programs and "traps" – files that look like leftovers but must survive – in Windows Sandbox or on a real PC.</p>
+
+</section>
+<section>
+<h2><span class="num">19</span>Questions and problems</h2>
+<table>
+  <tr><th style="width:38%">Question</th><th>Answer</th></tr>
+  <tr><td>I removed something I need.</td><td>Open the <b>Undo center</b>, select the package and click <b>Restore</b>.</td></tr>
+  <tr><td>A program came back after removing it.</td><td>Check the Notices – often a big Windows update or another program reinstalled it. Startup items can be set to <b>Keep off</b>.</td></tr>
+  <tr><td>"Windows protects this switch".</td><td>Some settings (like the Widgets button) can only be changed in Windows Settings – Purgely tells you where.</td></tr>
+  <tr><td>An uninstaller seems stuck.</td><td>Wait a moment – some work silently. Then use <b>Force uninstall</b>, or <b>Skip this one</b> in bulk mode.</td></tr>
+  <tr><td>"winget not found".</td><td>Install or update <i>App Installer</i> from the Microsoft Store.</td></tr>
+  <tr><td>Some items need a restart.</td><td>Locked files are removed at the next restart – they are already backed up.</td></tr>
+</table>
+</section>
+
+<section>
+<h2><span class="num">20</span>Help make Purgely better</h2>
+<p>Purgely is open source under the MIT license: free to use, free to share, and anyone can read every line of what it does.</p>
+<ul>
+  <li><b>Knowledge base</b> – what Purgely knows about bloatware and popular programs lives in readable files (<span class="kbd">src/Purgely/Knowledge</span>). Found an app that should be on the list, or a folder a program leaves behind? Suggest it on GitHub – <span class="kbd">CONTRIBUTING.md</span> explains how. Every suggestion is reviewed before it reaches anyone.</li>
+  <li><b>Bugs and ideas</b> – open an issue at github.com/kraljforgelabs/Purgely.</li>
+</ul>
+<div class="box tip"><b>KraljForge Labs</b>Practical tools forged for the future. Purgely is free and ad-free and will stay that way.</div>
+<p class="small" style="margin-top:20pt">Screenshots show version 0.3/0.4 on Windows 11; your screens may differ slightly. © 2026 KraljForge Labs · MIT License.</p>
+</section>
+</body></html>

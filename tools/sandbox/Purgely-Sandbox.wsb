@@ -1,0 +1,27 @@
+<Configuration>
+  <!-- Opens a throw-away Windows with Purgely and a fake test program. Everything is gone when you close it. -->
+  <!-- Graphics acceleration off: with NVIDIA laptop GPUs it often drops the Sandbox connection. -->
+  <VGpu>Disable</VGpu>
+  <MemoryInMB>4096</MemoryInMB>
+  <Networking>Disable</Networking>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>D:\AI\Purgely\dist-sandbox</HostFolder>
+      <SandboxFolder>C:\Purgely</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>D:\AI\Purgely\tools\sandbox</HostFolder>
+      <SandboxFolder>C:\PurgelyTest</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
+      <HostFolder>D:\AI\Purgely\sandbox-results</HostFolder>
+      <SandboxFolder>C:\Results</SandboxFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>powershell.exe -ExecutionPolicy Bypass -WindowStyle Normal -File C:\PurgelyTest\sandbox-start.ps1</Command>
+  </LogonCommand>
+</Configuration>

@@ -1,0 +1,165 @@
+<Window x:Class="Purgely.HardwareWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Purgely – Driver updates" Height="760" Width="1280" MinHeight="480" MinWidth="900"
+        xmlns:local="clr-namespace:Purgely"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <local:GroupExpandedConverter x:Key="GroupExpanded"/>
+        <local:GroupSummaryConverter x:Key="GroupSummary"/>
+    </Window.Resources>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Margin="0,0,0,14">
+            <Button x:Name="HomeButton" DockPanel.Dock="Left" Visibility="Collapsed" Padding="10,8" Margin="0,4,16,0"
+                    VerticalAlignment="Top" ToolTip="Back (Esc)" AutomationProperties.Name="Back">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE72B;"/>
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Home"/>
+                </StackPanel>
+            </Button>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
+                <Button Click="CopySpecs_Click" Padding="12,6" Margin="0,0,8,0"
+                        ToolTip="Copy a spec sheet – paste it to Claude in chat to have the makers' websites searched for you">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE8C8;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Copy specs"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="MakerButton" Click="Maker_Click" Padding="12,6" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE774;"/>
+                        <TextBlock x:Name="MakerButtonText" Style="{StaticResource ButtonLabel}" Text="Maker's driver page"/>
+                    </StackPanel>
+                </Button>
+                <Button Click="InstallFile_Click" Padding="12,6"
+                        ToolTip="Install a driver you downloaded yourself – Purgely checks its digital signature first">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE8B7;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Install downloaded driver…"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Driver updates" Style="{StaticResource PageTitle}"/>
+                <TextBlock x:Name="PcText" Style="{StaticResource PageSubtitle}" TextWrapping="Wrap" Text="Reading your hardware…"/>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Explanation + maker apps -->
+        <Border Grid.Row="1" Style="{StaticResource InfoBarInfo}" Margin="0,0,0,12">
+            <DockPanel>
+                <TextBlock Style="{StaticResource InfoBarIconInfo}"/>
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap"
+                               Text="Purgely looks up every device by its hardware ID – the way professional tools do – in Windows Update and in Microsoft's Update Catalog (official, signed drivers, many more than Windows installs on its own). A driver is installed only if it is signed by Microsoft and lists your exact device; your current driver is saved first, so the Undo center can put it back. Firmware and BIOS are never touched."/>
+                    <TextBlock x:Name="MakerAppsText" TextWrapping="Wrap" Margin="0,6,0,0" Opacity="0.85"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Devices -->
+        <Border Grid.Row="2" Style="{StaticResource ListCard}">
+            <Grid>
+                <DataGrid x:Name="DevicesGrid" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single"
+                          HeadersVisibility="Column" GridLinesVisibility="None" Background="Transparent" BorderThickness="0"
+                          MinRowHeight="36" ColumnHeaderStyle="{StaticResource GridHeader}">
+                    <DataGrid.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="GroupItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="GroupItem">
+                                                <Expander IsExpanded="{Binding Items, Mode=OneTime, Converter={StaticResource GroupExpanded}}"
+                                                          Margin="0,4,0,2">
+                                                    <Expander.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
+                                                            <TextBlock Text="{Binding Items, Converter={StaticResource GroupSummary}}"
+                                                                       Margin="12,0,0,0" Opacity="0.7" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </Expander.Header>
+                                                    <ItemsPresenter/>
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="44">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox x:Name="Box" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}"
+                                              HorizontalAlignment="Center" Click="Check_Click"/>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Update}" Value="{x:Null}">
+                                            <Setter TargetName="Box" Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="State" Binding="{Binding StateText}" Width="120" IsReadOnly="True" ElementStyle="{StaticResource GridText}"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding Class}" Width="110" IsReadOnly="True" ElementStyle="{StaticResource GridText}"/>
+                        <DataGridTextColumn Header="Device" Binding="{Binding DisplayName}" Width="2*" IsReadOnly="True" ElementStyle="{StaticResource GridWrapText}"/>
+                        <DataGridTextColumn Header="Maker" Binding="{Binding Maker}" Width="*" IsReadOnly="True" ElementStyle="{StaticResource GridText}"/>
+                        <DataGridTextColumn Header="Driver" Binding="{Binding DriverVersion}" Width="130" IsReadOnly="True" ElementStyle="{StaticResource GridText}"/>
+                        <DataGridTextColumn Header="Date" Binding="{Binding DriverDateText}" Width="95" IsReadOnly="True" ElementStyle="{StaticResource GridText}"/>
+                        <DataGridTextColumn Header="Newer driver" Binding="{Binding Update}" Width="2*" IsReadOnly="True" ElementStyle="{StaticResource GridWrapText}"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="150" IsReadOnly="True" ElementStyle="{StaticResource GridWrapText}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <!-- Progress card: the list behind it is dimmed while Purgely works -->
+                <Border x:Name="BusyPanel" Style="{StaticResource BusyCard}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Width="460">
+                    <StackPanel>
+                        <TextBlock x:Name="BusyText" Style="{StaticResource BusyTitleText}" TextWrapping="Wrap" Text="Reading your hardware…"/>
+                        <ProgressBar x:Name="BusyBar" IsIndeterminate="True" Height="4" MinHeight="4" Margin="0,14,0,8" Maximum="100"/>
+                        <DockPanel>
+                            <TextBlock x:Name="BusyCount" DockPanel.Dock="Right" Style="{StaticResource BusyDetailText}"/>
+                            <TextBlock x:Name="BusyItem" Style="{StaticResource BusyDetailText}" TextTrimming="CharacterEllipsis" Margin="0,0,12,0"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Commands: buttons left, summary in the middle (trimmed when narrow), install right -->
+        <Grid Grid.Row="3" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="CheckButton" Click="CheckUpdates_Click" Padding="12,6" IsEnabled="False">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE721;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Check for newer drivers"/>
+                    </StackPanel>
+                </Button>
+                <CheckBox x:Name="OnlyUpdates" Content="Only devices with a newer driver or a problem" Margin="16,0,0,0"
+                          VerticalAlignment="Center" Checked="Filter_Changed" Unchecked="Filter_Changed"/>
+                <CheckBox x:Name="ShowBuiltIn" Content="Show Windows' built-in drivers" Margin="16,0,0,0"
+                          VerticalAlignment="Center" Checked="Filter_Changed" Unchecked="Filter_Changed"
+                          ToolTip="Drivers that come with Windows itself (they are updated by Windows Update and all carry the date 2006-06-21)"/>
+            </WrapPanel>
+            <TextBlock x:Name="SummaryText" Grid.Column="1" Style="{StaticResource SecondaryText}" VerticalAlignment="Center"
+                       TextAlignment="Right" TextTrimming="CharacterEllipsis" Margin="16,0,16,0"
+                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+            <Button x:Name="InstallButton" Grid.Column="2" Style="{StaticResource AccentButton}" Click="Install_Click" Padding="16,6"
+                    Content="Install selected" IsEnabled="False"/>
+        </Grid>
+    </Grid>
+</Window>

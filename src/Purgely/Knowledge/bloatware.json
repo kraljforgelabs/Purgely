@@ -1,0 +1,309 @@
+{
+  "_about": "Preinstalled and promotional apps Purgely recognises. Store apps match by package-name prefix ('=Name' = exact); desktop programs match whole words of their name. rating: Remove (ticked only if tick=true), Check (never ticked), Keep. Changes go through a pull request and the council.",
+  "apps": [
+    {
+      "patterns": [
+        "Microsoft.DesktopAppInstaller"
+      ],
+      "rating": "Keep",
+      "why": "App Installer – Purgely and winget need it for updates.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.WindowsStore",
+        "Microsoft.StorePurchaseApp"
+      ],
+      "rating": "Keep",
+      "why": "Microsoft Store – needed to install and update Store apps.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.SecHealthUI"
+      ],
+      "rating": "Keep",
+      "why": "Windows Security.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.WindowsCalculator",
+        "Microsoft.Windows.Photos",
+        "Microsoft.ScreenSketch",
+        "Microsoft.Paint",
+        "Microsoft.WindowsNotepad",
+        "Microsoft.WindowsTerminal",
+        "Microsoft.WindowsCamera",
+        "Microsoft.MicrosoftEdge",
+        "Microsoft.HEIFImageExtension",
+        "Microsoft.HEVCVideoExtension",
+        "Microsoft.VP9VideoExtensions",
+        "Microsoft.WebMediaExtensions",
+        "Microsoft.WebpImageExtension",
+        "Microsoft.RawImageExtension",
+        "Microsoft.AV1VideoExtension",
+        "Microsoft.MPEG2VideoExtension"
+      ],
+      "rating": "Keep",
+      "why": "Basic Windows tool or media support – other apps rely on it.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "RealtekSemiconductorCorp",
+        "NVIDIACorp",
+        "AppUp.IntelGraphicsExperience",
+        "DolbyLaboratories",
+        "AcerIncorporated.QuickAccess",
+        "AcerIncorporated.AcerCareCenter",
+        "AcerIncorporated.NitroSense",
+        "E046963F.LenovoCompanion",
+        "E046963F.LenovoSettings",
+        "B9ECED6F.ArmouryCrate",
+        "B9ECED6F.MyASUS",
+        "DellInc.DellCommandUpdate",
+        "AD2F1837.HPSystemInformation",
+        "WavesAudio"
+      ],
+      "rating": "Keep",
+      "why": "Control panel for your hardware (sound, graphics, fans, keys).",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.Xbox",
+        "Microsoft.GamingApp",
+        "Microsoft.XboxGamingOverlay",
+        "Microsoft.XboxIdentityProvider",
+        "Microsoft.XboxSpeechToTextOverlay",
+        "Microsoft.Xbox.TCUI"
+      ],
+      "rating": "Check",
+      "why": "Xbox app, Game Bar and sign-in – needed for Game Pass and some PC games.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.YourPhone",
+        "MicrosoftWindows.CrossDevice"
+      ],
+      "rating": "Check",
+      "why": "Phone Link – connects your phone to the PC.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.Copilot",
+        "Microsoft.Windows.Ai.Copilot"
+      ],
+      "rating": "Check",
+      "why": "Copilot – Microsoft's AI assistant. Remove it if you don't use it.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "MSTeams",
+        "MicrosoftTeams"
+      ],
+      "rating": "Check",
+      "why": "Microsoft Teams (free/personal).",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.OutlookForWindows"
+      ],
+      "rating": "Check",
+      "why": "New Outlook (mail and calendar).",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.Todos"
+      ],
+      "rating": "Check",
+      "why": "Microsoft To Do.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.MicrosoftStickyNotes"
+      ],
+      "rating": "Check",
+      "why": "Sticky Notes.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.MicrosoftSolitaireCollection"
+      ],
+      "rating": "Check",
+      "why": "Solitaire games (with ads).",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.ZuneMusic"
+      ],
+      "rating": "Check",
+      "why": "Media Player (music and video).",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.WindowsAlarms",
+        "Microsoft.WindowsSoundRecorder"
+      ],
+      "rating": "Check",
+      "why": "Clock / Sound Recorder.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.PowerAutomateDesktop",
+        "MicrosoftCorporationII.QuickAssist"
+      ],
+      "rating": "Check",
+      "why": "Power Automate / Quick Assist (remote help).",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Clipchamp.Clipchamp"
+      ],
+      "rating": "Check",
+      "why": "Clipchamp video editor.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "SpotifyAB.SpotifyMusic",
+        "4DF9E0F8.Netflix",
+        "Netflix"
+      ],
+      "rating": "Check",
+      "why": "Streaming app that came with Windows or the PC.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.BingNews",
+        "Microsoft.BingWeather",
+        "Microsoft.BingSearch",
+        "=Microsoft.Start"
+      ],
+      "rating": "Remove",
+      "why": "News/weather/search app with ads – Windows works fine without it.",
+      "tick": true
+    },
+    {
+      "patterns": [
+        "Microsoft.Getstarted"
+      ],
+      "rating": "Remove",
+      "why": "Tips – Microsoft promotions.",
+      "tick": true
+    },
+    {
+      "patterns": [
+        "Microsoft.GetHelp"
+      ],
+      "rating": "Check",
+      "why": "Get Help – Windows troubleshooters run inside it. Keep it unless you never use them.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.MicrosoftOfficeHub"
+      ],
+      "rating": "Remove",
+      "why": "Microsoft 365 hub – a launcher with ads. Your installed Office apps (Word, Excel…) keep working.",
+      "tick": true
+    },
+    {
+      "patterns": [
+        "Microsoft.Office.OneNote"
+      ],
+      "rating": "Check",
+      "why": "OneNote for Windows 10 – remove only if your notes are synced elsewhere.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "microsoft.windowscommunicationsapps"
+      ],
+      "rating": "Check",
+      "why": "Old Mail and Calendar – Microsoft replaced it with the new Outlook.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "Microsoft.WindowsFeedbackHub",
+        "Microsoft.549981C3F5F10",
+        "Microsoft.Windows.DevHome",
+        "Microsoft.People",
+        "Microsoft.Messaging",
+        "Microsoft.SkypeApp",
+        "Microsoft.ZuneVideo",
+        "Microsoft.WindowsMaps",
+        "Microsoft.Wallet",
+        "Microsoft.MixedReality.Portal",
+        "Microsoft.3DBuilder",
+        "Microsoft.Microsoft3DViewer",
+        "Microsoft.OneConnect",
+        "Microsoft.Print3D"
+      ],
+      "rating": "Remove",
+      "why": "Old or rarely used Windows extra.",
+      "tick": true
+    },
+    {
+      "patterns": [
+        "king.com",
+        "Disney.",
+        "Facebook.",
+        "9E2F88E3.Twitter",
+        "7EE7776C.LinkedInforWindows",
+        "D5EA27B7.Duolingo",
+        "BytedancePte.Ltd.TikTok",
+        "AmazonVideo.PrimeVideo",
+        "WildTangent"
+      ],
+      "rating": "Remove",
+      "why": "Promotional app placed on the PC by the maker or Windows.",
+      "tick": true
+    },
+    {
+      "patterns": [
+        "McAfee",
+        "5A894077.McAfeeSecurity",
+        "Norton",
+        "Avast Free Antivirus trial"
+      ],
+      "rating": "Remove",
+      "why": "Antivirus trial – Windows Security already protects you; two antivirus programs slow the PC.",
+      "tick": false
+    },
+    {
+      "patterns": [
+        "AcerIncorporated.AcerCollection",
+        "AcerIncorporated.AcerJumpstart",
+        "AcerIncorporated.AcerRegistration",
+        "AcerIncorporated.PlanetNine",
+        "Acer Jumpstart",
+        "Acer Product Registration",
+        "Acer Collection",
+        "E046963F.LenovoWelcome",
+        "Lenovo Welcome",
+        "HP Welcome",
+        "Dell Digital Delivery",
+        "Dell Customer Connect",
+        "MyASUS Welcome"
+      ],
+      "rating": "Remove",
+      "why": "PC maker's welcome/registration/promotion app.",
+      "tick": true
+    }
+  ]
+}

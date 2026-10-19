@@ -1,0 +1,17 @@
+name: Suggest bloatware or a known program
+description: An app that should be on the bloatware list, or folders a program leaves behind
+labels: [knowledge-base]
+body:
+  - type: input
+    id: name
+    attributes: { label: Program or app name, placeholder: "e.g. Microsoft.BingNews, or Discord" }
+    validations: { required: true }
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What do you suggest?
+      options: ["Bloatware: safe to remove", "Bloatware: check (some people use it)", "Bloatware: keep (removing breaks something)", "Known leftovers of a program"]
+  - type: textarea
+    id: why
+    attributes: { label: Why / which folders, description: "Link to the maker's documentation or a screenshot is ideal. Never list folders with the user's own files." }
+    validations: { required: true }

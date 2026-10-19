@@ -1,0 +1,23 @@
+name: Bug report
+description: Something doesn't work or looks wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks! Security problems: please use the private form in SECURITY.md instead."
+  - type: input
+    id: version
+    attributes: { label: Purgely version, placeholder: "0.4.0 (bottom right of the home screen)" }
+    validations: { required: true }
+  - type: input
+    id: windows
+    attributes: { label: Windows version, placeholder: "Windows 11 Pro 24H2" }
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "What you did, what you expected, what happened. Screenshots help." }
+    validations: { required: true }
+  - type: dropdown
+    id: removed
+    attributes:
+      label: Did Purgely remove something it shouldn't have?
+      options: ["No", "Yes – and Undo center brought it back", "Yes – and Undo did NOT bring it back"]

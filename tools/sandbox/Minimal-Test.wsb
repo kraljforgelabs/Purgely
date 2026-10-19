@@ -1,0 +1,5 @@
+<Configuration>
+  <!-- Diagnostic: an empty Sandbox with nothing mapped. If this also disconnects, the problem is Windows, not Purgely. -->
+  <VGpu>Disable</VGpu>
+  <Networking>Disable</Networking>
+</Configuration>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Purgely</AssemblyName>
+    <RootNamespace>Purgely</RootNamespace>
+    <ApplicationManifest Condition="'$(UiTest)' != 'true'">app.manifest</ApplicationManifest>
+    <ApplicationManifest Condition="'$(UiTest)' == 'true'">app.uitest.manifest</ApplicationManifest>
+    <ApplicationIcon>Purgely.ico</ApplicationIcon>
+    <Version>0.4.0</Version>
+    <Product>Purgely</Product>
+    <Company>KraljForge Labs</Company>
+    <Authors>KraljForge Labs</Authors>
+    <Copyright>Copyright (c) 2026 KraljForge Labs. MIT License.</Copyright>
+    <Description>Purgely – the ultimate PC tool for Windows 11: uninstall, clean, update, drivers, bloatware and startup. Free, no ads.</Description>
+    <RepositoryUrl>https://github.com/kraljforgelabs/Purgely</RepositoryUrl>
+    <!-- WPF0001: Fluent ThemeMode is marked experimental -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Purgely.ico" />
+    <EmbeddedResource Include="Knowledge\*.json" />
+  </ItemGroup>
+
+</Project>
