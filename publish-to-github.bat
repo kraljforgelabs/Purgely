@@ -16,7 +16,10 @@ rem Safety: never publish private records or anything that looks like a secret.
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\secret-scan.ps1" || (echo. & echo Publishing stopped - see above. & pause & exit /b 1)
 
 git add -A
-git diff --cached --quiet || git commit -m "Purgely 0.2 - home screen, guided uninstall, updates, drivers, council fixes"
+for /f "tokens=3 delims=<>" %%v in ('findstr /c:"<Version>" src\Purgely\Purgely.csproj') do set VER=%%v
+set /p MSG=Short description of the changes (Enter = "Purgely %VER%"): 
+if "%MSG%"=="" set MSG=Purgely %VER%
+git diff --cached --quiet || git commit -m "%MSG%"
 
 git remote remove origin >nul 2>&1
 git remote add origin %REPO%
