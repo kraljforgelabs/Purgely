@@ -43,7 +43,7 @@ https://kraljforgelabs.github.io/Purgely/
   missing Microsoft runtimes ("a DLL is missing") using only Windows' own tools and official packages
 - **Epic Games games** *(0.9.2)* – listed with your other programs; uninstalled through the Epic launcher, then scanned
   for leftovers
-- **Uninstall by icon** *(0.9.2)* – drop a program's icon on Purgely, drag **Find by window** onto its window, or use
+- **Uninstall by icon** *(0.9.3)* – drop a program's icon on Purgely, drag **Find by window** onto its window, or use
   the optional **Uninstall with Purgely** right-click entry
 - **Settings** *(0.9)* – update check (once a day, never downloads anything by itself), Timeline history, Undo storage,
   welcome tour, and **Remove Purgely and its data**

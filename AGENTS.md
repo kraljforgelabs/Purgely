@@ -64,7 +64,7 @@ Purgely deletes and changes things on real Windows PCs. A wrong delete can break
   winget's official Microsoft packages – never single DLL downloads.
 - "Remove Purgely" deletes only folders with Purgely's exact names (never through a link) and only `Purgely.exe` itself.
 
-## Rules added with 0.9.2 (2026-10-20)
+## Rules added with 0.9.2–0.9.3 (2026-10-20)
 - Launcher games (Epic) are uninstalled by their launcher; Purgely only opens it (unelevated, through Explorer) and scans
   afterwards. A launcher game's own folder is never pre-ticked.
 - "Which program is this?" (`ProgramFinder`) must never guess: ties, several matches or anything inside an install area

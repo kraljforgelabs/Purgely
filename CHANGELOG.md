@@ -1,9 +1,6 @@
 # Changelog
 
-## 0.9.2 (beta) – 2026-10
-- **Epic Games games** are now in the program list. The Epic Games Launcher doesn't register its games with Windows,
-  so they were missing. Uninstall opens the launcher (as you, not as administrator), and once it has removed the game,
-  Purgely scans for what was left behind (saves, settings, shader cache)
+## 0.9.3 (beta) – 2026-10
 - **Uninstall by icon** – drop a program's icon (desktop shortcut, Start menu shortcut, .exe or folder) on Purgely,
   drag **Find by window** onto a program's window, or turn on **"Uninstall with Purgely"** in the right-click menu
   (Settings – off until you turn it on, for your account only, removed again with Purgely). A shortcut that starts a
@@ -11,6 +8,11 @@
   surprise. When Purgely can't tell which program it is, it says so and lets you pick in the list
 - Only one Purgely runs at a time
 - Clearer, more natural wording throughout the app, the user guide and the website
+
+## 0.9.2 (beta) – 2026-10
+- **Epic Games games** are now in the program list. The Epic Games Launcher doesn't register its games with Windows,
+  so they were missing. Uninstall opens the launcher (as you, not as administrator), and once it has removed the game,
+  Purgely scans for what was left behind (saves, settings, shader cache)
 
 ## 0.9.1 (beta) – 2026-10
 - **Repair** page (button on the home screen): devices that don't work explained in plain words (restart, reinstall,
