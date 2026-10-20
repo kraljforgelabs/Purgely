@@ -540,7 +540,7 @@ public partial class MainWindow : Window
                     break;
                 case FoundKind.Ambiguous:
                     SearchBox.Text = found.Name;
-                    Dialog.Show(this, $"Several programs share the folder of \"{found.Name}\", so Purgely can't tell which one it is.\n\n" +
+                    Dialog.Show(this, $"\"{found.Name}\" is in a folder that several programs share, so Purgely can't tell which one it belongs to.\n\n" +
                                       "Pick the right one in the list.",
                         "Which program?", MessageBoxButton.OK, MessageBoxImage.Information);
                     break;
@@ -602,7 +602,7 @@ public partial class MainWindow : Window
         var exe = WindowPicker.ProgramUnderPointer(out var own);
         if (own)
         {
-            Dialog.Show(this, "Hold the mouse button down on this icon, drag it onto the window of the program you want to remove, " +
+            Dialog.Show(this, "Hold the mouse button down on this button, drag it onto the program you want to remove – its window or its icon – " +
                               "and let go there.\n\nYou can also drag a program's icon (for example from the desktop) into this window.",
                 "Find by window", MessageBoxButton.OK, MessageBoxImage.Information);
             return;

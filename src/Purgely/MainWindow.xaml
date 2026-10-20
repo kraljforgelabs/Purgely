@@ -20,7 +20,7 @@
                         MouseLeftButtonDown="Picker_MouseDown" MouseLeftButtonUp="Picker_MouseUp" MouseMove="Picker_MouseMove"
                         LostMouseCapture="Picker_LostMouseCapture"
                         AutomationProperties.Name="Find by window"
-                        ToolTip="Hold the mouse button down here, drag onto a program's window and let go – Purgely finds that program. You can also drop a program's icon into this window.">
+                        ToolTip="Hold the mouse button down here, drag onto a program's window or its desktop icon and let go – Purgely finds that program. You can also drop a program's icon into this window.">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE81D;"/>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Find by window"/>
