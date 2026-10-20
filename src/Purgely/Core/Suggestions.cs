@@ -36,7 +36,7 @@ public static class Suggestions
     /// <summary>Sets <see cref="InstalledProgram.Suggestion"/> on the programs. Returns how many got one.</summary>
     public static int Analyze(IReadOnlyList<InstalledProgram> programs)
     {
-        var live = programs.Where(p => !p.IsOrphan && !p.IsRemovedEarlier && !p.IsStoreApp && !p.IsPortable).ToList();
+        var live = programs.Where(p => !p.IsOrphan && !p.IsRemovedEarlier && !p.IsStoreApp && !p.IsPortable && !p.IsLauncherGame).ToList();
         foreach (var p in programs) p.Suggestion = "";
 
         foreach (var c in Categories)

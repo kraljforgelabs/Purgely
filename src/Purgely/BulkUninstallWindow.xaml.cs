@@ -44,7 +44,7 @@ public partial class BulkUninstallWindow : Window
         _queue = programs.Select(p => new QueueItem
         {
             Program = p,
-            Kind = p.IsOrphan ? "Already removed – leftovers only" : p.IsPortable ? "Portable – folder goes to the leftover scan" : p.IsStoreApp ? "Store app" : p.IsMsi ? "Windows Installer" : "Official uninstaller",
+            Kind = p.IsOrphan ? "Already removed – leftovers only" : p.IsPortable ? "Portable – folder goes to the leftover scan" : p.IsLauncherGame ? $"{p.Launcher} game" : p.IsStoreApp ? "Store app" : p.IsMsi ? "Windows Installer" : "Official uninstaller",
         }).ToList();
         QueueGrid.ItemsSource = _queue;
         TitleText.Text = $"Uninstall {_queue.Count} programs";
@@ -122,6 +122,11 @@ public partial class BulkUninstallWindow : Window
         {
             item.Removed = true;
             SetState(item, "\uE73E", Ok, "Portable – its folder is offered in the leftover scan");
+            return;
+        }
+        if (p.IsLauncherGame)
+        {
+            SetState(item, "\uE946", null, $"Skipped – uninstall it in the {p.Launcher} launcher, or with Uninstall on its own");
             return;
         }
         if (p.IsStoreApp)

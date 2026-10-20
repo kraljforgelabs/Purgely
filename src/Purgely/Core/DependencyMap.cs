@@ -31,7 +31,7 @@ public static partial class DependencyMap
             if (Identify(p) is { } keys) runtimes[p] = keys;
         if (runtimes.Count == 0) return;
 
-        var targets = programs.Where(p => !runtimes.ContainsKey(p) && !p.IsOrphan && !p.IsStoreApp && !p.IsPortable && !p.IsRemovedEarlier).ToList();
+        var targets = programs.Where(p => !runtimes.ContainsKey(p) && !p.IsOrphan && !p.IsStoreApp && !p.IsPortable && !p.IsLauncherGame && !p.IsRemovedEarlier).ToList();
         var cache = DependencyCache.Load();
         var results = new ConcurrentDictionary<InstalledProgram, string[]>();
         var done = 0;

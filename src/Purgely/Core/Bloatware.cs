@@ -102,7 +102,7 @@ public static class Bloatware
     public static List<BloatItem> Scan(IReadOnlyList<InstalledProgram> programs)
     {
         var result = new List<BloatItem>();
-        foreach (var p in programs.Where(p => !p.IsOrphan && !p.IsRemovedEarlier && !p.IsPortable))
+        foreach (var p in programs.Where(p => !p.IsOrphan && !p.IsRemovedEarlier && !p.IsPortable && !p.IsLauncherGame))
         {
             var known = Kb.FirstOrDefault(k => k.Patterns.Any(pattern => Matches(p, pattern)));
             if (known is null || known.Rating == BloatRating.Keep && !p.IsStoreApp) continue;

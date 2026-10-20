@@ -37,8 +37,14 @@ public sealed class InstalledProgram
     public bool HasSuggestion => Suggestion.Length > 0;
     /// <summary>A folder with a program that was never installed (RegistryKey is "portable:&lt;folder&gt;").</summary>
     public bool IsPortable { get; init; }
+    /// <summary>A game from a launcher that doesn't register it with Windows (e.g. "Epic Games"); RegistryKey is "epic:&lt;AppName&gt;".</summary>
+    public string Launcher { get; init; } = "";
+    public bool IsLauncherGame => Launcher.Length > 0;
+    /// <summary>Launcher games: the launcher's file for this game (gone once the launcher has uninstalled it).</summary>
+    public string LauncherManifest { get; init; } = "";
     public string StatusText => IsOrphan ? OrphanReason : Suggestion.Length > 0 ? "Tip: " + Suggestion
-        : IsStoreApp ? "Microsoft Store app" : IsPortable ? "Portable – not installed, just a folder" : "";
+        : IsStoreApp ? "Microsoft Store app" : IsPortable ? "Portable – not installed, just a folder"
+        : IsLauncherGame ? $"{Launcher} game – uninstalled in the {Launcher} launcher" : "";
 
     /// <summary>Ticked in the program list for a bulk uninstall.</summary>
     public bool IsChecked { get; set; }

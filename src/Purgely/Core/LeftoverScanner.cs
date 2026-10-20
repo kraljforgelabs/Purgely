@@ -104,7 +104,11 @@ public sealed partial class LeftoverScanner
                                !_userData.Contains(item.Location) &&
                                // A portable program keeps its data inside its own folder (KeePass database, portable browser profile).
                                !(item.Kind == LeftoverKind.Folder &&
-                                 _t.UninstallKey?.StartsWith("portable:", StringComparison.OrdinalIgnoreCase) == true);
+                                 _t.UninstallKey?.StartsWith("portable:", StringComparison.OrdinalIgnoreCase) == true) &&
+                               // A launcher game's own folder is only in the list when its launcher couldn't remove it.
+                               !(item.Kind == LeftoverKind.Folder && _t.InstallLocation.Length > 3 &&
+                                 _t.UninstallKey?.StartsWith("epic:", StringComparison.OrdinalIgnoreCase) == true &&
+                                 PathUtil.SameOrUnder(PathUtil.Normalize(item.Location), PathUtil.Normalize(_t.InstallLocation)));
             item.IsChecked = item.Recommended;
             if (item.Score >= 25) item.SizeBytes = Sizes.Of(item);
         }

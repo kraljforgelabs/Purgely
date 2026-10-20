@@ -523,3 +523,40 @@ public class CatalogIdTests
     public void Chip_level_id_is_derived_only_from_board_specific_ids(string id, string expected) =>
         Assert.Equal(expected, DriverCatalog.BaseId(id));
 }
+
+public class LauncherGameTests
+{
+    private const string Game = """
+        {"FormatVersion":0,"DisplayName":"Hogwarts Legacy","AppName":"fa4240e57a3c46b39f169041b7811293",
+         "MainGameAppName":"fa4240e57a3c46b39f169041b7811293","InstallLocation":"D:/Igre/legacy/HogwartsLegacy",
+         "LaunchExecutable":"HogwartsLegacy.exe","AppVersionString":"1.0.1","InstallSize":85899345920}
+        """;
+
+    [Fact]
+    public void Epic_game_is_read_from_its_manifest()
+    {
+        var game = LauncherGames.ReadEpicManifest(Game, @"C:\m\x.item", checkFolder: false)!;
+        Assert.Equal("Hogwarts Legacy", game.Name);
+        Assert.Equal(@"D:\Igre\legacy\HogwartsLegacy", game.InstallLocation);
+        Assert.Equal("epic:fa4240e57a3c46b39f169041b7811293", game.RegistryKey);
+        Assert.True(game.IsLauncherGame);
+        Assert.Equal(85899345920 / 1024, game.SizeKb);
+    }
+
+    [Theory]
+    [InlineData("""{"DisplayName":"DLC","AppName":"dlc1","MainGameAppName":"game1","InstallLocation":"D:/Games/X"}""")]
+    [InlineData("""{"DisplayName":"No folder","AppName":"a","InstallLocation":""}""")]
+    [InlineData("""{"DisplayName":"Relative","AppName":"a","InstallLocation":"Games/X"}""")]
+    [InlineData("""{"DisplayName":"Root","AppName":"a","InstallLocation":"D:/"}""")]
+    [InlineData("""{"DisplayName":"Climb","AppName":"a","InstallLocation":"D:/Games/../Windows"}""")]
+    [InlineData("""{"DisplayName":"No id","InstallLocation":"D:/Games/X"}""")]
+    public void Dlc_and_unsafe_manifests_are_not_listed(string json) =>
+        Assert.Null(LauncherGames.ReadEpicManifest(json, @"C:\m\x.item", checkFolder: false));
+
+    [Fact]
+    public void Launcher_executable_outside_the_game_folder_is_never_used_as_icon()
+    {
+        var json = Game.Replace("HogwartsLegacy.exe", "../../Windows/evil.exe");
+        Assert.Equal("", LauncherGames.ReadEpicManifest(json, @"C:\m\x.item", checkFolder: false)!.DisplayIcon);
+    }
+}

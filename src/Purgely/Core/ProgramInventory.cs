@@ -34,6 +34,8 @@ public static partial class ProgramInventory
         programs.AddRange(Timeline.RecentlyRemoved().Where(r => !names.Contains(r.Name)));
         // Microsoft Store apps come last and stay out of the Timeline sync (they update themselves constantly).
         try { programs.AddRange(StoreApps.List().Where(a => !names.Contains(a.Name))); } catch (Exception) { }
+        // Games of launchers that don't register them with Windows (Epic Games).
+        try { programs.AddRange(LauncherGames.List().Where(a => !names.Contains(a.Name))); } catch (Exception) { }
         // Portable programs (folders with an .exe that Windows doesn't list) – offered, never pre-selected.
         try { programs.AddRange(PortableApps.Find(programs).Where(a => !names.Contains(a.Name))); } catch (Exception) { }
         return programs.OrderBy(p => p.Name, StringComparer.CurrentCultureIgnoreCase).ToList();

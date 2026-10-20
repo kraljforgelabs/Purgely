@@ -41,6 +41,8 @@ https://kraljforgelabs.github.io/Purgely/
   that point into a removed program's folder
 - **Repair** *(0.9.1)* – devices that don't work, devices that aren't connected any more, no sound, no internet, and
   missing Microsoft runtimes ("a DLL is missing") – only with Windows' own tools and official packages
+- **Epic Games games** *(0.9.2)* – listed with the other programs; uninstalled in the Epic launcher, then the leftovers
+  are scanned
 - **Settings** *(0.9)* – update check (once a day, nothing downloaded by itself), Timeline history, Undo storage,
   welcome tour, and **Remove Purgely and its data**
 - **Open knowledge base** – `src/Purgely/Knowledge/*.json`, see `CONTRIBUTING.md`

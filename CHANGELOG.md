@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.2 (beta) – 2026-10
+- **Epic Games games** are now in the program list. The Epic Games Launcher doesn't register its games with Windows,
+  so they were missing. Uninstall opens the launcher (as you, not as administrator), and when it has removed the game,
+  Purgely scans for what was left behind (saves, settings, shader cache)
+
 ## 0.9.1 (beta) – 2026-10
 - **Repair** page (button on the home screen): devices that don't work explained in plain words (restart, reinstall,
   turn on, look for a driver); devices Windows remembers but that aren't connected (offered, never ticked); restart

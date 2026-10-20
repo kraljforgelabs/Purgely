@@ -477,6 +477,12 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (p.IsLauncherGame)
+        {
+            await UninstallLauncherGameAsync(p);
+            return;
+        }
+
         if (p.IsPortable)
         {
             if (Dialog.Show(this, $"\"{p.Name}\" is a portable program – it was never installed, it is just a folder:\n\n{p.InstallLocation}\n\n" +
@@ -548,6 +554,42 @@ public partial class MainWindow : Window
             }
         }
         await ScanAsync(p, afterUninstall: true);
+    }
+
+    /// <summary>
+    /// A game the Epic Games Launcher installed: Windows doesn't list it, so it is uninstalled in the launcher (which then
+    /// knows it is gone). Purgely opens the launcher, waits for the user, and scans for what the game left behind.
+    /// </summary>
+    private async Task UninstallLauncherGameAsync(InstalledProgram p)
+    {
+        var opened = LauncherGames.OpenLauncher(p);
+        var steps = $"1. Click Library.\n2. Click ⋯ next to {p.Name} and choose Uninstall.\n\n";
+        var text = opened
+            ? $"\"{p.Name}\" was installed by the {p.Launcher} launcher, so it is uninstalled there – that way the launcher knows it is gone.\n\n" +
+              $"Purgely just opened the {p.Launcher} launcher:\n{steps}" +
+              "Click OK when the launcher has FINISHED. Purgely then looks for what the game left behind (saves, settings, shader cache)."
+            : $"\"{p.Name}\" was installed by the {p.Launcher} launcher, but Purgely can't find the launcher in Program Files.\n\n" +
+              $"If it is installed somewhere else, open it yourself and uninstall the game there:\n{steps}" +
+              "Then click OK. If the launcher is gone from this PC, click OK too – Purgely then offers the game folder in the " +
+              "leftover scan, like a portable program. You review the list first, and everything goes to the Undo center.";
+        if (Dialog.Show(this, text, $"Uninstall in {p.Launcher}", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK)
+            return;
+
+        if (LauncherGames.StillInstalled(p) && opened)
+        {
+            Dialog.Show(this, $"{p.Launcher} still lists \"{p.Name}\", so nothing was removed.\n\n" +
+                              "If the launcher is still uninstalling, wait until it has finished and click Uninstall again.",
+                "Still installed", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        if (!LauncherGames.StillInstalled(p))
+            Timeline.Log(TimelineEventType.Uninstalled, p.Name, $"Uninstalled in the {p.Launcher} launcher");
+        await LoadProgramsAsync();
+        await RunScanAsync(p.Name, ScanTarget.FromProgram(p, stillInstalled: false),
+            LauncherGames.StillInstalled(p)
+                ? $"The {p.Launcher} launcher wasn't found, so the game folder itself is in this list. Review it before removing – everything goes to an Undo package first."
+                : null);
+        Timeline.MarkRemovedHandled(p.RegistryKey);
     }
 
     /// <summary>Shows the related programs, uninstalls the chosen ones one by one, and returns them.</summary>
