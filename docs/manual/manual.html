@@ -55,7 +55,7 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
       <span class="pill">Free</span><span class="pill">No ads</span><span class="pill">Open source (MIT)</span><span class="pill">Portable – no installation</span><span class="pill">Undo for everything</span>
     </div>
   </div>
-  <div class="foot">Version 0.9 (beta) · KraljForge Labs – Practical tools forged for the future · github.com/kraljforgelabs/Purgely</div>
+  <div class="foot">Version 0.9.1 (beta) · KraljForge Labs – Practical tools forged for the future · github.com/kraljforgelabs/Purgely</div>
 </div>
 
 <h2 style="margin-top:0">Contents</h2>
@@ -193,9 +193,19 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
   <li><b>Check for newer drivers</b> looks each device up by its hardware ID in Windows Update and Microsoft's Update Catalog.</li>
   <li>A driver is installed only when it is <b>signed by Microsoft (WHQL)</b>, its checksum matches and it lists your exact device. A restore point is made first, and the Undo center can remove the new driver again.</li>
   <li>The <b>maker's driver page</b> button opens the support page of your PC's brand (or your motherboard). <b>Install downloaded driver</b> checks the digital signature of a file you downloaded there.</li>
-  <li>Graphics cards: NVIDIA, AMD and Intel's own apps are the best source – Purgely tells you when they are installed.</li>
+  <li>Graphics cards: NVIDIA, AMD and Intel's own apps are the best source – Purgely tells you when they are installed. Intel and NVIDIA publish some drivers (for example Intel Management Engine) in their apps weeks before Microsoft's catalog; those devices say "Intel DSA / NVIDIA app may have a newer one".</li>
+  <li>Devices that are not plugged in (for example a USB network adapter) are skipped – a driver is only installed for a device Purgely can check.</li>
 </ul>
 <div class="box safe"><b>Never from driver websites</b>Purgely never uses third-party "driver updater" sites. Firmware and BIOS are never touched.</div>
+
+<h3>Repair</h3>
+<p>The <b>Repair</b> button on the home screen fixes common problems with Windows' own tools:</p>
+<ul>
+  <li><b>Devices that don't work</b> – what Windows' problem code means in plain words, and <b>Restart device</b>, <b>Reinstall device</b>, <b>Turn on</b> or <b>Look for a driver</b>. Disk controllers, processors and other parts Windows needs to start are never reinstalled.</li>
+  <li><b>Devices that aren't connected</b> – old USB sticks, mice, phones and adapters Windows still remembers. Nothing is ticked for you; a forgotten device is set up again when you plug it in.</li>
+  <li><b>No sound</b> – restarts Windows Audio. <b>No internet</b> – a test that shows where the connection breaks, a refresh, and a full network reset as the last resort.</li>
+  <li><b>A DLL is missing</b> – installs the official Microsoft packages (Visual C++, DirectX, .NET) instead of single DLL files from websites.</li>
+</ul>
 
 <h2 style="margin-top:14pt"><span class="num">12</span>Startup</h2>
 <p>Everything that starts with Windows, grouped by program, with its impact and whether it is safe to turn off. <b>Turn off</b> never deletes anything. <b>Start 2 min later</b> keeps a program but lets Windows get ready first. <b>Keep off</b> turns it off again if the program switches itself back on. <b>Optimize</b> turns off only what Purgely's knowledge base marks as safe – and <b>Undo optimize</b> reverses it. The page shows your boot time before and after.</p>

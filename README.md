@@ -39,24 +39,21 @@ https://kraljforgelabs.github.io/Purgely/
 - **Startup** manager and **Undo center** for everything Purgely changed
 - **Leftover registrations** *(0.9)* – right-click menu entries, file types, Win+R paths, firewall rules and PATH entries
   that point into a removed program's folder
+- **Repair** *(0.9.1)* – devices that don't work, devices that aren't connected any more, no sound, no internet, and
+  missing Microsoft runtimes ("a DLL is missing") – only with Windows' own tools and official packages
 - **Settings** *(0.9)* – update check (once a day, nothing downloaded by itself), Timeline history, Undo storage,
   welcome tour, and **Remove Purgely and its data**
 - **Open knowledge base** – `src/Purgely/Knowledge/*.json`, see `CONTRIBUTING.md`
 
-## Code signing policy
-Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by
-[SignPath Foundation](https://signpath.org/) – applied for; until approved, releases are unsigned (check them with
-`SHA256SUMS.txt`).
-
-- Committers and reviewers: [KraljForge Labs](https://github.com/kraljforgelabs)
-- Approvers: [KraljForge Labs](https://github.com/kraljforgelabs)
-- Only builds made by GitHub Actions from this repository are signed – never a build made on someone's PC.
-- Privacy: Purgely sends nothing about you; see [PRIVACY.md](PRIVACY.md).
+## Code signing
+Releases are **not code-signed yet**, so Windows SmartScreen may warn about an unknown app. Every release is built by
+GitHub Actions from this repository – never on someone's PC – and comes with `SHA256SUMS.txt`, so you can check that
+the file you downloaded is exactly the one GitHub built (`Get-FileHash .\Purgely.exe` in PowerShell).
 
 ## Trust
 Releases are built by GitHub Actions from this source (`.github/workflows/release.yml`) with SHA-256 checksums – nobody
-builds them by hand. Code signing through the SignPath Foundation is being applied for (`SIGNING.md`); a winget listing
-follows with 1.0 (`packaging/winget`).
+builds them by hand. Code signing is planned once the project is better known (`SIGNING.md`); a winget listing follows with 1.0
+(`packaging/winget`).
 
 Quality: every risky change goes through the council (`D:\AI\council`) and `preflight.bat`.
 

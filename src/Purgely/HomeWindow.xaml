@@ -189,6 +189,14 @@
                         <TextBlock Text="Move to new PC" Margin="8,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
+                <Button Click="Repair_Click" Padding="12,6" Margin="0,0,8,0"
+                        ToolTip="Fix devices that don't work, no sound, no internet, missing DLLs"
+                        AutomationProperties.Name="Repair">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontFamily="{StaticResource IconFont}" Text="&#xE90F;" FontSize="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="Repair" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
                 <Button x:Name="RefreshButton" Click="Refresh_Click" Padding="12,6"
                         ToolTip="Count everything again (F5)" AutomationProperties.Name="Refresh all summaries">
                     <StackPanel Orientation="Horizontal">

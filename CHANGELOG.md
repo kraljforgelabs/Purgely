@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1 (beta) – 2026-10
+- **Repair** page (button on the home screen): devices that don't work explained in plain words (restart, reinstall,
+  turn on, look for a driver); devices Windows remembers but that aren't connected (offered, never ticked); restart
+  Windows Audio; internet test, refresh and reset; missing Microsoft runtimes (Visual C++, DirectX, .NET) installed
+  with Windows Package Manager instead of single DLLs from websites
+- Driver updates: busy chips with hundreds of catalog packages (e.g. Intel) are now also searched newest-first, so a
+  new driver isn't hidden on page 40; devices whose maker app is installed (Intel DSA, NVIDIA app) say so
+- Releases are not code-signed (the SignPath Foundation wants a better-known project first) – checksums as before
+
 ## 0.9 (public beta) – 2026-10
 - **Settings** page (gear button on the home screen): update check, Timeline history length, Undo storage, help links
 - **New version notice** – once a day Purgely asks GitHub for a newer release and shows a notice; nothing is downloaded

@@ -15,6 +15,8 @@ git config user.email "kraljforgelabs@gmail.com"
 rem Safety: never publish private records or anything that looks like a secret.
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\secret-scan.ps1" || (echo. & echo Publishing stopped - see above. & pause & exit /b 1)
 
+rem Build leftovers that slipped in before .gitignore listed them.
+git rm --cached -q --ignore-unmatch "src/Purgely/*_wpftmp.csproj" >nul 2>&1
 git add -A
 for /f "tokens=3 delims=<>" %%v in ('findstr /c:"<Version>" src\Purgely\Purgely.csproj') do set VER=%%v
 set /p MSG=Short description of the changes (Enter = "Purgely %VER%"): 

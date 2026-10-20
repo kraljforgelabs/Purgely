@@ -3,6 +3,10 @@
 Unsigned programs trigger Windows SmartScreen ("Windows protected your PC"). Purgely is open source, so it can be
 signed for free:
 
+**Status (2026-10-20):** the SignPath Foundation declined the first application – the project is too new (they look
+for stars, forks, contributors and outside articles or discussions). Reapply once Purgely is better known. Options until
+then: stay unsigned with SHA-256 checksums (current), or a low-cost Certum open-source certificate.
+
 1. **SignPath Foundation** (free code signing for open-source projects): apply at https://signpath.org with the
    repository https://github.com/kraljforgelabs/Purgely. Requirements: OSI license (MIT ✓), public repository,
    builds made by CI (✓ `.github/workflows/release.yml`), no malware or bundled offers (✓).

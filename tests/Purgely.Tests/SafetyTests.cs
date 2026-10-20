@@ -479,3 +479,47 @@ public class NewLeftoverKindTests
     public void Registration_parents_are_never_deletable(string key) =>
         Assert.True(Cleaner.IsCriticalKey(key));
 }
+
+public class RepairTests
+{
+    [Theory]
+    [InlineData(28, "No driver")]
+    [InlineData(22, "turned off")]
+    [InlineData(43, "stopped the device")]
+    [InlineData(999, "problem code 999")]
+    public void Problem_codes_are_explained_in_plain_words(int code, string expected) =>
+        Assert.Contains(expected, Repair.Explain(code).Meaning, StringComparison.OrdinalIgnoreCase);
+
+    [Theory]
+    [InlineData("SCSIAdapter")]
+    [InlineData("System")]
+    [InlineData("Display")]
+    [InlineData("DiskDrive")]
+    public void Boot_critical_devices_are_never_restarted_or_reinstalled(string cls)
+    {
+        var device = new HardwareDevice { DeviceId = @"PCI\VEN_1234&DEV_5678\1", Class = cls, Name = "x", ProblemCode = 10 };
+        var problem = Repair.FindProblems(new[] { device }).Single();
+        Assert.False(problem.CanRestart);
+        Assert.False(problem.CanReinstall);
+    }
+
+    [Fact]
+    public void Usb_controllers_are_never_reinstalled()
+    {
+        var device = new HardwareDevice { DeviceId = @"PCI\VEN_8086&DEV_43ED\3&11583659&0&A0", Class = "USB", Name = "USB controller", ProblemCode = 10 };
+        Assert.False(Repair.FindProblems(new[] { device }).Single().CanReinstall);
+    }
+}
+
+public class CatalogIdTests
+{
+    [Theory]
+    [InlineData(@"PCI\VEN_8086&DEV_9A60&SUBSYS_14771025&REV_01", @"PCI\VEN_8086&DEV_9A60")]
+    [InlineData(@"PCI\VEN_8086&DEV_9A60&SUBSYS_14771025", @"PCI\VEN_8086&DEV_9A60")]
+    [InlineData(@"HDAUDIO\FUNC_01&VEN_10EC&DEV_0295&SUBSYS_10251477&REV_1000", @"HDAUDIO\FUNC_01&VEN_10EC&DEV_0295")]
+    [InlineData(@"PCI\VEN_8086&DEV_9A60&CC_030000", "")]
+    [InlineData(@"PCI\VEN_8086&DEV_9A60", "")]
+    [InlineData(@"USB\VID_8087&PID_0026&REV_0002", "")]
+    public void Chip_level_id_is_derived_only_from_board_specific_ids(string id, string expected) =>
+        Assert.Equal(expected, DriverCatalog.BaseId(id));
+}

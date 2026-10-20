@@ -59,4 +59,7 @@ Purgely deletes and changes things on real Windows PCs. A wrong delete can break
 - PATH: remove one entry, keep the value type (REG_EXPAND_SZ) and every other entry unexpanded; Undo adds the entry back.
 - The update check only reads GitHub's public release list, at most once a day, can be turned off, and never downloads
   or runs anything. Only URLs under the project's own releases page are opened.
+- Repair: never restart/reinstall/remove devices of boot-critical classes (System, Processor, disk controllers, Display,
+  Volume, Firmware…); "devices that aren't connected" are leaf classes only and never pre-ticked; runtimes only from
+  winget's official Microsoft packages – never single DLL downloads.
 - "Remove Purgely" deletes only folders with Purgely's exact names (never through a link) and only `Purgely.exe` itself.

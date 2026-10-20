@@ -23,6 +23,8 @@ other PC makers, other programs. Everything you report makes 1.0 safer for every
 6. **Program updates** and **Driver updates** – do they find what other tools find?
 7. **Undo center** – restore one package. Did everything come back?
 8. **Settings** – *Check now* for a new version, the welcome tour.
+9. **Repair** – does it list devices with problems correctly? "Find them" under devices that aren't connected
+   (just look – forgetting is optional). "Test the connection".
 
 ## What to report
 Open an issue with **Report a problem** (Settings) or at
@@ -35,7 +37,7 @@ https://github.com/kraljforgelabs/Purgely/issues/new/choose and include:
 Security problems: please report them privately – see [SECURITY.md](SECURITY.md).
 
 ## Known limits of the beta
-- Not code-signed yet (applied for at the SignPath Foundation).
+- Not code-signed yet – check the download with `SHA256SUMS.txt` (see Before you start).
 - English only.
 - If you start Purgely from a standard account with another administrator's password, your own AppData and settings
   can't be cleaned from there – the home screen tells you.

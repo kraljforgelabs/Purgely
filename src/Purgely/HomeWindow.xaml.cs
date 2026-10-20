@@ -410,6 +410,8 @@ public partial class HomeWindow : Window
 
     private void Move_Click(object sender, RoutedEventArgs e) => OpenPage(new MoveWindow());
 
+    private void Repair_Click(object sender, RoutedEventArgs e) => OpenPage(new RepairWindow());
+
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         var page = new SettingsWindow();

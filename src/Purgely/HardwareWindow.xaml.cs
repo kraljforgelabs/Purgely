@@ -17,6 +17,8 @@ public partial class HardwareWindow : Window
     private PcSummary? _pc;
     private ObservableCollection<HardwareDevice> _devices = new();
     private ICollectionView? _view;
+    /// <summary>Makers whose own update app is installed ("Intel", "NVIDIA", "AMD").</summary>
+    private readonly HashSet<string> _makerAppVendors = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Official update apps of graphics/chip makers: (name in Programs, label, official page).</summary>
     private static readonly (string Match, string Label, string Url)[] MakerApps =
@@ -54,17 +56,27 @@ public partial class HardwareWindow : Window
             MakerButtonText.Text = $"{FirstWord(pc.DriverMaker)} driver page";
             MakerButton.Visibility = Hardware.MakerSupportUrl(pc) is not null ? Visibility.Visible : Visibility.Collapsed;
             BusyPanel.Visibility = Visibility.Collapsed;
-            CheckButton.IsEnabled = true;
             var problems = devices.Count(d => d.HasProblem);
             SummaryText.Text = $"{devices.Count} devices ({devices.Count(d => d.IsInbox && !d.IsGeneric)} with Windows' built-in drivers, hidden)" +
                                (problems > 0 ? $"  •  {problems} not working" : "");
             await ShowMakerAppsAsync();
+            CheckButton.IsEnabled = true; // after the maker apps are known, so their "may have a newer one" notes appear
         }
         catch (Exception ex)
         {
             BusyText.Text = $"Could not read the hardware list: {ex.Message}";
             BusyBar.Visibility = Visibility.Collapsed;
         }
+    }
+
+    /// <summary>The installed maker app that also updates this device's driver, if any.</summary>
+    private string? MakerAppFor(HardwareDevice device)
+    {
+        foreach (var vendor in _makerAppVendors)
+            if (device.DriverProvider.Contains(vendor, StringComparison.OrdinalIgnoreCase) ||
+                device.Maker.Contains(vendor, StringComparison.OrdinalIgnoreCase))
+                return vendor switch { "Intel" => "Intel DSA", "NVIDIA" => "NVIDIA app", _ => "AMD Software" };
+        return null;
     }
 
     private static string FirstWord(string s) => s.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? s;
@@ -79,7 +91,11 @@ public partial class HardwareWindow : Window
             if (!gpu.Contains(vendor, StringComparison.OrdinalIgnoreCase) && vendor != "Intel") continue;
             var app = MakerApps.FirstOrDefault(a => a.Label.StartsWith(vendor, StringComparison.OrdinalIgnoreCase) &&
                 programs.Any(p => p.Name.Contains(a.Match, StringComparison.OrdinalIgnoreCase)));
-            if (app.Label is not null) lines.Add($"{app.Label} is installed – it gets {vendor} drivers straight from {vendor}.");
+            if (app.Label is not null)
+            {
+                _makerAppVendors.Add(vendor);
+                lines.Add($"{app.Label} is installed – it gets {vendor} drivers straight from {vendor}, often weeks before Microsoft's catalog.");
+            }
             else if (gpu.Contains(vendor, StringComparison.OrdinalIgnoreCase))
                 lines.Add($"For the newest {vendor} graphics driver, {vendor}'s own app is best: {MakerApps.First(a => a.Label.StartsWith(vendor)).Url}");
         }
@@ -152,6 +168,8 @@ public partial class HardwareWindow : Window
                 {
                     Interlocked.Increment(ref upToDate);
                     device.Status = lookup.NewestSeen.Length > 0 ? $"Up to date (catalog: {lookup.NewestSeen})" : "Up to date";
+                    // The maker publishes in its own app first (Intel Management Engine, NVIDIA platform drivers…).
+                    if (MakerAppFor(device) is { } makerApp) device.Status += $" · {makerApp} may have a newer one";
                 }
                 else device.Status = "Newer driver found";
                 if (lookup.Driver is { } found)

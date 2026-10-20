@@ -22,6 +22,7 @@
   "Core\\FileMover.cs|Recycle/DeleteBestEffort": 1,
   "Core\\WingetUpdates.cs|Process.Kill": 1,
   "Core\\AppSettings.cs|File.Move": 1,
+  "Core\\Repair.cs|pnputil (devices)": 4,
   "Core\\Timeline.cs|File.Move": 1,
   "Core\\UndoStore.cs|File.Move": 1,
   "Core\\UndoStore.cs|DeleteValue": 1,

@@ -1,0 +1,200 @@
+<Window x:Class="Purgely.RepairWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Purgely – Repair" Height="760" Width="1150" MinHeight="500" MinWidth="800">
+    <Window.Resources>
+        <Style x:Key="SettingText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+        <Style x:Key="SectionIcon" TargetType="TextBlock" BasedOn="{StaticResource IconText}">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Margin" Value="0,2,14,0"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        </Style>
+        <Style x:Key="StatusText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,16">
+            <Button x:Name="HomeButton" DockPanel.Dock="Left" Visibility="Collapsed" Padding="10,8" Margin="0,4,16,0"
+                    VerticalAlignment="Top" ToolTip="Back to the home screen (Esc)" AutomationProperties.Name="Back to home">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE72B;"/>
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Home"/>
+                </StackPanel>
+            </Button>
+            <StackPanel>
+                <TextBlock Text="Repair" Style="{StaticResource PageTitle}"/>
+                <TextBlock Style="{StaticResource PageSubtitle}"
+                           Text="Fix common problems with Windows' own tools: devices that don't work, devices Windows still remembers, no sound, no internet, missing runtimes. Nothing is downloaded from third-party sites."/>
+            </StackPanel>
+        </DockPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+            <StackPanel Margin="71,0,8,0" MaxWidth="1000" HorizontalAlignment="Left">
+
+                <!-- ============ Devices that don't work ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="18,16">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SectionIcon}" Text="&#xE7BA;"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="Devices that don't work"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Devices Windows reports a problem with (a yellow mark in Device Manager), explained in plain words."/>
+                            <TextBlock x:Name="ProblemsStatus" Style="{StaticResource StatusText}" Text="Looking at your devices…"/>
+                            <ItemsControl x:Name="ProblemsList" Margin="0,10,0,0" Focusable="False">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="6" Padding="14,10" Margin="0,0,0,8" BorderThickness="1"
+                                                Background="{StaticResource CardBrush}" BorderBrush="{StaticResource AttentionBorderBrush}">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource BodyStrongText}" Text="{Binding Name}"/>
+                                                <TextBlock Style="{StaticResource SettingText}" Text="{Binding Meaning}"/>
+                                                <TextBlock Style="{StaticResource SettingText}" Text="{Binding Advice}" FontStyle="Italic"/>
+                                                <WrapPanel Margin="0,8,0,0">
+                                                    <Button Padding="12,5" Margin="0,0,8,0" Content="Restart device" Tag="{Binding}"
+                                                            Click="RestartDevice_Click" Visibility="{Binding RestartVisibility}"/>
+                                                    <Button Padding="12,5" Margin="0,0,8,0" Content="Reinstall device" Tag="{Binding}"
+                                                            Click="ReinstallDevice_Click" Visibility="{Binding ReinstallVisibility}"/>
+                                                    <Button Padding="12,5" Margin="0,0,8,0" Content="Turn on" Tag="{Binding}"
+                                                            Click="EnableDevice_Click" Visibility="{Binding EnableVisibility}"/>
+                                                    <Button Padding="12,5" Margin="0,0,8,0" Content="Look for a driver" Tag="{Binding}"
+                                                            Click="FindDriver_Click" Visibility="{Binding DriverVisibility}"/>
+                                                </WrapPanel>
+                                                <TextBlock Style="{StaticResource StatusText}" Text="{Binding Status}"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- ============ Devices that aren't connected ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="18,16">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SectionIcon}" Text="&#xE88E;"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="Devices that aren't connected"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Windows remembers every USB stick, mouse, phone and adapter it ever saw. Forgetting the ones you no longer use tidies Device Manager. Nothing is ticked for you – if you plug a forgotten device in again, Windows simply sets it up again."/>
+                            <WrapPanel Margin="0,10,0,0">
+                                <Button x:Name="FindGhostsButton" Padding="12,5" Margin="0,0,8,0" Click="FindGhosts_Click" Content="Find them"/>
+                                <Button x:Name="SelectAllGhostsButton" Padding="12,5" Margin="0,0,8,0" Click="SelectAllGhosts_Click"
+                                        Content="Tick all" Visibility="Collapsed"/>
+                                <Button x:Name="ForgetGhostsButton" Click="ForgetGhosts_Click" Padding="12,5" Content="Forget ticked (0)"
+                                        Visibility="Collapsed" IsEnabled="False"/>
+                            </WrapPanel>
+                            <TextBlock x:Name="GhostsStatus" Style="{StaticResource StatusText}" Visibility="Collapsed"/>
+                            <Border x:Name="GhostsCard" Style="{StaticResource ListCard}" Margin="0,10,0,0" MaxHeight="340" Visibility="Collapsed">
+                                <DataGrid x:Name="GhostsGrid" AutoGenerateColumns="False" HeadersVisibility="Column" GridLinesVisibility="None"
+                                          Background="Transparent" BorderThickness="0" MinRowHeight="32" CanUserAddRows="False"
+                                          SelectionMode="Extended" ColumnHeaderStyle="{StaticResource GridHeader}">
+                                    <DataGrid.Columns>
+                                        <DataGridTemplateColumn Width="44">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" Click="GhostCheck_Click"
+                                                              HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="0"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Device" Binding="{Binding Name}" Width="2*" MinWidth="200" IsReadOnly="True"
+                                                            ElementStyle="{StaticResource GridText}"/>
+                                        <DataGridTextColumn Header="Type" Binding="{Binding Class}" Width="130" IsReadOnly="True"
+                                                            ElementStyle="{StaticResource GridText}"/>
+                                        <DataGridTextColumn Header="Maker" Binding="{Binding Maker}" Width="*" MinWidth="120" IsReadOnly="True"
+                                                            ElementStyle="{StaticResource GridText}"/>
+                                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="130" IsReadOnly="True"
+                                                            ElementStyle="{StaticResource GridText}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- ============ Sound ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="18,16">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SectionIcon}" Text="&#xE767;"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="No sound"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Restarting Windows Audio fixes most cases of sound that stopped after sleep or a driver hiccup. Also check that the right speakers or headphones are chosen in Sound settings."/>
+                            <WrapPanel Margin="0,10,0,0">
+                                <Button x:Name="AudioButton" Padding="12,5" Margin="0,0,8,0" Click="RestartAudio_Click" Content="Restart Windows Audio"/>
+                                <Button Padding="12,5" Margin="0,0,8,0" Click="SoundSettings_Click" Content="Open Sound settings"/>
+                            </WrapPanel>
+                            <TextBlock x:Name="AudioStatus" Style="{StaticResource StatusText}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- ============ Internet ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="18,16">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SectionIcon}" Text="&#xE774;"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="No internet"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Test finds where the connection breaks. Refresh clears the name cache and gets a new address (the connection drops for a few seconds). Reset is the last resort: it puts Windows' network settings back to default and needs a restart."/>
+                            <WrapPanel Margin="0,10,0,0">
+                                <Button x:Name="TestNetButton" Padding="12,5" Margin="0,0,8,0" Click="TestNetwork_Click" Content="Test the connection"/>
+                                <Button x:Name="RefreshNetButton" Padding="12,5" Margin="0,0,8,0" Click="RefreshNetwork_Click" Content="Refresh the connection" ToolTip="All connections drop for a few seconds – VPN and remote desktop too"/>
+                                <Button x:Name="ResetNetButton" Padding="12,5" Margin="0,0,8,0" Click="ResetNetwork_Click" Content="Reset network settings…"/>
+                            </WrapPanel>
+                            <TextBlock x:Name="NetStatus" Style="{StaticResource StatusText}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- ============ Runtimes ============ -->
+                <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="18,16">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SectionIcon}" Text="&#xE7FC;"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="Programs or games complain about a missing DLL"/>
+                            <TextBlock Style="{StaticResource SettingText}"
+                                       Text="Never download single DLL files from websites – they are often outdated or infected. Missing DLLs almost always come from these official Microsoft packages, installed here with Windows Package Manager."/>
+                            <ItemsControl x:Name="RuntimesList" Margin="0,10,0,0" Focusable="False">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="6" Padding="14,10" Margin="0,0,0,6" BorderThickness="1"
+                                                Background="{StaticResource CardBrush}" BorderBrush="{StaticResource CardBorderBrush}">
+                                            <DockPanel>
+                                                <Button DockPanel.Dock="Right" Padding="12,5" VerticalAlignment="Center" Content="Install"
+                                                        Tag="{Binding}" Click="InstallRuntime_Click" Visibility="{Binding InstallVisibility}"/>
+                                                <StackPanel>
+                                                    <TextBlock Style="{StaticResource BodyStrongText}" Text="{Binding Name}"/>
+                                                    <TextBlock Style="{StaticResource SettingText}" Text="{Binding Why}"/>
+                                                    <TextBlock Style="{StaticResource StatusText}" Text="{Binding Status}" Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </DockPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

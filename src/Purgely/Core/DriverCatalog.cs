@@ -64,6 +64,11 @@ public static partial class DriverCatalog
             var noRev = Regex.Replace(id, @"&REV_[0-9A-Fa-f]+", "", RegexOptions.IgnoreCase);
             if (!noRev.Equals(id, StringComparison.OrdinalIgnoreCase)) ids.Add(noRev);
         }
+        // The chip itself ("PCI\VEN_8086&DEV_9A60", without the PC maker's board ID): Intel, NVIDIA and AMD packages
+        // usually list only that – the board-specific IDs above then find nothing ("Not in the catalog").
+        ids.AddRange(device.HardwareIds.Select(BaseId).Where(b => b.Length > 0));
+        // Class-code IDs ("&CC_0300") match whole device families – last.
+        ids = ids.OrderBy(i => i.Contains("&CC_", StringComparison.OrdinalIgnoreCase)).ToList();
         foreach (var id in ids)
         {
             if (id.Length < 8 || !seen.Add(id)) continue;
@@ -75,6 +80,16 @@ public static partial class DriverCatalog
                  !upper.StartsWith("ACPI\\VEN_PNP") && !upper.StartsWith("ACPI\\VEN_ACPI"));
             yield return (id, exact);
         }
+    }
+
+    /// <summary>"PCI\VEN_8086&DEV_9A60&SUBSYS_14771025&REV_01" → "PCI\VEN_8086&DEV_9A60" (the chip, as Windows' compatible ID).</summary>
+    public static string BaseId(string id)
+    {
+        if (id.Contains("&CC_", StringComparison.OrdinalIgnoreCase)) return "";
+        var b = Regex.Replace(id.Trim(), @"&(SUBSYS|REV)_[0-9A-Fa-f]+", "", RegexOptions.IgnoreCase);
+        // Only chip-level IDs with both a vendor and a device part are useful (never just "PCI\VEN_8086").
+        return Regex.IsMatch(b, @"^(PCI|HDAUDIO\\FUNC_\d+)\\?.*VEN_[0-9A-F]{4}&DEV_[0-9A-F]{4}$", RegexOptions.IgnoreCase) &&
+               !b.Equals(id.Trim(), StringComparison.OrdinalIgnoreCase) ? b : "";
     }
 
     public static bool IsFirmwareTitle(string title, string classification = "") =>
@@ -89,11 +104,16 @@ public static partial class DriverCatalog
         var tried = 0;
         var hits = 0;
         Version? newestSeen = null;
-        foreach (var (id, exact) in SearchIds(device).Take(6))
+        var sortedOnce = false; // the extra "newest first" requests: for one ID per device, to stay gentle with the site
+        foreach (var (id, exact) in SearchIds(device).Take(8))
         {
             tried++;
             List<CatalogDriver> found;
-            try { found = await SearchAsync(id, exact, cancel).ConfigureAwait(false); }
+            try
+            {
+                found = await SearchAsync(id, exact, cancel, newestFirst: !sortedOnce).ConfigureAwait(false);
+                if (found.Count > 25) sortedOnce = true;
+            }
             catch (Exception) { failures++; continue; }
 
             var usable = found
@@ -131,9 +151,74 @@ public static partial class DriverCatalog
         return v.Length >= 3 && p.Length >= 3 && (v.Contains(p) || p.Contains(v));
     }
 
-    public static async Task<List<CatalogDriver>> SearchAsync(string hardwareId, bool exact, CancellationToken cancel = default)
+    /// <summary>Results per hardware ID for this Purgely session – a second check doesn't ask the catalog again.</summary>
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, List<CatalogDriver>> Cache =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    public static async Task<List<CatalogDriver>> SearchAsync(string hardwareId, bool exact, CancellationToken cancel = default,
+                                                              bool newestFirst = true)
     {
-        var html = await Http.GetStringAsync($"{Site}Search.aspx?q={Uri.EscapeDataString(hardwareId)}", cancel).ConfigureAwait(false);
+        var cacheKey = $"{hardwareId}|{exact}|{newestFirst}";
+        if (Cache.TryGetValue(cacheKey, out var cached)) return cached;
+        var found = await SearchUncachedAsync(hardwareId, exact, newestFirst, cancel).ConfigureAwait(false);
+        Cache[cacheKey] = found;
+        return found;
+    }
+
+    private static async Task<List<CatalogDriver>> SearchUncachedAsync(string hardwareId, bool exact, bool newestFirst, CancellationToken cancel)
+    {
+        var url = $"{Site}Search.aspx?q={Uri.EscapeDataString(hardwareId)}";
+        var html = await Http.GetStringAsync(url, cancel).ConfigureAwait(false);
+        var result = Parse(html, hardwareId, exact);
+
+        // The catalog shows only 25 results per page, oldest-first for busy chips (Intel lists 1000+ packages for one
+        // chipset ID) – the newest driver was simply never seen. When there is more than one page, ask the catalog to
+        // sort by "Last Updated" (the same click a person would make) and add those rows. Any problem → first page only.
+        if (newestFirst && MorePagesRegex().IsMatch(html))
+        {
+            try
+            {
+                var sorted = await PostBackAsync(url, html, SortByDateTarget, cancel).ConfigureAwait(false);
+                var rows = Parse(sorted, hardwareId, exact);
+                // A header click may sort ascending first – then click it once more for newest first.
+                if (rows.Count > 1 && rows[0].LastUpdated < rows[^1].LastUpdated)
+                    rows = Parse(await PostBackAsync(url, sorted, SortByDateTarget, cancel).ConfigureAwait(false), hardwareId, exact);
+                var known = new HashSet<string>(result.Select(r => r.UpdateId), StringComparer.OrdinalIgnoreCase);
+                result.AddRange(rows.Where(r => known.Add(r.UpdateId)));
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException) { /* first page is still a valid answer */ }
+        }
+        return result;
+    }
+
+    private const string SortByDateTarget = "ctl00$catalogBody$updateMatches$ctl02$dateComputedHeaderLink";
+
+    /// <summary>Repeats what a click on a catalog link does: posts the page's own form back with that link as the target.</summary>
+    private static async Task<string> PostBackAsync(string url, string page, string target, CancellationToken cancel)
+    {
+        var fields = new List<KeyValuePair<string, string>>();
+        foreach (Match input in HiddenInputRegex().Matches(page))
+        {
+            var tag = input.Value;
+            var name = NameAttributeRegex().Match(tag);
+            if (!name.Success) continue;
+            var value = ValueAttributeRegex().Match(tag);
+            var key = System.Net.WebUtility.HtmlDecode(name.Groups[1].Value);
+            if (key is "__EVENTTARGET" or "__EVENTARGUMENT") continue;
+            fields.Add(new(key, value.Success ? System.Net.WebUtility.HtmlDecode(value.Groups[1].Value) : ""));
+        }
+        if (!fields.Any(f => f.Key == "__VIEWSTATE")) throw new InvalidOperationException("no page state");
+        fields.Add(new("__EVENTTARGET", target));
+        fields.Add(new("__EVENTARGUMENT", ""));
+        using var content = new FormUrlEncodedContent(fields);
+        using var response = await Http.PostAsync(url, content, cancel).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync(cancel).ConfigureAwait(false);
+    }
+
+
+    private static List<CatalogDriver> Parse(string html, string hardwareId, bool exact)
+    {
         var result = new List<CatalogDriver>();
         foreach (Match row in RowRegex().Matches(html))
         {
@@ -328,7 +413,8 @@ public static partial class DriverCatalog
         { why = $"it is not made for this PC's architecture ({arch})"; return false; }
 
         var ids = device.HardwareIds.Where(id => id.Length >= 8)
-            .SelectMany(id => new[] { id, Regex.Replace(id, @"&REV_[0-9A-Fa-f]+", "", RegexOptions.IgnoreCase) })
+            .SelectMany(id => new[] { id, Regex.Replace(id, @"&REV_[0-9A-Fa-f]+", "", RegexOptions.IgnoreCase), BaseId(id) })
+            .Where(id => id.Length > 0)
             .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         if (!ids.Any(id => Regex.IsMatch(text, $@"^[^;\r\n]*,\s*{Regex.Escape(id)}\s*(,|$)", RegexOptions.Multiline | RegexOptions.IgnoreCase)))
         { why = "it does not list this device"; return false; }
@@ -349,6 +435,19 @@ public static partial class DriverCatalog
 
     [GeneratedRegex(@"<tr id=""([0-9a-fA-F-]{36})_R\d+""[^>]*>(.*?)</tr>", RegexOptions.Singleline)]
     private static partial Regex RowRegex();
+
+    [GeneratedRegex(@"(?<![\w-])name=""([^""]*)""", RegexOptions.IgnoreCase)]
+    private static partial Regex NameAttributeRegex();
+
+    [GeneratedRegex(@"(?<![\w-])value=""([^""]*)""", RegexOptions.IgnoreCase)]
+    private static partial Regex ValueAttributeRegex();
+
+    [GeneratedRegex(@"<input[^>]*type=""hidden""[^>]*>", RegexOptions.IgnoreCase)]
+    private static partial Regex HiddenInputRegex();
+
+    /// <summary>"(page 1 of 40)" – more than one page of results.</summary>
+    [GeneratedRegex(@"\(page\s+1\s+of\s+([2-9]|\d{2,})\)", RegexOptions.IgnoreCase)]
+    private static partial Regex MorePagesRegex();
 
     [GeneratedRegex(@"<td[^>]*>(.*?)</td>", RegexOptions.Singleline)]
     private static partial Regex CellRegex();

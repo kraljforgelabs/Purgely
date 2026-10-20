@@ -22,6 +22,7 @@ $patterns = [ordered]@{
     'Recycle/DeleteBestEffort' = 'DeleteBestEffort\('
     'pnputil (drivers)'    = 'pnputil\.exe", \$?"/(add|delete)-driver'
     'Remove-AppxPackage'   = 'Remove-AppxPackage -Package'
+    'pnputil (devices)'    = '/remove-device|netsh\.exe", \$?"(winsock|int ip) reset'
 }
 
 $current = [ordered]@{}

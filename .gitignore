@@ -22,3 +22,4 @@ private/
 *.key
 *.pfx
 dist-uitest/
+*_wpftmp.csproj
