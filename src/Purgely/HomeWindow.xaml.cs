@@ -49,10 +49,19 @@ public partial class HomeWindow : Window
         AdminBadge.Text = IsAdministrator() ? "Administrator" : "Not running as administrator – some things can't be cleaned";
         VersionText.Text = $"KraljForge Labs · free · no ads · v{typeof(HomeWindow).Assembly.GetName().Version?.ToString(3)}";
 
+        // A program's icon dropped on the home screen: uninstall that program.
+        FileDrop.Enable(this, UninstallItem);
+
         Loaded += async (_, _) =>
         {
             TileUninstall.Focus();
-            if (!AppSettings.Current.WelcomeSeen) ShowWelcome();
+            // Started with an item (right-click "Uninstall with Purgely", or an icon dropped on Purgely.exe).
+            if (App.StartTarget is { } target)
+            {
+                App.StartTarget = null;
+                OpenPage(new MainWindow(MainView.All, "", target));
+            }
+            else if (!AppSettings.Current.WelcomeSeen) ShowWelcome();
             _ = SessionChecksAsync();
             await RefreshAsync();
         };
@@ -375,6 +384,17 @@ public partial class HomeWindow : Window
     }
 
     private Window? _page;
+
+    /// <summary>Opens the program list for a dropped or right-clicked item (replacing an open page that can close).</summary>
+    public void UninstallItem(string path)
+    {
+        if (_page is { IsLoaded: true })
+        {
+            _page.Close();
+            if (_page is { IsLoaded: true }) return; // the page is busy and stayed open
+        }
+        OpenPage(new MainWindow(MainView.All, "", path));
+    }
 
     private void OpenMain(MainView view, string search = "") => OpenPage(new MainWindow(view, search));
 

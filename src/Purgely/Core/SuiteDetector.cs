@@ -119,7 +119,7 @@ public static class SuiteDetector
     }
 
     /// <summary>Folders that hold many unrelated programs (game libraries, Program Files…).</summary>
-    private static bool IsLibraryRoot(string folder)
+    internal static bool IsLibraryRoot(string folder)
     {
         if (folder.Length <= 3) return true;
         var name = Path.GetFileName(folder.TrimEnd('\\')).ToLowerInvariant();

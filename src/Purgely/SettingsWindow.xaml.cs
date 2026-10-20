@@ -36,8 +36,23 @@ public partial class SettingsWindow : Window
             _release = new PurgelyRelease(v, settings.AvailableTag, UpdateCheck.IsReleaseUrl(settings.AvailableUrl) ? settings.AvailableUrl : UpdateCheck.ReleasesPage, false);
             DownloadButton.Visibility = Visibility.Visible;
         }
+        MenuBox.IsChecked = ExplorerMenu.IsOn();
+        if (MenuBox.IsChecked != true && !ExplorerMenu.CanUse(Environment.ProcessPath))
+        {
+            MenuBox.IsEnabled = false;
+            MenuText.Text = "Available when Purgely.exe is on one of this PC's drives (not on a network share).";
+        }
         _loading = false;
-        Loaded += async (_, _) => await CountUndoAsync();
+        Loaded += async (_, _) =>
+        {
+            // Purgely started with another account's administrator rights: the entry would go to that account's menu.
+            if (MenuBox.IsChecked != true && await Task.Run(DataFolders.DifferentUser) is { } users)
+            {
+                MenuBox.IsEnabled = false;
+                MenuText.Text = $"Purgely is running as {users.Running}, not as {users.SignedIn}, so the entry would appear in the wrong account's menu.";
+            }
+            await CountUndoAsync();
+        };
     }
 
     private async Task CountUndoAsync()
@@ -60,6 +75,23 @@ public partial class SettingsWindow : Window
                 ProtectStatus.Text = "Purgely is not running as administrator, so it can't check the protection of its data folder now.";
         }
         catch (Exception) { UndoStatus.Text = "Couldn't count the backups."; }
+    }
+
+    // ------------------------------------------------------------------ right-click menu
+    private void MenuBox_Click(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        try
+        {
+            if (MenuBox.IsChecked == true) ExplorerMenu.TurnOn(Environment.ProcessPath!);
+            else ExplorerMenu.TurnOff();
+        }
+        catch (Exception ex)
+        {
+            Dialog.Show(this, $"Purgely couldn't change the right-click menu.\n\n{ex.Message}", "Right-click menu",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        MenuBox.IsChecked = ExplorerMenu.IsOn();
     }
 
     // ------------------------------------------------------------------ updates
@@ -150,6 +182,8 @@ public partial class SettingsWindow : Window
                 lines.Add($"\n⚠ {plan.OpenTrials} program(s) are still on trial (Install & Track). Their records are deleted too, so Purgely can no longer revert them.");
             if (plan.DelayedStartupItems > 0)
                 lines.Add($"\n{plan.DelayedStartupItems} startup item(s) you delayed will keep starting 2 minutes after sign-in (Task Scheduler → Purgely → Delayed).");
+            if (ExplorerMenu.IsOn())
+                lines.Add("\nThe \"Uninstall with Purgely\" right-click entry is removed too.");
             lines.Add("\nYour own files and programs are not touched. Ads, privacy and startup settings stay as you set them.");
             if (plan.ExePath is null)
                 lines.Add("\nPurgely.exe itself stays – delete it yourself when Purgely is closed.");

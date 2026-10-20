@@ -49,6 +49,7 @@ public static class SelfRemoval
     public static int RemoveData(SelfRemovalPlan plan)
     {
         var scheduled = 0;
+        ExplorerMenu.TurnOff(); // the optional right-click entry – only Purgely's own keys
         foreach (var folder in plan.Folders.Where(IsPurgelyFolder))
         {
             try { scheduled += FileMover.DeleteBestEffort(folder, true); }

@@ -63,3 +63,17 @@ Purgely deletes and changes things on real Windows PCs. A wrong delete can break
   Volume, Firmware…); "devices that aren't connected" are leaf classes only and never pre-ticked; runtimes only from
   winget's official Microsoft packages – never single DLL downloads.
 - "Remove Purgely" deletes only folders with Purgely's exact names (never through a link) and only `Purgely.exe` itself.
+
+## Rules added with 0.9.2 (2026-10-20)
+- Launcher games (Epic) are uninstalled by their launcher; Purgely only opens it (unelevated, through Explorer) and scans
+  afterwards. A launcher game's own folder is never pre-ticked.
+- "Which program is this?" (`ProgramFinder`) must never guess: ties, several matches or anything inside an install area
+  (Program Files, ProgramData, WindowsApps, LocalAppData\Programs) without a clear match answer NotFound/Ambiguous and
+  let the user pick in the list. A folder is "portable" only when it is usable (SafePaths), not a library, holds no
+  installed program and has one main .exe.
+- Elevated windows accept drops only through WM_DROPFILES (+ WM_COPYGLOBALDATA) – never open other messages
+  (WM_COPYDATA) to lower-integrity processes. A dropped or right-clicked item only starts the normal uninstall with
+  its questions.
+- The right-click entry is opt-in, all-or-nothing, under HKCU only, points only at a local Purgely.exe, is removed by
+  "Remove Purgely", and follows a moved Purgely.exe only when the old one is gone.
+- One Purgely instance at a time (named mutex).

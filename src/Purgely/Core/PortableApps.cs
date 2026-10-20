@@ -53,21 +53,27 @@ public static class PortableApps
                     "unins|setup|install|update|crash|helper|vc_?redist|dxsetup", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
                     .ToList();
                 if (main.Count == 0) continue;
-                var info = Publisher(main[0]);
-                result.Add(new InstalledProgram
-                {
-                    Name = name,
-                    Publisher = info.Publisher,
-                    Version = info.Version,
-                    InstallLocation = folder,
-                    DisplayIcon = main[0],
-                    RegistryKey = "portable:" + folder,
-                    IsPortable = true,
-                    InstallDate = SafeCreation(folder),
-                });
+                result.Add(ForFolder(folder, main[0]));
             }
         }
         return result;
+    }
+
+    /// <summary>A portable program: <paramref name="folder"/> with its main .exe.</summary>
+    public static InstalledProgram ForFolder(string folder, string exe)
+    {
+        var info = Publisher(exe);
+        return new InstalledProgram
+        {
+            Name = Path.GetFileName(folder.TrimEnd('\\')),
+            Publisher = info.Publisher,
+            Version = info.Version,
+            InstallLocation = folder,
+            DisplayIcon = exe,
+            RegistryKey = "portable:" + folder,
+            IsPortable = true,
+            InstallDate = SafeCreation(folder),
+        };
     }
 
     private static (string Publisher, string Version) Publisher(string exe)

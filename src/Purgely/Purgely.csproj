@@ -10,6 +10,8 @@
     <RootNamespace>Purgely</RootNamespace>
     <ApplicationManifest Condition="'$(UiTest)' != 'true'">app.manifest</ApplicationManifest>
     <ApplicationManifest Condition="'$(UiTest)' == 'true'">app.uitest.manifest</ApplicationManifest>
+    <DefineConstants Condition="'$(UiTest)' == 'true'">$(DefineConstants);UITEST</DefineConstants>
+    <DefineConstants Condition="'$(DropLog)' == 'true'">$(DefineConstants);DROPLOG</DefineConstants>
     <ApplicationIcon>Purgely.ico</ApplicationIcon>
     <Version>0.9.2</Version>
     <Product>Purgely</Product>

@@ -119,6 +119,21 @@
                     </DockPanel>
                 </Border>
 
+                <!-- ============ Right-click menu ============ -->
+                <TextBlock Style="{StaticResource SectionHeader}" Text="Right-click menu" FontSize="16" Margin="0,18,0,8"/>
+                <Border Style="{StaticResource SettingRow}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Style="{StaticResource SettingIcon}" Text="&#xE8A7;"/>
+                        <CheckBox x:Name="MenuBox" DockPanel.Dock="Right" VerticalAlignment="Center" Content="On"
+                                  Click="MenuBox_Click" AutomationProperties.Name="Uninstall with Purgely in the right-click menu"/>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SettingTitle}" Text="&quot;Uninstall with Purgely&quot; in the right-click menu"/>
+                            <TextBlock x:Name="MenuText" Style="{StaticResource SettingText}"
+                                       Text="Right-click a program, its shortcut or its folder, choose Show more options, then Uninstall with Purgely. It's added for your account only, and turning this off – or removing Purgely – takes it out again."/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
                 <!-- ============ Help ============ -->
                 <TextBlock Style="{StaticResource SectionHeader}" Text="Help" FontSize="16" Margin="0,18,0,8"/>
                 <Border Style="{StaticResource SettingRow}">

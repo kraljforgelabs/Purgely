@@ -21,7 +21,8 @@ public partial class MainWindow : Window
     /// <summary>Raised after programs were uninstalled, cleaned or updated, so the home screen can recount.</summary>
     public event Action? Changed;
 
-    public MainWindow(MainView view = MainView.All, string search = "")
+    /// <param name="target">A file, folder or shortcut to uninstall the program of (dropped on Purgely or right-clicked).</param>
+    public MainWindow(MainView view = MainView.All, string search = "", string? target = null)
     {
         InitializeComponent();
         BusyGuard.Attach(this);
@@ -34,8 +35,10 @@ public partial class MainWindow : Window
             SearchBox.Text = search;
             SearchBox.CaretIndex = SearchBox.Text.Length;
             SearchBox.Focus();
+            _pendingTarget = target;
             await LoadProgramsAsync();
         };
+        FileDrop.Enable(this, path => _ = HandleTargetAsync(path));
         Closed += (_, _) => Changed?.Invoke();
     }
 
@@ -52,6 +55,13 @@ public partial class MainWindow : Window
         UpdateStatus();
         _ = AnalyzeDependenciesAsync(_programs);
         _ = SuggestAsync(_programs);
+        _listReady = true;
+        // An icon dropped or right-clicked before the list was ready: handle it now, not after the update check.
+        if (_pendingTarget is { } pending)
+        {
+            _pendingTarget = null;
+            _ = HandleTargetAsync(pending);
+        }
         await CheckUpdatesAsync(_programs);
     }
 
@@ -342,7 +352,7 @@ public partial class MainWindow : Window
         PageSubtitleText.Text = leftovers
             ? "Programs that are gone but left things behind. Or type any name and click \"Find leftovers by name\"."
             : updates ? "Newer versions of your programs from Windows Package Manager (winget). Tick the ones you want, or click \"Update all\". Drivers are on the Driver updates page."
-            : "Select a program to uninstall it or clean up what it left behind. Double-click to uninstall.";
+            : "Select a program to uninstall it or clean up what it left behind. Double-click to uninstall, or drop a program's icon here.";
         StatusHint.Text = "";
         SetVisible(UninstallButton, !leftovers && !updates);
         SetVisible(ScanButton, !updates);
@@ -460,7 +470,210 @@ public partial class MainWindow : Window
             return;
         }
         if (Selected() is not { } p) return;
+        await UninstallProgramAsync(p);
+    }
 
+    /// <summary>An uninstall (with its questions, the uninstaller and the leftover scan) is in progress.</summary>
+    private bool _uninstalling;
+
+    // ------------------------------------------------------------------ uninstall by icon, file or window
+    /// <summary>An item sent by a second copy of Purgely (right-click "Uninstall with Purgely" while this one is open).</summary>
+    public void UninstallItem(string path) => _ = HandleTargetAsync(path);
+
+    private bool _handlingTarget;
+    private bool _listReady;
+    private string? _pendingTarget;
+
+    /// <summary>
+    /// A dropped or right-clicked icon, file or folder, or a picked window: finds its program and starts the normal
+    /// uninstall for it (with the usual questions). Nothing is removed here.
+    /// </summary>
+    private async Task HandleTargetAsync(string path)
+    {
+        FileDrop.Trace($"target {path} ready={_listReady} busy={_busyUi} handling={_handlingTarget} uninstalling={_uninstalling} modal={System.Windows.Interop.ComponentDispatcher.IsThreadModal}");
+        if (!_listReady)
+        {
+            _pendingTarget = path; // the list is still loading – handled as soon as it is there
+            return;
+        }
+        if (_busyUi || _handlingTarget || _uninstalling || Core.Activity.IsBusy ||
+            System.Windows.Interop.ComponentDispatcher.IsThreadModal || !IsLoaded)
+            return;
+        _handlingTarget = true;
+        try
+        {
+            var found = ProgramFinder.Find(path, _programs);
+            FileDrop.Trace($"found {found.Kind} '{found.Program?.Name}' ({found.Program?.RegistryKey}) path '{found.Path}'");
+            switch (found.Kind)
+            {
+                case FoundKind.Program:
+                    ShowInList(found.Program!);
+                    await UninstallProgramAsync(found.Program!);
+                    break;
+                case FoundKind.Portable:
+                    await UninstallProgramAsync(found.Program!);
+                    break;
+                case FoundKind.ThroughLauncher:
+                {
+                    var host = found.Program!;
+                    ShowInList(host);
+                    if (Dialog.Show(this, $"This icon starts \"{found.Name}\" through {host.Name}.\n\n" +
+                                          $"\"{found.Name}\" lives inside {host.Name}, so remove it there – in {host.Name}'s own list of games or apps.\n\n" +
+                                          $"Purgely can only uninstall {host.Name} as a whole, together with everything in it. Do you want to do that?",
+                            "Uninstall", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                        await UninstallProgramAsync(host);
+                    break;
+                }
+                case FoundKind.Windows:
+                    Dialog.Show(this, $"\"{found.Name}\" is part of Windows, so it can't be uninstalled.\n\n" +
+                                      "Built-in apps and Windows extras can be removed or turned off under \"Bloatware\" on the home screen.",
+                        "Part of Windows", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case FoundKind.StoreAppWindow:
+                    Dialog.Show(this, "This window belongs to a Microsoft Store app, and Windows doesn't say which one.\n\n" +
+                                      "Type the app's name in the search box instead.",
+                        "Store app", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case FoundKind.Purgely:
+                    Dialog.Show(this, "That's Purgely itself.\n\nTo remove it, open Settings (the gear on the home screen) → Remove Purgely.",
+                        "Purgely", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case FoundKind.Ambiguous:
+                    SearchBox.Text = found.Name;
+                    Dialog.Show(this, $"Several programs share the folder of \"{found.Name}\", so Purgely can't tell which one it is.\n\n" +
+                                      "Pick the right one in the list.",
+                        "Which program?", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case FoundKind.SingleFile:
+                    Dialog.Show(this, $"\"{found.Name}\" isn't part of an installed program – it's a single file:\n\n{found.Path}\n\n" +
+                                      "If you don't need it, you can simply delete it.",
+                        "Not a program", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                default:
+                    SearchBox.Text = found.Name;
+                    Dialog.Show(this, $"Purgely couldn't tell which program \"{found.Name}\" belongs to.\n\n" +
+                                      "Look for it in the list, or type its name in the search box.",
+                        "Not found", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            HideBusy();
+            Dialog.Show(this, $"Something went wrong:\n\n{ex.Message}", "Uninstall", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally { _handlingTarget = false; }
+    }
+
+    /// <summary>Shows the program in the list (filters cleared, selected), so the user sees what will be uninstalled.</summary>
+    private void ShowInList(InstalledProgram p)
+    {
+        OrphansOnly.IsChecked = false;
+        UpdatesOnly.IsChecked = false;
+        SuggestedOnly.IsChecked = false;
+        ApplyMode();
+        SearchBox.Text = p.Name;
+        ApplyFilter();
+        var shown = _programs.FirstOrDefault(q => q.RegistryKey.Equals(p.RegistryKey, StringComparison.OrdinalIgnoreCase));
+        if (shown is null) return;
+        ProgramsGrid.SelectedItem = shown;
+        ProgramsGrid.ScrollIntoView(shown);
+    }
+
+    // "Find by window": hold the mouse on the target, drag it onto a program's window and let go.
+    private bool _picking;
+
+    private void Picker_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (_busyUi || _handlingTarget || _uninstalling) return;
+        if (!PickerButton.CaptureMouse()) return;
+        _picking = true;
+        Mouse.OverrideCursor = Cursors.Cross;
+        MovePickerPopup(e);
+        PickerPopup.IsOpen = true;
+        e.Handled = true;
+    }
+
+    private async void Picker_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!_picking) return;
+        EndPicking();
+        e.Handled = true;
+        var exe = WindowPicker.ProgramUnderPointer(out var own);
+        if (own)
+        {
+            Dialog.Show(this, "Hold the mouse button down on this icon, drag it onto the window of the program you want to remove, " +
+                              "and let go there.\n\nYou can also drag a program's icon (for example from the desktop) into this window.",
+                "Find by window", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        if (exe is null)
+        {
+            Dialog.Show(this, "Purgely couldn't tell which program that window belongs to.\n\nLook for it in the list instead.",
+                "Find by window", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        if (System.IO.Path.GetFileName(exe).Equals("explorer.exe", StringComparison.OrdinalIgnoreCase))
+        {
+            // Let go on a desktop icon or a file in File Explorer: that item is what the user means.
+            if (WindowPicker.ShellItemUnderPointer() is { } item)
+            {
+                await HandleTargetAsync(item);
+                return;
+            }
+            Dialog.Show(this, "That's the desktop, the taskbar or a File Explorer window – part of Windows.\n\n" +
+                              "To remove a program by its icon, let go right on the icon, or drag the icon into this window.",
+                "Find by window", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        if (ProgramFinder.Hosts.Contains(System.IO.Path.GetFileName(exe)))
+        {
+            Dialog.Show(this, $"That window is run by {System.IO.Path.GetFileName(exe)}, which runs many different programs and scripts – " +
+                              "so the window doesn't say which program it is.\n\nLook for the program in the list instead.",
+                "Find by window", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        await HandleTargetAsync(exe);
+    }
+
+    private void Picker_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (_picking) MovePickerPopup(e);
+    }
+
+    /// <summary>Keeps the "Let go over the program's window" label just below-right of the pointer (never under it).</summary>
+    private void MovePickerPopup(MouseEventArgs e)
+    {
+        var point = PointToScreen(e.GetPosition(this));
+        if (PresentationSource.FromVisual(this)?.CompositionTarget?.TransformFromDevice is { } toDip) point = toDip.Transform(point);
+        PickerPopup.HorizontalOffset = point.X + 18;
+        PickerPopup.VerticalOffset = point.Y + 22;
+    }
+
+    private void Picker_LostMouseCapture(object sender, MouseEventArgs e)
+    {
+        if (_picking) EndPicking();
+    }
+
+    private void EndPicking()
+    {
+        _picking = false;
+        PickerPopup.IsOpen = false;
+        Mouse.OverrideCursor = null;
+        if (PickerButton.IsMouseCaptured) PickerButton.ReleaseMouseCapture();
+    }
+
+    /// <summary>The whole single-program uninstall: the right steps for each kind of program, each with its question.</summary>
+    private async Task UninstallProgramAsync(InstalledProgram p)
+    {
+        if (_uninstalling) return;
+        _uninstalling = true;
+        try { await UninstallProgramCoreAsync(p); }
+        finally { _uninstalling = false; }
+    }
+
+    private async Task UninstallProgramCoreAsync(InstalledProgram p)
+    {
         if (p.IsStoreApp)
         {
             if (Dialog.Show(this, $"Remove the Store app \"{p.Name}\"?\n\n" +

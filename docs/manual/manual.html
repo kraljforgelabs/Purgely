@@ -111,10 +111,19 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
   <li>When the program is gone, Purgely scans for leftovers and shows them for review (see chapter 6).</li>
   <li>Programs that came together (a "suite", e.g. several parts of one product) are offered for removal as well.</li>
 </ol>
+<h3>Uninstall by icon or window</h3>
+<p>You don't have to look a program up in the list:</p>
+<ul>
+  <li><b>Drop its icon</b> – a desktop or Start menu shortcut, its .exe or its folder – on Purgely's window (or on Purgely.exe).</li>
+  <li>Hold the mouse button down on <b>Find by window</b>, drag it onto the program's open window and let go.</li>
+  <li>Turn on <b>"Uninstall with Purgely"</b> in Settings, then right-click the icon → <i>Show more options</i> → <i>Uninstall with Purgely</i>. It's off until you turn it on and is removed again with Purgely.</li>
+</ul>
+<p>Purgely shows which program it found and asks before anything happens. If an icon starts a game inside an emulator or launcher (for example a game in GameLoop), Purgely explains that the game is removed in that program – it never removes the whole emulator without asking. If it can't tell which program something belongs to, it says so and you pick it in the list.</p>
 <h3>Special cases</h3>
 <table>
   <tr><th>Situation</th><th>What Purgely does</th></tr>
   <tr><td><b>Microsoft Store apps</b></td><td>Listed with your programs. Removed for your account by Windows itself. The Undo entry opens the app's Store page, so you can reinstall it.</td></tr>
+  <tr><td><b>Epic Games games</b></td><td>Listed with your programs. Uninstalling opens the Epic Games Launcher, where the game is removed; afterwards Purgely scans for what it left behind.</td></tr>
   <tr><td><b>Portable programs</b></td><td>Folders with a program that was never installed (unzipped tools, games). "Uninstall" shows the folder and its traces for review. A folder directly on a drive is never pre-ticked.</td></tr>
   <tr><td><b>Broken uninstaller</b></td><td><b>Force uninstall</b> – after your confirmation Purgely stops the uninstaller and removes the program's parts itself, backing everything up to the Undo center first.</td></tr>
   <tr><td><b>Runtimes</b> (Visual C++, .NET)</td><td>The <i>Dependencies</i> column shows which programs need them. Purgely warns before you remove one that is used.</td></tr>

@@ -15,6 +15,17 @@
         <!-- Header -->
         <DockPanel Grid.Row="0" Margin="0,0,0,16">
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
+                <Border x:Name="PickerButton" Style="{StaticResource Card}" Padding="10,6" Margin="0,0,12,0" Cursor="Cross"
+                        VerticalAlignment="Top"
+                        MouseLeftButtonDown="Picker_MouseDown" MouseLeftButtonUp="Picker_MouseUp" MouseMove="Picker_MouseMove"
+                        LostMouseCapture="Picker_LostMouseCapture"
+                        AutomationProperties.Name="Find by window"
+                        ToolTip="Hold the mouse button down here, drag onto a program's window and let go – Purgely finds that program. You can also drop a program's icon into this window.">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE81D;"/>
+                        <TextBlock Style="{StaticResource ButtonLabel}" Text="Find by window"/>
+                    </StackPanel>
+                </Border>
                 <Border Style="{StaticResource Badge}" Margin="0,0,12,0">
                     <TextBlock x:Name="AdminBadge" Style="{StaticResource CaptionText}"/>
                 </Border>
@@ -33,10 +44,20 @@
             </StackPanel>
         </DockPanel>
 
+        <!-- Follows the pointer while "Find by window" is dragged -->
+        <Popup x:Name="PickerPopup" Placement="AbsolutePoint" AllowsTransparency="True" IsHitTestVisible="False" StaysOpen="True">
+            <Border Style="{StaticResource Card}" Padding="10,6">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource IconText}" Text="&#xE81D;"/>
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Let go over the program's window"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+
         <!-- Search & filters -->
         <DockPanel Grid.Row="1" Margin="0,0,0,12">
             <Grid Width="340">
-                <TextBox x:Name="SearchBox" TextChanged="Search_TextChanged"
+                <TextBox x:Name="SearchBox" TextChanged="Search_TextChanged" AllowDrop="False"
                          AutomationProperties.Name="Search programs"
                          ToolTip="Just start typing, or press Ctrl+F. Ctrl+V pastes here. Esc clears."/>
                 <TextBlock Text="Search programs" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"

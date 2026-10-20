@@ -479,7 +479,7 @@
             <TextBlock x:Name="VersionText" DockPanel.Dock="Right" Opacity="0.5" FontSize="12" VerticalAlignment="Center"
                        Text="KraljForge Labs · free · no ads"/>
             <TextBlock DockPanel.Dock="Right" Opacity="0.5" FontSize="12" VerticalAlignment="Center" Margin="0,0,18,0"
-                       Text="Tip: just start typing a program name to find it"/>
+                       Text="Tip: start typing a program's name to find it, or drop its icon here to uninstall it"/>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
                 <TextBlock x:Name="FooterStatus" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="12.5" Opacity="0.8"

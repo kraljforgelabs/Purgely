@@ -31,6 +31,8 @@
   "Core\\UndoStore.cs|schtasks change": 1,
   "Core\\UndoStore.cs|Recycle/DeleteBestEffort": 2,
   "Core\\UndoStore.cs|pnputil (drivers)": 2,
+  "Core\\ExplorerMenu.cs|DeleteSubKey": 1,
+  "Core\\ExplorerMenu.cs|SetValue": 3,
   "Core\\SelfRemoval.cs|Recycle/DeleteBestEffort": 1,
   "Core\\StoreApps.cs|Recycle/DeleteBestEffort": 1,
   "Core\\StoreApps.cs|Remove-AppxPackage": 1,

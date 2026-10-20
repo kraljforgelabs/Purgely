@@ -560,3 +560,33 @@ public class LauncherGameTests
         Assert.Equal("", LauncherGames.ReadEpicManifest(json, @"C:\m\x.item", checkFolder: false)!.DisplayIcon);
     }
 }
+
+public class ProgramFinderTests
+{
+    private static InstalledProgram P(string name, string folder) =>
+        new() { Name = name, RegistryKey = @"HKLM\x\" + name, InstallLocation = folder };
+
+    [Fact]
+    public void A_game_shortcut_through_an_emulator_is_not_the_emulator_itself() =>
+        Assert.False(ProgramFinder.Similar("Call of Duty", P("GameLoop", @"D:\Program Files\TxGameAssistant"),
+            @"D:\Program Files\TxGameAssistant\AppMarket\AppMarket.exe"));
+
+    [Theory]
+    [InlineData("Discord", "Discord", @"C:\Users\u\AppData\Local\Discord", @"C:\Users\u\AppData\Local\Discord\Update.exe")]
+    [InlineData("Google Chrome", "Google Chrome", @"C:\Program Files\Google\Chrome\Application", @"C:\Program Files\Google\Chrome\Application\chrome.exe")]
+    [InlineData("Chrome – Work", "Google Chrome", @"C:\Program Files\Google\Chrome\Application", @"C:\Program Files\Google\Chrome\Application\chrome.exe")]
+    public void A_program_started_with_options_is_still_that_program(string shortcut, string program, string folder, string target) =>
+        Assert.True(ProgramFinder.Similar(shortcut, P(program, folder), target));
+
+    [Theory]
+    [InlineData(@"C:\Tools\Purgely.exe\..\evil.exe")]
+    [InlineData("Purgely.exe")]
+    [InlineData(@"\\server\share\Purgely.exe")]
+    [InlineData(@"C:\Tools\Pur""gely.exe")]
+    public void Right_click_entry_only_for_a_real_local_Purgely_exe(string exe) =>
+        Assert.False(ExplorerMenu.CanUse(exe));
+
+    [Fact]
+    public void Right_click_entry_passes_the_item_quoted() =>
+        Assert.Equal("\"C:\\Tools\\Purgely.exe\" --uninstall \"%1\"", ExplorerMenu.CommandFor(@"C:\Tools\Purgely.exe"));
+}
