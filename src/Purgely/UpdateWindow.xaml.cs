@@ -112,7 +112,7 @@ public partial class UpdateWindow : Window
         else
         {
             ResultText.Text = "Not updated:\n" + string.Join("\n", failed.Select(f => $"• {f.Program.Name} – {f.Why}")) +
-                              "\n\nYou can update these one at a time and try the installer visible.";
+                              "\n\nYou can update these one at a time with the installer visible.";
         }
     }
 

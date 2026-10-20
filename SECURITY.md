@@ -9,5 +9,5 @@ kraljforgelabs@gmail.com with "Purgely security" in the subject.
 Helpful details: Purgely version, Windows version, what an attacker could do, and steps to reproduce.
 You'll get an answer within a week. Fixed problems are credited in the CHANGELOG unless you prefer otherwise.
 
-Examples of what we want to hear about: a way to make Purgely delete something outside what it showed, to run code
+Examples of what we want to hear about: a way to make Purgely delete something other than what it showed, to run code
 through its knowledge base or an uninstall string, or to bypass its Undo.

@@ -122,7 +122,7 @@
                 <DataGridTextColumn Header="Type" Binding="{Binding KindText}" Width="150" ElementStyle="{StaticResource Cell}"/>
                 <DataGridTextColumn Header="Impact" Binding="{Binding ImpactText}" Width="80" ElementStyle="{StaticResource Cell}"/>
                 <DataGridTextColumn Header="Safe to turn off?" Binding="{Binding SafetyText}" Width="150" ElementStyle="{StaticResource Cell}"/>
-                <DataGridTextColumn Header="What is it / why" Binding="{Binding Details}" Width="4*" ElementStyle="{StaticResource Cell}"/>
+                <DataGridTextColumn Header="What it is and why" Binding="{Binding Details}" Width="4*" ElementStyle="{StaticResource Cell}"/>
             </DataGrid.Columns>
         </DataGrid>
         </Border>
@@ -142,14 +142,14 @@
                     </StackPanel>
                 </Button>
                 <Button Click="Delay_Click" Padding="12,6" Margin="8,0,0,0" AutomationProperties.Name="Start 2 min later"
-                        ToolTip="Keeps the program, but starts it 2 minutes after you sign in, so Windows is ready faster">
+                        ToolTip="Keeps the program but starts it 2 minutes after you sign in, so Windows is ready sooner">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE916;"/>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Start 2 min later"/>
                     </StackPanel>
                 </Button>
                 <Button Click="Keep_Click" Padding="12,6" Margin="8,0,0,0" AutomationProperties.Name="Keep off"
-                        ToolTip="Turn off and stay off – if the program switches itself back on, Purgely turns it off again">
+                        ToolTip="Turn it off and keep it off. If the program turns itself back on, Purgely turns it off again">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE72E;"/>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Keep off"/>

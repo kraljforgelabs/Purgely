@@ -23,13 +23,13 @@ public partial class RelatedWindow : Window
         var chosen = _related.Where(r => r.IsChecked).Select(r => r.Program).ToList();
         if (chosen.Count == 0)
         {
-            Dialog.Show(this, "Nothing is checked.", "Related programs", MessageBoxButton.OK, MessageBoxImage.Information);
+            Dialog.Show(this, "Nothing is ticked.", "Related programs", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         if (Dialog.Show(this, $"Uninstall these {chosen.Count} program(s), one after another?\n\n" +
                                   string.Join("\n", chosen.Take(15).Select(p => $"• {p.Name}")) +
                                   (chosen.Count > 15 ? $"\n… and {chosen.Count - 15} more" : "") +
-                                  "\n\nThe uninstallers of the programs themselves can't be undone by Purgely.",
+                                  "\n\nPurgely can't undo what the programs' own uninstallers do.",
                 "Related programs", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
             return;
         Chosen.AddRange(chosen);

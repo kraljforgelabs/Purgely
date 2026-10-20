@@ -60,7 +60,7 @@
                       Margin="16,0,0,0" VerticalAlignment="Center"
                       Checked="Filter_Changed" Unchecked="Filter_Changed"/>
             <CheckBox x:Name="SuggestedOnly" Content="Suggestions"
-                      ToolTip="Programs you haven't used for months, and several programs doing the same job"
+                      ToolTip="Programs you haven't used in months, and programs that do the same job"
                       Margin="16,0,0,0" VerticalAlignment="Center"
                       Checked="Filter_Changed" Unchecked="Filter_Changed"/>
             <TextBlock x:Name="StatusHint" Margin="16,0,0,0" Style="{StaticResource SecondaryText}"/>
@@ -127,9 +127,9 @@
                 <TextBlock Style="{StaticResource IconText}" Text="&#xE73E;" FontSize="28" HorizontalAlignment="Center"
                            Foreground="{StaticResource OkBrush}"/>
                 <TextBlock Style="{StaticResource BodyStrongText}" HorizontalAlignment="Center" Margin="0,10,0,4"
-                           Text="No removed program is waiting to be checked."/>
+                           Text="No removed programs are waiting to be checked."/>
                 <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" TextAlignment="Center"
-                           Text="Programs removed long ago can still leave traces: shortcuts and startup entries that point nowhere, dead services and tasks, empty folders. Sweep the whole PC for them – nothing is removed before you review the list."/>
+                           Text="Programs removed long ago can still leave traces: shortcuts and startup entries that point nowhere, dead services and tasks, empty folders. Sweep the whole PC for them. Nothing is removed until you've reviewed the list."/>
                 <Button Click="Sweep_Click" Style="{StaticResource AccentButton}" HorizontalAlignment="Center" Margin="0,14,0,0" Padding="14,6">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE773;"/>
@@ -160,7 +160,7 @@
                     </StackPanel>
                 </Button>
                 <Button x:Name="ScanByNameButton" Click="ScanByName_Click" Padding="12,6" Margin="8,0,0,0" AutomationProperties.Name="Find leftovers by name"
-                        ToolTip="Type the name of an already removed program in the Search box, then click here">
+                        ToolTip="Type the name of a program you've already removed in the search box, then click here">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE71E;"/>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Find leftovers by name"/>

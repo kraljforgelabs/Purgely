@@ -7,7 +7,7 @@
 - Undo backups: `C:\ProgramData\Purgely\Undo` and a `Purgely Undo` folder on each drive that had something removed
 
 Only administrators can change these folders. **Settings → Remove Purgely…** deletes all of them (and `Purgely.exe` if
-you want), so nothing of Purgely remains.
+you want), so nothing of Purgely is left behind.
 
 ## When Purgely goes online – only when you ask
 | When… | Purgely contacts | What is sent |

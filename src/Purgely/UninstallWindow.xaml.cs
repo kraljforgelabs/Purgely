@@ -83,15 +83,15 @@ public partial class UninstallWindow : Window
             _finished = true;
             ProgressLine.IsIndeterminate = false;
             ProgressLine.Value = 100;
-            StatusText.Text = $"Uninstalled in {Format(last.Elapsed)}. Purgely now looks for what it left behind.";
+            StatusText.Text = $"Uninstalled in {Format(last.Elapsed)}. Purgely will now look for what it left behind.";
             await Task.Delay(900);
             if (IsVisible) DialogResult = true;
             return;
         }
 
         SetStep(2, Failed, "Windows still lists the program");
-        Finish("The uninstaller ended, but the program is still installed.",
-               "It may have been cancelled, failed, or needs a restart to finish. You can look for its parts without " +
+        Finish("The uninstaller finished, but the program is still installed.",
+               "It may have been cancelled or failed, or it needs a restart to finish. You can look for its parts without " +
                "removing anything, or force the uninstall.",
                force: true, scan: true, scanText: "Scan only (nothing pre-selected)");
         Outcome = UninstallOutcome.StillListed;
@@ -165,7 +165,7 @@ public partial class UninstallWindow : Window
         var running = _monitor.RunningNames();
         if (Dialog.Show(this,
                 $"Force uninstall \"{_program.Name}\"?\n\n" +
-                (running.Count > 0 ? $"1. These uninstaller processes are stopped: {string.Join(", ", running.Distinct())}\n"
+                (running.Count > 0 ? $"1. These uninstaller processes will be stopped: {string.Join(", ", running.Distinct())}\n"
                                    : "1. The official uninstaller is no longer running.\n") +
                 "2. Purgely scans for the program's files, registry entries, services and startup entries.\n" +
                 "3. You review the list – nothing is removed before you confirm, and everything goes to an Undo package.\n\n" +

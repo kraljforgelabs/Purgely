@@ -27,7 +27,7 @@
             </Button>
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top">
                 <Button Click="CopySpecs_Click" Padding="12,6" Margin="0,0,8,0"
-                        ToolTip="Copy a spec sheet – paste it to Claude in chat to have the makers' websites searched for you">
+                        ToolTip="Copy a spec sheet. Paste it into a chat with Claude to have it search the makers' websites for you">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE8C8;"/>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Copy specs"/>
@@ -59,7 +59,7 @@
                 <TextBlock Style="{StaticResource InfoBarIconInfo}"/>
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap"
-                               Text="Purgely looks up every device by its hardware ID – the way professional tools do – in Windows Update and in Microsoft's Update Catalog (official, signed drivers, many more than Windows installs on its own). A driver is installed only if it is signed by Microsoft and lists your exact device; your current driver is saved first, so the Undo center can put it back. Firmware and BIOS are never touched."/>
+                               Text="Purgely looks up each device by its hardware ID, the way professional tools do, in Windows Update and Microsoft's Update Catalog (official, signed drivers – far more than Windows installs on its own). A driver is installed only if Microsoft has signed it and it lists your exact device. Your current driver is saved first, so the Undo center can put it back. Firmware and BIOS are never touched."/>
                     <TextBlock x:Name="MakerAppsText" TextWrapping="Wrap" Margin="0,6,0,0" Opacity="0.85"/>
                 </StackPanel>
             </DockPanel>
@@ -153,7 +153,7 @@
                           VerticalAlignment="Center" Checked="Filter_Changed" Unchecked="Filter_Changed"/>
                 <CheckBox x:Name="ShowBuiltIn" Content="Show Windows' built-in drivers" Margin="16,0,0,0"
                           VerticalAlignment="Center" Checked="Filter_Changed" Unchecked="Filter_Changed"
-                          ToolTip="Drivers that come with Windows itself (they are updated by Windows Update and all carry the date 2006-06-21)"/>
+                          ToolTip="Drivers that come with Windows itself. They're updated through Windows Update and all show the date 2006-06-21."/>
             </WrapPanel>
             <TextBlock x:Name="SummaryText" Grid.Column="1" Style="{StaticResource SecondaryText}" VerticalAlignment="Center"
                        TextAlignment="Right" TextTrimming="CharacterEllipsis" Margin="16,0,16,0"

@@ -146,7 +146,7 @@ public partial class TrialWindow : Window
         if (Selected() is not { } r) return;
         if (r.State != TrialState.Installing)
         {
-            Dialog.Show(this, "This trial is already analyzed.", "Trial Mode", MessageBoxButton.OK, MessageBoxImage.Information);
+            Dialog.Show(this, "This trial has already been analyzed.", "Trial Mode", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         await AnalyzeAsync(r);
@@ -183,7 +183,7 @@ public partial class TrialWindow : Window
             $"• Services/drivers: {diff.AddedServices.Count}   • Scheduled tasks: {diff.AddedTasks.Count}\n" +
             (diff.ModifiedFiles > 0 ? $"• Existing files changed: {diff.ModifiedFiles} (Revert removes additions; the restore point covers these)\n" : "") +
             (diff.PossibleBundle ? "\n⚠ BUNDLEWARE: the installer registered programs from more than one publisher!\n" : "") +
-            "\nNow try the program as long as you like. Then come back here and choose Keep or Revert.";
+            "\nNow try the program for as long as you like. Then come back here and choose Keep or Revert.";
         Dialog.Show(this, message, "Trial recorded", MessageBoxButton.OK,
             diff.PossibleBundle ? MessageBoxImage.Warning : MessageBoxImage.Information);
     }

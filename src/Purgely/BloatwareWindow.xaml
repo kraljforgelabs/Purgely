@@ -36,7 +36,7 @@
                         <CheckBox x:Name="ShowKeep" Content="Also show apps to keep" VerticalAlignment="Center"
                                   Checked="Filter_Changed" Unchecked="Filter_Changed"/>
                         <TextBlock x:Name="AppsHint" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource SecondaryText}"
-                                   Text="Ticked: ads, trials and promotions. 'Check' items are yours to decide."/>
+                                   Text="Ticked: ads, trials and promotions. Items marked 'Check' are up to you."/>
                     </DockPanel>
                     <Border Grid.Row="1" Style="{StaticResource ListCard}">
                         <DataGrid x:Name="AppsGrid" AutoGenerateColumns="False" SelectionMode="Extended" HeadersVisibility="Column"
@@ -141,7 +141,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Margin="0,0,0,12"
-                               Text="Extensions can see what you do in the browser. Purgely shows what each one may do and where it came from. Remove them in the browser itself (so sync doesn't bring them back) – the button opens the right page."/>
+                               Text="Extensions can see what you do in the browser. Purgely shows what each one may do and where it came from. Remove them in the browser itself so sync doesn't bring them back. The Manage in browser button opens the right page."/>
                     <Border Grid.Row="1" Style="{StaticResource ListCard}">
                         <DataGrid x:Name="ExtensionsGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
                                   HeadersVisibility="Column" GridLinesVisibility="None" Background="Transparent" BorderThickness="0"

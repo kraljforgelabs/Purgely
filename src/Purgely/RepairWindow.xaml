@@ -93,7 +93,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="Devices that aren't connected"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="Windows remembers every USB stick, mouse, phone and adapter it ever saw. Forgetting the ones you no longer use tidies Device Manager. Nothing is ticked for you – if you plug a forgotten device in again, Windows simply sets it up again."/>
+                                       Text="Windows remembers every USB stick, mouse, phone and adapter it has ever seen. Forgetting the ones you no longer use tidies up Device Manager. Nothing is ticked for you. If you plug a forgotten device in again, Windows simply sets it up again."/>
                             <WrapPanel Margin="0,10,0,0">
                                 <Button x:Name="FindGhostsButton" Padding="12,5" Margin="0,0,8,0" Click="FindGhosts_Click" Content="Find them"/>
                                 <Button x:Name="SelectAllGhostsButton" Padding="12,5" Margin="0,0,8,0" Click="SelectAllGhosts_Click"
@@ -137,7 +137,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="No sound"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="Restarting Windows Audio fixes most cases of sound that stopped after sleep or a driver hiccup. Also check that the right speakers or headphones are chosen in Sound settings."/>
+                                       Text="Restarting Windows Audio fixes most cases where sound stops after sleep or a driver hiccup. Also check that the right speakers or headphones are selected in Sound settings."/>
                             <WrapPanel Margin="0,10,0,0">
                                 <Button x:Name="AudioButton" Padding="12,5" Margin="0,0,8,0" Click="RestartAudio_Click" Content="Restart Windows Audio"/>
                                 <Button Padding="12,5" Margin="0,0,8,0" Click="SoundSettings_Click" Content="Open Sound settings"/>
@@ -154,10 +154,10 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="No internet"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="Test finds where the connection breaks. Refresh clears the name cache and gets a new address (the connection drops for a few seconds). Reset is the last resort: it puts Windows' network settings back to default and needs a restart."/>
+                                       Text="Test finds where the connection breaks. Refresh clears the name cache and gets a new address (the connection drops for a few seconds). Reset is a last resort: it puts Windows' network settings back to their defaults and needs a restart."/>
                             <WrapPanel Margin="0,10,0,0">
                                 <Button x:Name="TestNetButton" Padding="12,5" Margin="0,0,8,0" Click="TestNetwork_Click" Content="Test the connection"/>
-                                <Button x:Name="RefreshNetButton" Padding="12,5" Margin="0,0,8,0" Click="RefreshNetwork_Click" Content="Refresh the connection" ToolTip="All connections drop for a few seconds – VPN and remote desktop too"/>
+                                <Button x:Name="RefreshNetButton" Padding="12,5" Margin="0,0,8,0" Click="RefreshNetwork_Click" Content="Refresh the connection" ToolTip="All connections drop for a few seconds, including VPN and Remote Desktop"/>
                                 <Button x:Name="ResetNetButton" Padding="12,5" Margin="0,0,8,0" Click="ResetNetwork_Click" Content="Reset network settings…"/>
                             </WrapPanel>
                             <TextBlock x:Name="NetStatus" Style="{StaticResource StatusText}"/>
@@ -172,7 +172,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource BodyStrongText}" FontSize="16" Text="Programs or games complain about a missing DLL"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="Never download single DLL files from websites – they are often outdated or infected. Missing DLLs almost always come from these official Microsoft packages, installed here with Windows Package Manager."/>
+                                       Text="Never download individual DLL files from websites – they're often outdated or infected. Missing DLLs almost always belong to one of these official Microsoft packages, which you can install here with Windows Package Manager."/>
                             <ItemsControl x:Name="RuntimesList" Margin="0,10,0,0" Focusable="False">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>

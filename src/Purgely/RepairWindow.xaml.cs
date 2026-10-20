@@ -67,7 +67,7 @@ public partial class RepairWindow : Window
             });
             foreach (var p in problems) _problems.Add(new ProblemRow { Problem = p });
             ProblemsStatus.Text = problems.Count == 0
-                ? "All devices work – Windows reports no problems."
+                ? "All devices are working – Windows reports no problems."
                 : $"{problems.Count} device(s) need attention.";
             foreach (var r in runtimes)
                 _runtimes.Add(new RuntimeRow { Runtime = r, Installed = r.Installed, Status = r.Installed ? "Installed" : "Not installed" });
@@ -88,7 +88,7 @@ public partial class RepairWindow : Window
         {
             var (ok, message) = await Task.Run(() => action(row.Problem.Device));
             row.Status = (ok ? message : "Didn't work: " + message) +
-                         (row.Problem.Device.Count > 1 ? $" (Windows lists {row.Problem.Device.Count} identical devices – this changed the first one; repeat for the others in Device Manager if needed.)" : "");
+                         (row.Problem.Device.Count > 1 ? $" (Windows lists {row.Problem.Device.Count} identical devices. Only the first one was changed – repeat for the others in Device Manager if needed.)" : "");
         }
         catch (Exception ex) { row.Status = "Didn't work: " + ex.Message; }
         finally { button.IsEnabled = true; }
@@ -104,8 +104,8 @@ public partial class RepairWindow : Window
     {
         if ((sender as FrameworkElement)?.Tag is not ProblemRow row) return;
         if (Dialog.Show(this,
-                $"Reinstall \"{row.Name}\"?\n\nWindows removes the device and finds it again straight away, with its driver – " +
-                "like \"Uninstall device\" and \"Scan for hardware changes\" in Device Manager. The driver itself stays installed. " +
+                $"Reinstall \"{row.Name}\"?\n\nWindows removes the device and immediately detects it again with its driver, " +
+                "like \"Uninstall device\" followed by \"Scan for hardware changes\" in Device Manager. The driver itself stays installed. " +
                 "The device may stop working for a few seconds.",
                 "Reinstall device", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No,
                 new Dictionary<MessageBoxResult, string> { [MessageBoxResult.Yes] = "Reinstall", [MessageBoxResult.No] = "Cancel" })
@@ -131,7 +131,7 @@ public partial class RepairWindow : Window
                 any ? Visibility.Visible : Visibility.Collapsed;
             GhostsStatus.Text = any
                 ? $"{ghosts.Count} device(s) aren't connected. Tick the ones you no longer use."
-                : "Nothing to tidy – Windows remembers no unplugged devices of the kinds Purgely handles.";
+                : "Nothing to tidy up – Windows doesn't remember any unplugged devices of the kinds Purgely handles.";
             UpdateForgetButton();
         }
         catch (Exception ex) { GhostsStatus.Text = "Couldn't list them: " + ex.Message; }
@@ -161,7 +161,7 @@ public partial class RepairWindow : Window
         if (ticked.Count == 0) return;
         if (Dialog.Show(this,
                 $"Forget {ticked.Count} device(s)?\n\nWindows removes them from its list. This can't be undone in the Undo center, " +
-                "but nothing is lost: when you plug a forgotten device in again, Windows sets it up again by itself.",
+                "but nothing is lost: when you plug a forgotten device in again, Windows sets it up again automatically.",
                 "Devices that aren't connected", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No,
                 new Dictionary<MessageBoxResult, string> { [MessageBoxResult.Yes] = "Forget", [MessageBoxResult.No] = "Cancel" })
             != MessageBoxResult.Yes) return;
@@ -220,7 +220,7 @@ public partial class RepairWindow : Window
     private async void RefreshNetwork_Click(object sender, RoutedEventArgs e)
     {
         SetNetBusy(true);
-        NetStatus.Text = "Refreshing the connection – all connections drop for a few seconds, VPN and remote desktop too…";
+        NetStatus.Text = "Refreshing the connection – all connections, including VPN and remote desktop, drop for a few seconds…";
         try { NetStatus.Text = await Repair.RefreshConnectionAsync(); }
         catch (Exception ex) { NetStatus.Text = "Didn't work: " + ex.Message; }
         finally { SetNetBusy(false); }
@@ -230,7 +230,7 @@ public partial class RepairWindow : Window
     {
         if (Dialog.Show(this,
                 "Reset Windows' network settings?\n\nThis puts Winsock and TCP/IP back to Windows' defaults – the last thing to try " +
-                "before calling your internet provider. Wi-Fi passwords stay.\n\n" +
+                "before calling your internet provider. Wi-Fi passwords are kept.\n\n" +
                 "Fixed (static) IP and DNS settings are cleared – Purgely saves them to a text file first so you can type them in again. " +
                 "VPN programs may need to be set up again. You need to restart the PC afterwards.",
                 "Reset network settings", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No,

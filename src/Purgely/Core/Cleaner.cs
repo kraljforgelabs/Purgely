@@ -208,7 +208,7 @@ public static class Cleaner
             catch (Exception ex) { report.Failures.Add($"{p.DisplayLocation}: {ex.Message}"); }
         }
         if (firewallAfterRestart)
-            report.Notes.Add("Some firewall rules are removed from Windows Firewall after the next restart.");
+            report.Notes.Add("Some firewall rules will be removed from Windows Firewall after the next restart.");
 
         // 4. Stop programs still running from the folders we are about to remove.
         var folders = items.Where(i => i.Kind == LeftoverKind.Folder && SafePaths.IsRemovableFolder(i.Location, out _))

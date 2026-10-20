@@ -117,8 +117,8 @@ public static class UndoStore
         if (!Trusted()) DataFolders.Protect(); // packages made before 0.9 get the new protection first
         if (!Trusted())
         {
-            notes.Add("This package was not written by Purgely with administrator rights (someone else can change it), " +
-                      "so it is not restored. If you made it with Purgely, start Purgely as administrator and try again.");
+            notes.Add("This package wasn't saved by Purgely with administrator rights, so someone else could have changed it. " +
+                      "It was not restored. If you made it with Purgely, start Purgely as administrator and try again.");
             return notes;
         }
         var failed = new List<int>();
@@ -210,7 +210,7 @@ public static class UndoStore
                         {
                             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
                                 $"ms-windows-store://pdp/?PFN={Uri.EscapeDataString(a.Original)}") { UseShellExecute = true });
-                            notes.Add($"{a.Extra}: the Microsoft Store opened – click Get/Install to put the app back. " +
+                            notes.Add($"{a.Extra}: the Microsoft Store has opened – click Get/Install to put the app back. " +
                                       "This entry stays here until you discard it, in case you want to open the Store page again.");
                             ok = false; // not really restored until the user installs it
                             Bloatware.ForgetRestored(Array.Empty<string>(), new[] { a.Original });

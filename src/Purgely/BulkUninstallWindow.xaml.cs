@@ -54,7 +54,7 @@ public partial class BulkUninstallWindow : Window
         {
             if (!_running) return;
             if (Dialog.Show(this, "Programs are still being uninstalled.\n\nStop after the current one? The program being " +
-                                  "removed right now is finished by its own uninstaller.", "Uninstall several programs",
+                                  "removed right now will be finished by its own uninstaller.", "Uninstall several programs",
                     MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                 _closeRequested = true;
             e.Cancel = true;
@@ -98,8 +98,8 @@ public partial class BulkUninstallWindow : Window
         {
             AttentionBar.Style = (Style)FindResource("InfoBarSuccess");
             AttentionIcon.Style = (Style)FindResource("InfoBarIconSuccess");
-            ShowAttention("Next: click \"Scan for leftovers\" – Purgely looks for what all of them left behind, in one list. " +
-                          "If you close now, they wait for you under \"Clean leftovers\".");
+            ShowAttention("Next: click \"Scan for leftovers\" – Purgely looks for what all of them left behind and shows it in one list. " +
+                          "If you close now, they'll be waiting under \"Clean leftovers\".");
             StartButton.Focus();
         }
         StartButton.IsEnabled = removed > 0;
@@ -126,7 +126,7 @@ public partial class BulkUninstallWindow : Window
         }
         if (p.IsLauncherGame)
         {
-            SetState(item, "\uE946", null, $"Skipped – uninstall it in the {p.Launcher} launcher, or with Uninstall on its own");
+            SetState(item, "\uE946", null, $"Skipped – uninstall it in the {p.Launcher} launcher, or on its own with Uninstall");
             return;
         }
         if (p.IsStoreApp)
@@ -157,7 +157,7 @@ public partial class BulkUninstallWindow : Window
             if (s.LooksStuck)
             {
                 item.Status = "Seems stuck (no window, no activity)";
-                ShowAttention($"{p.Name}: the uninstaller does nothing and shows no window. Wait a bit more, or click \"Skip this one\" – " +
+                ShowAttention($"{p.Name}: the uninstaller isn't doing anything and shows no window. Wait a bit longer, or click \"Skip this one\" – " +
                               "it can be finished later with Uninstall → Force uninstall.");
             }
             else
@@ -182,7 +182,7 @@ public partial class BulkUninstallWindow : Window
         var stillListed = await Task.Run(() => RegistryPath.Exists(p.RegistryKey));
         item.Removed = !stillListed;
         if (stillListed)
-            SetState(item, "", Attention, "Still installed – cancelled, failed or needs a restart. Try it alone (Force uninstall is there).");
+            SetState(item, "", Attention, "Still installed – cancelled, failed or needs a restart. Uninstall it on its own (Force uninstall is available there).");
         else
             SetState(item, "", Ok, "Removed");
     }

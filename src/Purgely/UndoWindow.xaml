@@ -20,7 +20,7 @@
             <StackPanel>
             <TextBlock Text="Undo center" Style="{StaticResource PageTitle}"/>
             <TextBlock Style="{StaticResource PageSubtitle}"
-                       Text="Every cleanup is saved here. Restore puts everything back exactly where it was. Discard frees the disk space – select several with Ctrl or Shift, or Ctrl+A for all."/>
+                       Text="Every cleanup is saved here. Restore puts everything back exactly where it was. Discard frees up the disk space. Select several with Ctrl or Shift, or press Ctrl+A to select all."/>
         </StackPanel>
         </DockPanel>
         <Border Grid.Row="1" Style="{StaticResource ListCard}">
@@ -31,7 +31,7 @@
                        Foreground="{StaticResource OkBrush}"/>
             <TextBlock Style="{StaticResource BodyStrongText}" HorizontalAlignment="Center" Margin="0,10,0,4" Text="Nothing to undo."/>
             <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" TextAlignment="Center"
-                       Text="Whenever Purgely removes or changes something, a backup appears here first – so you can always put it back."/>
+                       Text="Whenever Purgely removes or changes something, it saves a backup here first, so you can always put it back."/>
         </StackPanel>
         <DataGrid x:Name="PackagesGrid" AutoGenerateColumns="False" IsReadOnly="True"
                   SelectionMode="Extended" HeadersVisibility="Column" GridLinesVisibility="None"

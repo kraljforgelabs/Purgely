@@ -15,13 +15,13 @@
         <StackPanel>
             <TextBlock x:Name="TitleText" Style="{StaticResource PageTitle}" FontSize="22" Text="Uninstall several programs"/>
             <TextBlock Style="{StaticResource PageSubtitle}" Margin="0,4,0,12" TextWrapping="Wrap"
-                       Text="One after another, never two at the same time. Programs that support it are removed without questions; the others open their own window – answer it and Purgely continues by itself. At the end, one leftover scan for all of them."/>
+                       Text="Programs are removed one at a time, never two at once. Those that support it are removed without questions; the others open their own window. Answer it, and Purgely carries on by itself. At the end, one leftover scan covers them all."/>
         </StackPanel>
 
         <DockPanel Grid.Row="1" Margin="0,0,0,12">
             <CheckBox x:Name="QuietBox" IsChecked="True" VerticalAlignment="Center"
                       Content="Quiet mode – no questions where the program allows it (recommended)"
-                      ToolTip="Windows Installer, Inno Setup and NSIS uninstallers, and programs that offer a quiet uninstall, run without questions. Others still show their window."/>
+                      ToolTip="Windows Installer, Inno Setup and NSIS uninstallers – and any program that offers a quiet uninstall – run without questions. Others still show their window."/>
             <TextBlock x:Name="ElapsedText" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource CaptionText}"/>
         </DockPanel>
 
@@ -64,7 +64,7 @@
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button x:Name="SkipButton" Click="Skip_Click" Padding="14,6" Visibility="Collapsed"
-                        ToolTip="Stop waiting for this program and go on with the next one. Its uninstaller keeps running on its own.">
+                        ToolTip="Stop waiting for this program and move on to the next one. Its uninstaller keeps running on its own.">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE893;"/>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Skip this one"/>

@@ -19,7 +19,7 @@
             <StackPanel>
                 <TextBlock Text="Checkup" Style="{StaticResource PageTitle}"/>
                 <TextBlock Style="{StaticResource PageSubtitle}" TextWrapping="Wrap"
-                           Text="One look at the whole PC. Only things Purgely is sure about are ticked, everything goes to the Undo center, and nothing happens until you click &quot;Fix ticked&quot;."/>
+                           Text="Your whole PC at a glance. Only things Purgely is sure about are ticked, everything goes to the Undo center, and nothing happens until you click &quot;Fix ticked&quot;."/>
             </StackPanel>
         </DockPanel>
 
@@ -39,7 +39,7 @@
                                         <TextBlock Style="{StaticResource BodyStrongText}" Text="{Binding Title}"/>
                                     </DockPanel>
                                     <TextBlock Style="{StaticResource SecondaryText}" Text="{Binding Summary}" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                    <Expander x:Name="DetailsExpander" Header="Details – what exactly" Margin="0,6,0,0" Padding="0,4,0,0">
+                                    <Expander x:Name="DetailsExpander" Header="Details" Margin="0,6,0,0" Padding="0,4,0,0">
                                         <ItemsControl ItemsSource="{Binding Details}" Margin="4,4,0,0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>

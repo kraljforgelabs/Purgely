@@ -50,8 +50,8 @@ public static partial class Repair
         1 => ("Windows has no proper settings for this device.", "Reinstall the device, or look for a driver."),
         3 => ("The driver is damaged, or the PC is short on memory.", "Restart the device; if that doesn't help, reinstall it."),
         10 => ("The device can't start.", "Restart the device. If it keeps failing, look for a newer driver."),
-        12 => ("The device can't get the resources it needs (conflict with another device).", "Restart the PC; if it stays, check the PC maker's drivers."),
-        14 => ("The device needs a restart of the PC.", "Restart the PC."),
+        12 => ("The device can't get the resources it needs (conflict with another device).", "Restart the PC; if the problem continues, check the PC maker's drivers."),
+        14 => ("The device won't work properly until you restart the PC.", "Restart the PC."),
         18 or 24 => ("The driver needs to be installed again.", "Reinstall the device."),
         19 => ("The device's settings in the registry are damaged.", "Reinstall the device."),
         21 => ("Windows is removing this device.", "Restart the PC."),
@@ -64,7 +64,7 @@ public static partial class Repair
         43 => ("Windows stopped the device because it reported a problem.", "Restart the device; for USB devices, try another port."),
         48 => ("The driver was blocked because it is known to cause problems.", "Look for a newer driver from the maker."),
         52 => ("The driver's signature can't be checked.", "Look for a signed driver (Driver updates)."),
-        _ => ($"Windows reports problem code {code}.", "Restart the device; if it stays, look for a newer driver."),
+        _ => ($"Windows reports problem code {code}.", "Restart the device; if the problem continues, look for a newer driver."),
     };
 
     /// <summary>USB controllers and root hubs carry the keyboard, the mouse – sometimes even the boot disk.</summary>
@@ -235,11 +235,11 @@ $ErrorActionPreference = 'SilentlyContinue'
         if (!internet) internet = await PingAsync(IPAddress.Parse("1.1.1.1")) || await PingAsync(IPAddress.Parse("8.8.8.8"));
 
         var summary = !hasAdapter ? "No network connection is active. Check that Wi-Fi is on (or the cable is plugged in) and Airplane mode is off."
-            : internet && dns ? "The internet works: your PC reaches the internet and looks up website names."
+            : internet && dns ? "The internet works: your PC can reach the internet and look up website names."
             : internet ? "The internet works, but website names can't be looked up (DNS). \"Refresh the connection\" usually fixes it."
-            : gateway is null ? "Your PC has no address from the router. \"Refresh the connection\" first; if that doesn't help, restart the router."
-            : gw ? "Your PC reaches the router, but not the internet. Restart the router; if that doesn't help, the problem is at your internet provider."
-            : "Your PC doesn't reach the router. \"Refresh the connection\" first; if that doesn't help, restart the router.";
+            : gateway is null ? "Your PC didn't get an address from the router. Try \"Refresh the connection\" first; if that doesn't help, restart the router."
+            : gw ? "Your PC can reach the router, but not the internet. Restart the router; if that doesn't help, the problem is at your internet provider."
+            : "Your PC can't reach the router. Try \"Refresh the connection\" first; if that doesn't help, restart the router.";
         return new NetworkDiagnosis(hasAdapter, gw, internet, dns, summary);
     }
 

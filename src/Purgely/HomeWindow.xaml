@@ -174,7 +174,7 @@
                 <TextBlock x:Name="AdminBadge" VerticalAlignment="Center" Margin="0,0,14,0" FontSize="12.5" Opacity="0.8"
                            Text="Checking permissions…"/>
                 <Button Click="Checkup_Click" Padding="14,6" Margin="0,0,8,0" Style="{StaticResource AccentButton}"
-                        ToolTip="Look at the whole PC at once and fix what Purgely is sure about – with undo"
+                        ToolTip="Check the whole PC at once and fix what Purgely is sure about – with undo"
                         AutomationProperties.Name="Run checkup">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="{StaticResource IconFont}" Text="&#xE9D9;" FontSize="14" VerticalAlignment="Center"/>
@@ -190,7 +190,7 @@
                     </StackPanel>
                 </Button>
                 <Button Click="Repair_Click" Padding="12,6" Margin="0,0,8,0"
-                        ToolTip="Fix devices that don't work, no sound, no internet, missing DLLs"
+                        ToolTip="Fix problems with devices, sound, internet and missing DLLs"
                         AutomationProperties.Name="Repair">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="{StaticResource IconFont}" Text="&#xE90F;" FontSize="14" VerticalAlignment="Center"/>
@@ -198,7 +198,7 @@
                     </StackPanel>
                 </Button>
                 <Button x:Name="RefreshButton" Click="Refresh_Click" Padding="12,6"
-                        ToolTip="Count everything again (F5)" AutomationProperties.Name="Refresh all summaries">
+                        ToolTip="Recount everything (F5)" AutomationProperties.Name="Refresh all summaries">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock FontFamily="{StaticResource IconFont}" Text="&#xE72C;" FontSize="14" VerticalAlignment="Center"/>
                         <TextBlock Text="Refresh" Margin="8,0,0,0" VerticalAlignment="Center"/>
@@ -271,7 +271,7 @@
                                 <TextBlock x:Name="TileLeftoversSummary" Style="{StaticResource TileSummary}"/>
                                 <ProgressBar Style="{StaticResource TileBusy}"/>
                                 <TextBlock Style="{StaticResource TileDescription}"
-                                           Text="Programs already removed that left files behind. Or search by name."/>
+                                           Text="Files left behind by programs you've removed. Or search by name."/>
                             </StackPanel>
                         </Button>
 
@@ -286,7 +286,7 @@
                                 <TextBlock x:Name="TileJunkSummary" Style="{StaticResource TileSummary}"/>
                                 <ProgressBar Style="{StaticResource TileBusy}"/>
                                 <TextBlock Style="{StaticResource TileDescription}"
-                                           Text="Old setup files no program needs any more. Removed with undo."/>
+                                           Text="Old setup files no program needs any more. Removal can be undone."/>
                             </StackPanel>
                         </Button>
 
@@ -356,7 +356,7 @@
 
                         <Button x:Name="TileTrial" Style="{StaticResource TileButton}" Click="Trial_Click" TabIndex="7"
                                 AutomationProperties.Name="Install and Track"
-                                AutomationProperties.HelpText="Install a program under watch and undo it completely later">
+                                AutomationProperties.HelpText="Install a program while Purgely watches, and undo it completely later">
                             <StackPanel>
                                 <Border Style="{StaticResource TileIconBox}">
                                     <TextBlock Style="{StaticResource TileIcon}" Text="&#xEA18;"/>
@@ -365,7 +365,7 @@
                                 <TextBlock x:Name="TileTrialSummary" Style="{StaticResource TileSummary}"/>
                                 <ProgressBar Style="{StaticResource TileBusy}"/>
                                 <TextBlock Style="{StaticResource TileDescription}"
-                                           Text="Check an installer first, install it under watch, undo it completely later."/>
+                                           Text="Check an installer, install it while Purgely watches, and undo it completely later."/>
                             </StackPanel>
                         </Button>
 

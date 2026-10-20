@@ -1,7 +1,7 @@
 # Contributing to Purgely
 
-Thank you for helping! Purgely deletes and changes things on real PCs, so safety comes before everything.
-Read `AGENTS.md` first – the same rules apply to people and AI tools.
+Thank you for helping! Purgely deletes and changes things on real PCs, so safety comes first.
+Read `AGENTS.md` first; the same rules apply to people and AI tools.
 
 ## The easiest way to help: the knowledge base
 Everything Purgely "knows" lives in plain JSON files in `src/Purgely/Knowledge/`:

@@ -19,7 +19,7 @@
             <StackPanel>
                 <TextBlock Text="Move to a new PC" Style="{StaticResource PageTitle}"/>
                 <TextBlock Style="{StaticResource PageSubtitle}" TextWrapping="Wrap"
-                           Text="Save the list of your programs on this PC, copy the file to the new one (USB stick, OneDrive), and let Purgely install them all there – with Windows Package Manager, from the publishers' official sources."/>
+                           Text="Save a list of your programs on this PC, copy the file to the new one (by USB stick or OneDrive), and let Purgely install them all there using Windows Package Manager and the publishers' official sources."/>
             </StackPanel>
         </DockPanel>
 
@@ -28,7 +28,7 @@
                 <StackPanel>
                     <TextBlock Style="{StaticResource SectionHeader}" Text="1. On the old PC"/>
                     <TextBlock Style="{StaticResource SecondaryText}" TextWrapping="Wrap" Margin="0,6,0,12"
-                               Text="Saves a list of your programs (a small .json file) and a text file with the ones you have to install yourself."/>
+                               Text="Saves a list of your programs (a small .json file) and a text file listing the ones you'll need to install yourself."/>
                     <Button x:Name="ExportButton" Style="{StaticResource AccentButton}" Click="Export_Click" Padding="14,6" HorizontalAlignment="Left">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource IconText}" Text="&#xE74E;"/>

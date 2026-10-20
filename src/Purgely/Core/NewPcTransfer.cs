@@ -37,8 +37,8 @@ public static class NewPcTransfer
         var extra = missing.Concat(programs.Where(p => p.IsPortable).Select(p => $"{p.Name} (portable folder: {p.InstallLocation})"))
                            .Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(n => n).ToList();
         File.WriteAllLines(Path.ChangeExtension(file, null) + " - install these yourself.txt",
-            new[] { "Programs Purgely could not put in the list (install them from the publisher's website).",
-                    "Note: on Windows in another language than English, winget's messages can't be read – then compare with the list yourself.", "" }.Concat(extra.Select(n => "• " + n)));
+            new[] { "Programs Purgely couldn't add to the list (install them from the publisher's website).",
+                    "Note: if Windows uses a language other than English, winget's messages can't be read – in that case, compare with the list yourself.", "" }.Concat(extra.Select(n => "• " + n)));
         return (exported, extra);
     }
 

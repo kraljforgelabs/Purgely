@@ -29,7 +29,7 @@
             <DockPanel>
                 <TextBlock Style="{StaticResource InfoBarIconInfo}"/>
                 <TextBlock TextWrapping="Wrap" VerticalAlignment="Center"
-                           Text="Drivers come only from Windows Update – signed and tested by Microsoft, the same ones Windows itself installs. Purgely never downloads drivers from other websites. If a new driver causes trouble: Device Manager → the device → Properties → Driver → Roll Back Driver. Graphics cards often get newer drivers through their own app (NVIDIA app, AMD Software, Intel Driver &amp; Support Assistant)."/>
+                           Text="Drivers come only from Windows Update – signed and tested by Microsoft, the same ones Windows itself installs. Purgely never downloads drivers from other websites. If a new driver causes trouble, go to Device Manager → the device → Properties → Driver → Roll Back Driver. Graphics cards often get newer drivers through their own app (NVIDIA app, AMD Software, Intel Driver &amp; Support Assistant)."/>
             </DockPanel>
         </Border>
 

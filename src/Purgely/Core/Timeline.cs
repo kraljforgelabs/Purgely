@@ -226,7 +226,7 @@ public static class Timeline
                         Detail = Describe(p),
                     });
                 foreach (var group in FindGroups(current.Values))
-                    data.Events.Add(GroupEvent(group, "A program from another publisher was newly installed at the same moment – possible bundle"));
+                    data.Events.Add(GroupEvent(group, "A program from another publisher was installed at the same moment – possibly bundled"));
                 data.Seeded = true;
             }
             else

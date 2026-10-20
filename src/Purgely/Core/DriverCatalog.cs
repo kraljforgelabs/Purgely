@@ -246,7 +246,7 @@ public static partial class DriverCatalog
             // 1. Where to download from, and its fingerprint.
             progress.Report("Finding the download…");
             var (url, digest) = await DownloadInfoAsync(device.UpdateId, cancel).ConfigureAwait(false);
-            if (url is null) throw new InvalidOperationException("The catalog gave no download link.");
+            if (url is null) throw new InvalidOperationException("The catalog didn't provide a download link.");
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) ||
                 !(uri.Host.EndsWith(".windowsupdate.com", StringComparison.OrdinalIgnoreCase) ||
                   uri.Host.EndsWith(".microsoft.com", StringComparison.OrdinalIgnoreCase)))

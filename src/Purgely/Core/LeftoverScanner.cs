@@ -99,7 +99,7 @@ public sealed partial class LeftoverScanner
             // products and their settings – it is offered, never ticked on its own (brand word = weak evidence).
             var vendorFolder = item.Kind == LeftoverKind.Folder && !item.IsShared && IsVendorFolder(item.Location);
             if (vendorFolder)
-                item.AddEvidence(0, $"Company folder ({Path.GetFileName(item.Location.TrimEnd('\\'))}) – tick it only if you use no other program from this company");
+                item.AddEvidence(0, $"Company folder ({Path.GetFileName(item.Location.TrimEnd('\\'))}) – tick it only if you don't use any other program from this company");
             item.Recommended = !vendorFolder && !_t.StillInstalled && !item.IsShared && item.Score >= 70 && !NeverPreselect(item) &&
                                !_userData.Contains(item.Location) &&
                                // A portable program keeps its data inside its own folder (KeePass database, portable browser profile).

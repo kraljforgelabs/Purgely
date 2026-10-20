@@ -47,7 +47,7 @@ public partial class MoveWindow : Window
             var programs = await Task.Run(ProgramInventory.LoadWithRecentlyRemoved);
             var (exported, missing) = await NewPcTransfer.ExportAsync(dialog.FileName, programs, Log);
             SetBusy(false, $"Saved: {exported} program(s) can be installed automatically" +
-                           (missing.Count > 0 ? $", {missing.Count} you install yourself (see the .txt next to the list)." : "."));
+                           (missing.Count > 0 ? $", {missing.Count} you'll need to install yourself (see the .txt file next to the list)." : "."));
         }
         catch (Exception ex)
         {
@@ -81,7 +81,7 @@ public partial class MoveWindow : Window
         {
             var code = await NewPcTransfer.ImportAsync(dialog.FileName, Log);
             SetBusy(false, code == 0 ? "Done – all programs from the list are installed." :
-                "Finished – some programs could not be installed (see the log). Install those from the publisher's website.");
+                "Finished – some programs could not be installed (see the log). Install those from their publishers' websites.");
             Timeline.Log(TimelineEventType.Installed, "Program list", "Programs installed from a \"Move to a new PC\" list");
         }
         catch (Exception ex)

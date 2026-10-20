@@ -70,7 +70,7 @@ public sealed partial class LeftoverScanner
         var targetName = targetIsFolder ? Path.GetFileName(target.TrimEnd('\\')) : Path.GetFileNameWithoutExtension(target);
         var parentName = Path.GetFileName(Path.GetDirectoryName(target.TrimEnd('\\')) ?? "");
         if (MatchStrict(name) || MatchStrict(targetName) || MatchStrict(parentName))
-            return (NamePoints + MissingPoints, "Name matches the program, and what it points at is gone");
+            return (NamePoints + MissingPoints, "Name matches the program, and what it points to is gone");
         return null;
     }
 

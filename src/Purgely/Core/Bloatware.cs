@@ -156,7 +156,7 @@ public static class Bloatware
                 What = "AI actions on whatever is on your screen (Win + click). Copilot+ PCs only.",
                 Values = new[] { (@"HKCU\Software\Policies\Microsoft\Windows\WindowsAI", "DisableClickToDo", 1) } },
         new() { Id = "copilot", Name = "Copilot in Windows", Category = "AI features", TickByDefault = false,
-                What = "The Copilot button and key. Turn off only if you don't use Microsoft's AI assistant.",
+                What = "The Copilot button and key. Turn it off only if you don't use Microsoft's AI assistant.",
                 Values = new[] { (@"HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot", "TurnOffWindowsCopilot", 1) },
                 Note = "The newer Copilot app may ignore this – remove the Copilot app on the Preinstalled apps tab instead." },
         new() { Id = "edge-copilot", Name = "Copilot sidebar in Edge", Category = "AI features", TickByDefault = false,

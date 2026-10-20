@@ -43,7 +43,7 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
             <Button x:Name="VisibleButton" Click="Visible_Click" Padding="14,6" Visibility="Collapsed"
-                    ToolTip="Some installers need to ask questions – run the update again in a visible window">
+                    ToolTip="Some installers need to ask you questions. Run the update again in a visible window.">
                 <TextBlock Style="{StaticResource ButtonLabel}" Text="Try again with the installer visible"/>
             </Button>
             <Button x:Name="CloseButton" Click="Close_Click" Padding="14,6" Margin="8,0,0,0" Content="Run in background" MinWidth="96"/>

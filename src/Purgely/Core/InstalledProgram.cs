@@ -66,7 +66,7 @@ public sealed class InstalledProgram
     /// <summary>winget could not update this program last time (it must be updated by the publisher's own tool).</summary>
     public bool WingetFailed { get; set; }
     public string UpdateText => AvailableVersion is null ? ""
-        : WingetFailed ? $"⬆ {AvailableVersion} (use publisher's updater)" : $"⬆ {AvailableVersion}";
+        : WingetFailed ? $"⬆ {AvailableVersion} (use the publisher's updater)" : $"⬆ {AvailableVersion}";
 
     public string SizeText => SizeKb is > 0
         ? SizeKb.Value >= 1024 * 1024

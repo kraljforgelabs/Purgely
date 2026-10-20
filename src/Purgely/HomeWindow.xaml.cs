@@ -188,7 +188,7 @@ public partial class HomeWindow : Window
             if (result.shouldBeOn.Count > 0)
                 Notices.Add(new Notice(Warning,
                     $"{Names(result.shouldBeOn.Select(i => i.Name))} {(result.shouldBeOn.Count == 1 ? "is" : "are")} off at startup, " +
-                    "but should stay on (security, hardware or backup software). Probably turned off by an older Purgely Optimize.",
+                    "but should stay on (security, hardware or backup software). Probably turned off by Optimize in an older version of Purgely.",
                     "Turn back on", NoticeKind.ShouldBeOn, IsWarning: true, Payload: result.shouldBeOn));
             if (result.added.Count > 0)
                 Notices.Add(new Notice(Info,
@@ -280,7 +280,7 @@ public partial class HomeWindow : Window
             if (await Task.Run(DataFolders.DifferentUser) is { } users)
                 Notices.Add(new Notice(Warning,
                     $"Purgely runs as {users.Running}, but {users.SignedIn} is signed in. Programs installed for everyone are " +
-                    "shown, but settings, AppData and startup items are the ones of the administrator account, not yours.",
+                    "shown, but settings, AppData and startup items are those of the administrator account, not yours.",
                     "What to do", NoticeKind.DifferentUser, IsWarning: true));
 
             if (await UpdateCheck.CheckIfDueAsync() is { } release)
@@ -464,7 +464,7 @@ public partial class HomeWindow : Window
                 return; // stays until the new version is running or the user skips it
             case NoticeKind.DifferentUser:
                 Dialog.Show(this,
-                    "Purgely runs under another account than the one signed in.\n\n" +
+                    "Purgely is running under a different account from the one that's signed in.\n\n" +
                     "This happens when you start Purgely from a standard account and type an administrator's password. " +
                     "Programs installed for all users are handled normally, but your own settings, AppData folders and " +
                     "startup items belong to the account you are signed in with, and Purgely can't see them from here.\n\n" +

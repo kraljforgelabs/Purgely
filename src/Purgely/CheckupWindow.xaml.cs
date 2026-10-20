@@ -85,7 +85,7 @@ public partial class CheckupWindow : Window
             {
                 OpenText = "Open page", Kind = CheckupKind.Startup, Icon = "", Title = "Startup",
                 Summary = startup.Count == 0 ? "Nothing that is known to be safe to turn off."
-                    : $"{startup.Count} program(s) known to be safe to start without: {string.Join(", ", startup.Take(4).Select(s => s.Name))}{(startup.Count > 4 ? "…" : "")}",
+                    : $"{startup.Count} startup program(s) known to be safe to turn off: {string.Join(", ", startup.Take(4).Select(s => s.Name))}{(startup.Count > 4 ? "…" : "")}",
                 CanFix = startup.Count > 0, IsChecked = startup.Count > 0, Payload = startup,
                 Details = startup.Select(i => $"{i.Name} – {i.Program}").ToList(),
             });
@@ -123,7 +123,7 @@ public partial class CheckupWindow : Window
             sections.Add(new CheckupSection
             {
                 Kind = CheckupKind.Drivers, Icon = "", Title = "Drivers", OpenText = "Open Drivers",
-                Summary = "Driver checks download catalog data, so they run on the Driver updates page – only signed drivers from Microsoft or your PC's maker.",
+                Summary = "Driver checks download catalog data, so they run on the Driver updates page. Only signed drivers from Microsoft or your PC's maker are offered.",
             });
         }
         catch (Exception ex)

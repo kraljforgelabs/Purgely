@@ -3,9 +3,9 @@
 Unsigned programs trigger Windows SmartScreen ("Windows protected your PC"). Purgely is open source, so it can be
 signed for free:
 
-**Status (2026-10-20):** the SignPath Foundation declined the first application – the project is too new (they look
+**Status (2026-10-20):** the SignPath Foundation declined the first application because the project is too new (they look
 for stars, forks, contributors and outside articles or discussions). Reapply once Purgely is better known. Options until
-then: stay unsigned with SHA-256 checksums (current), or a low-cost Certum open-source certificate.
+then: stay unsigned with SHA-256 checksums (current), or get a low-cost Certum open-source certificate.
 
 1. **SignPath Foundation** (free code signing for open-source projects): apply at https://signpath.org with the
    repository https://github.com/kraljforgelabs/Purgely. Requirements: OSI license (MIT ✓), public repository,
@@ -28,8 +28,8 @@ Apply at https://signpath.org/apply (signed in with the GitHub account `kraljfor
   removes leftovers, bloatware and Windows ads, updates programs (winget) and drivers (Microsoft Update Catalog only),
   and manages startup items. Every change is backed up first and can be undone.
 - **Why signing matters:** Purgely needs administrator rights. Users should be able to verify that the Purgely.exe they
-  run was built from this repository by GitHub Actions and not modified – and SmartScreen warnings on an unsigned admin
-  tool teach users to click through warnings.
+  run was built from this repository by GitHub Actions and not modified. SmartScreen warnings on an unsigned admin
+  tool also teach users to click through warnings.
 - **Build:** GitHub Actions on `windows-latest`, `.github/workflows/release.yml`, triggered by version tags; runs unit
   tests and a safety audit before publishing. Artifacts: `Purgely.exe` (self-contained single file),
   `Purgely-needs-dotnet10.exe`, `Purgely-portable.zip`.

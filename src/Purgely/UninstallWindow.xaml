@@ -6,7 +6,7 @@
     <StackPanel Margin="24,20,24,20">
         <TextBlock x:Name="TitleText" Style="{StaticResource PageTitle}" FontSize="22" TextWrapping="Wrap"/>
         <TextBlock Style="{StaticResource PageSubtitle}" Margin="0,4,0,16"
-                   Text="Purgely runs the program's own uninstaller and follows it until it is done – even when it has no window."/>
+                   Text="Purgely runs the program's own uninstaller and keeps track of it until it's done, even if it has no window."/>
 
         <!-- Steps -->
         <Border Style="{StaticResource Card}" Padding="16,12">
@@ -41,7 +41,7 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
             <Button x:Name="ForceButton" Click="Force_Click" Padding="14,6" Visibility="Collapsed"
-                    ToolTip="Stop the uninstaller (if it still runs) and remove the program's files and registry entries yourself – everything goes to an Undo package first">
+                    ToolTip="Stop the uninstaller (if it's still running) and remove the program's files and registry entries yourself. Everything is saved to an Undo package first.">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource IconText}" Text="&#xE7BA;"/>
                     <TextBlock Style="{StaticResource ButtonLabel}" Text="Force uninstall"/>

@@ -39,7 +39,7 @@ public partial class ScanResultsWindow : Window
         if (found >= expected / 10) return null;
         return $"Windows recorded about {Sizes.Format(expected)} for this program, but Purgely found only " +
                $"{(found > 0 ? Sizes.Format(found) : "a few small items")}. Its main folder is probably somewhere Purgely didn't look " +
-               "(e.g. a games folder on another drive). Click \"Add folder…\" to point to it, or it will stay on your disk.";
+               "(for example, a games folder on another drive). Click \"Add folder…\" to point to it, otherwise it will stay on your disk.";
     }
 
     private void UpdateWarning()

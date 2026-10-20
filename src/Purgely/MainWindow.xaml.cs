@@ -135,7 +135,7 @@ public partial class MainWindow : Window
         if (todo.Count == 0)
         {
             Dialog.Show(this, skipped.Count > 0
-                    ? "The remaining programs could not be updated by winget last time – update them one at a time."
+                    ? "winget couldn't update the remaining programs last time. Try updating them one at a time."
                     : "Everything is up to date.", "Update all", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -206,11 +206,11 @@ public partial class MainWindow : Window
         if (!nothing) return;
         var q = SearchBox.Text.Trim();
         NoMatchText.Text = q.Length > 0 ? $"No program matches \"{q}\"." :
-                           SuggestedOnly.IsChecked == true ? "No suggestions – nothing unused for months and no duplicates found." :
+                           SuggestedOnly.IsChecked == true ? "No suggestions – no programs unused for months and no duplicates." :
                            UpdatesOnly.IsChecked == true ? "Everything is up to date." : "Nothing to show.";
         NoMatchHint.Text = q.Length > 0
             ? "Removed long ago? Click \"Find leftovers by name\" to search for its traces."
-            : SuggestedOnly.IsChecked == true ? "Purgely reads when programs last ran from Windows' Prefetch – that needs administrator rights." : "";
+            : SuggestedOnly.IsChecked == true ? "Purgely checks when programs last ran using Windows' Prefetch data, which needs administrator rights." : "";
     }
 
     /// <summary>Whole-PC sweep: dead shortcuts, startup entries, tasks, services and empty folders of programs removed long ago.</summary>
@@ -243,7 +243,7 @@ public partial class MainWindow : Window
         UpdateEmptyState();
         var shown = _view?.Cast<object>().Count() ?? 0;
         var orphans = _programs.Count(p => p.IsOrphan);
-        StatusText.Text = $"Showing {shown} of {_programs.Count} programs  •  removed, to check: {orphans}" +
+        StatusText.Text = $"Showing {shown} of {_programs.Count} programs  •  removed programs to check: {orphans}" +
                           (_updatesAvailable > 0 ? $"  •  updates available: {_updatesAvailable}" : "");
     }
 
@@ -430,12 +430,12 @@ public partial class MainWindow : Window
         var text = $"Uninstall these {chosen.Count} programs, one after another?\n\n" +
                    string.Join("\n", chosen.Take(15).Select(p => "• " + p.Name)) +
                    (chosen.Count > 15 ? $"\n• …and {chosen.Count - 15} more" : "") +
-                   "\n\nAt the end Purgely scans for the leftovers of all of them at once." +
+                   "\n\nAfterwards, Purgely scans for all their leftovers at once." +
                    (runtimes.Count > 0
                        ? "\n\nWarning – other programs need: " + string.Join(", ", runtimes.Select(r => r.Name)) +
                          ". Removing them will probably break those programs."
                        : "") +
-                   "\n\nThe programs' own uninstallers can't be undone by Purgely.";
+                   "\n\nPurgely can't undo what the programs' own uninstallers do.";
         if (Dialog.Show(this, text, "Uninstall several programs", MessageBoxButton.YesNo,
                 runtimes.Count > 0 ? MessageBoxImage.Warning : MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
             return;
@@ -486,7 +486,7 @@ public partial class MainWindow : Window
         if (p.IsPortable)
         {
             if (Dialog.Show(this, $"\"{p.Name}\" is a portable program – it was never installed, it is just a folder:\n\n{p.InstallLocation}\n\n" +
-                                  "Purgely now looks for the folder and anything else it left (settings, shortcuts). You review the list " +
+                                  "Purgely will now look for the folder and anything else it left behind (settings, shortcuts). You review the list " +
                                   "before anything is removed, and everything goes to the Undo center.",
                     "Portable program", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK)
                 return;
@@ -513,8 +513,8 @@ public partial class MainWindow : Window
         if (Dialog.Show(this, $"Uninstall \"{p.Name}\"?\n\n" +
                                   (p.IsRuntime && p.UsedBy.Count == 0
                                       ? "Dependency Map: no installed program was found that uses it.\n" +
-                                        "Some programs load runtimes in ways Purgely cannot see, and a runtime's own " +
-                                        "uninstaller cannot be undone – if a program stops working, reinstall this runtime " +
+                                        "Some programs load runtimes in ways Purgely can't see, and Purgely can't undo a runtime's own " +
+                                        "uninstaller. If a program stops working, reinstall this runtime " +
                                         "from Microsoft's website.\n\n" : "") +
                                   "1. The program's official uninstaller will run.\n" +
                                   "2. Then Purgely scans for leftovers.",
@@ -530,8 +530,8 @@ public partial class MainWindow : Window
         if (dialog.Outcome == UninstallOutcome.Force)
         {
             await RunScanAsync(p.Name, ScanTarget.FromProgram(p, stillInstalled: false),
-                "Force uninstall: the official uninstaller didn't finish the job. Purgely found these parts of the program – " +
-                "review the list before removing. Everything goes to an Undo package first.");
+                "Force uninstall: the official uninstaller didn't finish the job. Purgely found these parts of the program. " +
+                "Review the list before removing anything. Everything goes to an Undo package first.");
             Timeline.MarkRemovedHandled(p.RegistryKey);
             return;
         }
@@ -565,12 +565,12 @@ public partial class MainWindow : Window
         var opened = LauncherGames.OpenLauncher(p);
         var steps = $"1. Click Library.\n2. Click ⋯ next to {p.Name} and choose Uninstall.\n\n";
         var text = opened
-            ? $"\"{p.Name}\" was installed by the {p.Launcher} launcher, so it is uninstalled there – that way the launcher knows it is gone.\n\n" +
+            ? $"\"{p.Name}\" was installed by the {p.Launcher} launcher, so uninstall it there – that way the launcher knows it's gone.\n\n" +
               $"Purgely just opened the {p.Launcher} launcher:\n{steps}" +
               "Click OK when the launcher has FINISHED. Purgely then looks for what the game left behind (saves, settings, shader cache)."
             : $"\"{p.Name}\" was installed by the {p.Launcher} launcher, but Purgely can't find the launcher in Program Files.\n\n" +
               $"If it is installed somewhere else, open it yourself and uninstall the game there:\n{steps}" +
-              "Then click OK. If the launcher is gone from this PC, click OK too – Purgely then offers the game folder in the " +
+              "Then click OK. If the launcher is no longer on this PC, click OK anyway – Purgely will then include the game folder in the " +
               "leftover scan, like a portable program. You review the list first, and everything goes to the Undo center.";
         if (Dialog.Show(this, text, $"Uninstall in {p.Launcher}", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK)
             return;
@@ -610,7 +610,7 @@ public partial class MainWindow : Window
                 var waited = await UninstallCommand.RunAndWaitAsync(program);
                 Timeline.Log(TimelineEventType.Uninstalled, program.Name, $"Removed as part of the {mainName} suite");
                 if (!waited)
-                    Dialog.Show(this, $"Follow the steps in the uninstaller of \"{program.Name}\".\n\nClick OK when it has FINISHED.",
+                    Dialog.Show(this, $"Follow the steps in the \"{program.Name}\" uninstaller.\n\nClick OK when it has FINISHED.",
                         "Waiting for the uninstaller", MessageBoxButton.OK, MessageBoxImage.Information);
                 done.Add(program);
             }

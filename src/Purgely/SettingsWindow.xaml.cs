@@ -147,9 +147,9 @@ public partial class SettingsWindow : Window
                 lines.Add($"\n⚠ {plan.UndoPackages} cleanup(s) can still be undone. After this, what Purgely removed can't be brought back. " +
                           "If you want anything back, press Cancel and restore it in the Undo center first.");
             if (plan.OpenTrials > 0)
-                lines.Add($"\n⚠ {plan.OpenTrials} program(s) are still on trial (Install & Track). Their record is deleted too, so they can't be reverted with Purgely any more.");
+                lines.Add($"\n⚠ {plan.OpenTrials} program(s) are still on trial (Install & Track). Their records are deleted too, so Purgely can no longer revert them.");
             if (plan.DelayedStartupItems > 0)
-                lines.Add($"\n{plan.DelayedStartupItems} startup item(s) you delayed keep starting 2 minutes after sign-in (Task Scheduler → Purgely → Delayed).");
+                lines.Add($"\n{plan.DelayedStartupItems} startup item(s) you delayed will keep starting 2 minutes after sign-in (Task Scheduler → Purgely → Delayed).");
             lines.Add("\nYour own files and programs are not touched. Ads, privacy and startup settings stay as you set them.");
             if (plan.ExePath is null)
                 lines.Add("\nPurgely.exe itself stays – delete it yourself when Purgely is closed.");
@@ -172,9 +172,9 @@ public partial class SettingsWindow : Window
 
             int scheduled;
             using (Core.Activity.Begin()) scheduled = await Task.Run(() => SelfRemoval.RemoveData(plan));
-            var exeNote = removeExe && SelfRemoval.ScheduleExeDelete(plan.ExePath!) ? " Purgely.exe is deleted a few seconds after Purgely closes." : "";
-            Dialog.Show(this, "Purgely's data was removed.\n\n" +
-                              (scheduled > 0 ? $"{scheduled} file(s) were in use and are removed when you restart the PC. " : "") +
+            var exeNote = removeExe && SelfRemoval.ScheduleExeDelete(plan.ExePath!) ? " Purgely.exe will be deleted a few seconds after Purgely closes." : "";
+            Dialog.Show(this, "Purgely's data has been removed.\n\n" +
+                              (scheduled > 0 ? $"{scheduled} file(s) were in use and will be removed when you restart the PC. " : "") +
                               exeNote + " Thank you for trying Purgely!", "Remove Purgely",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             PageNav.Exiting = true; // nothing may reopen a window or write Purgely's data again

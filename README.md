@@ -12,22 +12,22 @@ startup. Every item comes with a plain explanation, almost everything can be und
 > and tell us what you find.
 
 ## Download
-1. Open **[Releases](https://github.com/kraljforgelabs/Purgely/releases)** and download `Purgely.exe` (no installation –
-   it is a single file).
-2. Optional: check the download – `SHA256SUMS.txt` next to it lists the fingerprint
-   (`Get-FileHash Purgely.exe` in PowerShell must show the same value).
-3. Start it. Windows asks for administrator rights. While Purgely is not code-signed yet, Windows may show
+1. Open **[Releases](https://github.com/kraljforgelabs/Purgely/releases)** and download `Purgely.exe` (it's a single file,
+   nothing to install).
+2. Optional: check the download. `SHA256SUMS.txt` next to it lists its fingerprint, and
+   `Get-FileHash Purgely.exe` in PowerShell must show the same value.
+3. Start it. Windows asks for administrator rights. Because Purgely isn't code-signed yet, Windows may show
    "Windows protected your PC" – click *More info → Run anyway*.
 
 The [user guide (PDF)](docs/Purgely-User-Guide.pdf) explains every feature. Website:
 https://kraljforgelabs.github.io/Purgely/
 
 ## Features (0.9)
-- **Home screen** with ten live tiles, a Notices panel, **Checkup** (one look at the whole PC, fix what is certain) and
+- **Home screen** with ten live tiles, a Notices panel, **Checkup** (one look at the whole PC, fixes only what is certain) and
   **Move to new PC** (save your program list, reinstall everything on the new PC with winget)
 - **Uninstall** – desktop programs, Microsoft Store apps and portable programs; **several at once** (quiet mode where the
   uninstaller allows it, one combined leftover scan); live uninstall window, force uninstall; deep leftover scan with
-  confidence in words and known-program rules; suite cleanup; smart suggestions (unused for months, duplicates)
+  confidence shown in words and known-program rules; suite cleanup; smart suggestions (unused for months, duplicates)
 - **Clean leftovers** – removed programs and a whole-PC sweep for orphaned shortcuts, tasks, services and empty folders
 - **Installer junk**, **Dependency Map**, **PC Timeline** with Bundleware Detector
 - **Bloatware, ads, AI & privacy** – preinstalled apps with a verdict; ads and suggestions; Recall, Click to Do, Copilot;
@@ -40,10 +40,10 @@ https://kraljforgelabs.github.io/Purgely/
 - **Leftover registrations** *(0.9)* – right-click menu entries, file types, Win+R paths, firewall rules and PATH entries
   that point into a removed program's folder
 - **Repair** *(0.9.1)* – devices that don't work, devices that aren't connected any more, no sound, no internet, and
-  missing Microsoft runtimes ("a DLL is missing") – only with Windows' own tools and official packages
-- **Epic Games games** *(0.9.2)* – listed with the other programs; uninstalled in the Epic launcher, then the leftovers
-  are scanned
-- **Settings** *(0.9)* – update check (once a day, nothing downloaded by itself), Timeline history, Undo storage,
+  missing Microsoft runtimes ("a DLL is missing") using only Windows' own tools and official packages
+- **Epic Games games** *(0.9.2)* – listed with your other programs; uninstalled through the Epic launcher, then scanned
+  for leftovers
+- **Settings** *(0.9)* – update check (once a day, never downloads anything by itself), Timeline history, Undo storage,
   welcome tour, and **Remove Purgely and its data**
 - **Open knowledge base** – `src/Purgely/Knowledge/*.json`, see `CONTRIBUTING.md`
 
@@ -53,8 +53,8 @@ GitHub Actions from this repository – never on someone's PC – and comes with
 the file you downloaded is exactly the one GitHub built (`Get-FileHash .\Purgely.exe` in PowerShell).
 
 ## Trust
-Releases are built by GitHub Actions from this source (`.github/workflows/release.yml`) with SHA-256 checksums – nobody
-builds them by hand. Code signing is planned once the project is better known (`SIGNING.md`); a winget listing follows with 1.0
+Releases are built by GitHub Actions from this source (`.github/workflows/release.yml`) with SHA-256 checksums. Nobody
+builds them by hand. Code signing is planned once the project is better known (`SIGNING.md`); a winget listing will follow with 1.0
 (`packaging/winget`).
 
 Quality: every risky change goes through the council (`D:\AI\council`) and `preflight.bat`.
@@ -65,7 +65,7 @@ Quality: every risky change goes through the council (`D:\AI\council`) and `pref
 Requirements: .NET 10 SDK.
 
 - `build.bat` – publishes `dist\Purgely.exe` and starts it (asks for administrator rights).
-- `preflight.bat` – Release build + unit tests + safety audit. Must end without **MUST FIX** before testing.
+- `preflight.bat` – Release build + unit tests + safety audit. It must finish with no **MUST FIX** before testing.
 - `tools\safety-audit.ps1 -UpdateBaseline` – only after the council has reviewed new destructive calls.
 - `sandbox.bat` – opens Purgely in Windows Sandbox with a fake removed program ("Contoso PhotoTool") and traps
   that must survive (your Documents, a junction, another installed Contoso program). After cleaning, run
@@ -96,5 +96,5 @@ are trademarks of their respective owners and are used only to identify software
 ## License
 MIT – see [LICENSE](LICENSE). Copyright (c) 2026 KraljForge Labs.
 
-Purgely is free and has no ads. It is provided "as is", without warranty – it changes your PC only after you confirm,
+Purgely is free and has no ads. It is provided "as is", without warranty. It changes your PC only after you confirm,
 and almost everything can be undone from the Undo center.

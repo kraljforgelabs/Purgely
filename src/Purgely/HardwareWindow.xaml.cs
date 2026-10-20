@@ -217,7 +217,7 @@ public partial class HardwareWindow : Window
         if (wuFailed || failed > 0)
             Dialog.Show(this, (wuFailed ? $"Windows Update could not be reached: {DriverUpdates.LastError}\n" : "") +
                                   (failed > 0 ? $"The Microsoft Update Catalog could not be reached for {failed} device(s).\n" : "") +
-                                  "\nThe list may be incomplete - check your internet connection and try again.",
+                                  "\nThe list may be incomplete – check your internet connection and try again.",
                 "Check for newer drivers", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
@@ -252,7 +252,7 @@ public partial class HardwareWindow : Window
                 $"Install {chosen.Count} driver(s)?\n\n" +
                 string.Join("\n", chosen.Take(12).Select(d => $"• {d.Name}: {d.DriverVersion} → {d.UpdateVersion}")) +
                 "\n\nThe screen may flicker or the network may drop for a moment while a driver is replaced. Save your work first.\n" +
-                "Each driver from the Catalog is checked (Microsoft signature, lists your device) and your current driver is saved for Undo.",
+                "Each driver from the Catalog is checked (Microsoft signature, and that it lists your device) and your current driver is saved for Undo.",
                 "Install drivers", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
             return;
 
@@ -333,8 +333,8 @@ public partial class HardwareWindow : Window
     {
         if (_pc is null) return;
         try { Clipboard.SetText(Hardware.SpecSheet(_pc, _devices)); }
-        catch (Exception) { Dialog.Show(this, "The clipboard is busy - try again.", "Copy specs"); return; }
-        Dialog.Show(this, "The spec sheet is copied.\n\nPaste it into a chat with Claude and ask for newer official drivers – " +
+        catch (Exception) { Dialog.Show(this, "The clipboard is busy – try again.", "Copy specs"); return; }
+        Dialog.Show(this, "The spec sheet has been copied.\n\nPaste it into a chat with Claude and ask for newer official drivers – " +
                               "it can search the makers' websites and give you the right links.",
             "Copy specs", MessageBoxButton.OK, MessageBoxImage.Information);
     }
@@ -348,7 +348,7 @@ public partial class HardwareWindow : Window
         try { Clipboard.SetText(key); } catch (Exception) { }
         Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         Dialog.Show(this, $"The {FirstWord(_pc.DriverMaker)} support page is opening.\n\n" +
-                              $"Your {(useSerial ? "serial number" : "model")} ({key}) is copied – " +
+                              $"Your {(useSerial ? "serial number" : "model")} ({key}) has been copied – " +
                               "paste it into the search box there to get the drivers made for exactly this PC.\n\n" +
                               "After downloading, use \"Install downloaded driver…\" so Purgely checks the signature first.",
             "Maker's driver page", MessageBoxButton.OK, MessageBoxImage.Information);

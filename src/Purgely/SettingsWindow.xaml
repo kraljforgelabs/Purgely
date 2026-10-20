@@ -57,7 +57,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource SettingTitle}" Text="Check for new versions of Purgely"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="Once a day Purgely asks GitHub whether a newer version was released and tells you on the home screen. Nothing about your PC is sent, and nothing is downloaded or installed by itself."/>
+                                       Text="Once a day, Purgely asks GitHub whether a newer version is available and lets you know on the home screen. Nothing about your PC is sent, and nothing is downloaded or installed automatically."/>
                         </StackPanel>
                     </DockPanel>
                 </Border>
@@ -91,7 +91,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource SettingTitle}" Text="Keep Timeline history"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="Older events are removed when Purgely starts. What Purgely needs to find leftovers of recently removed programs is always kept."/>
+                                       Text="Older events are removed when Purgely starts. Anything Purgely needs to find leftovers of recently removed programs is always kept."/>
                         </StackPanel>
                     </DockPanel>
                 </Border>
@@ -132,7 +132,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource SettingTitle}" Text="Learn and get help"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="The welcome tour explains Purgely in three steps. Problems and ideas go to GitHub (you need a free account)."/>
+                                       Text="The welcome tour explains Purgely in three steps. Report problems and share ideas on GitHub (you'll need a free account)."/>
                         </StackPanel>
                     </DockPanel>
                 </Border>
@@ -162,7 +162,7 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource SettingTitle}" Text="Remove Purgely and its data"/>
                             <TextBlock Style="{StaticResource SettingText}"
-                                       Text="Deletes Purgely's backups, history and settings – and Purgely.exe if you want. What you changed with Purgely (ads turned off, startup items) stays as it is. Restore anything you want back from the Undo center first: afterwards it can't be undone."/>
+                                       Text="Deletes Purgely's backups, history and settings, and Purgely.exe too if you like. Changes you made with Purgely (such as ads turned off or startup items) stay as they are. Restore anything you want back from the Undo center first – this can't be undone."/>
                         </StackPanel>
                     </DockPanel>
                 </Border>

@@ -22,7 +22,7 @@
             <StackPanel>
             <TextBlock Text="PC Timeline" Style="{StaticResource PageTitle}"/>
             <TextBlock Style="{StaticResource PageSubtitle}"
-                       Text="Everything installed, updated and removed on this PC – and everything Purgely did. ⚠ marks programs that were installed together by different publishers (possible bundleware)."/>
+                       Text="Everything installed, updated and removed on this PC – and everything Purgely did. ⚠ marks programs from different publishers that were installed together (possible bundleware)."/>
         </StackPanel>
         </DockPanel>
 

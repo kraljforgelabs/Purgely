@@ -22,7 +22,7 @@
             <StackPanel>
             <TextBlock Text="Install &amp; Track (Trial Mode)" Style="{StaticResource PageTitle}"/>
             <TextBlock Style="{StaticResource PageSubtitle}"
-                       Text="Install a program under Purgely's watch. Purgely records everything the installer changes, so you can try the program and later put your PC back exactly as it was – with one click."/>
+                       Text="Install a program under Purgely's watch. Purgely records everything the installer changes, so you can try the program and later put your PC back exactly as it was, in one click."/>
         </StackPanel>
         </DockPanel>
 
@@ -32,7 +32,7 @@
                 <StackPanel x:Name="StartPanel">
                     <TextBlock Style="{StaticResource BodyStrongText}" Text="Start a new trial" Margin="0,0,0,8"/>
                     <CheckBox x:Name="RestorePointBox" IsChecked="True"
-                              Content="Also create a system restore point first (recommended, extra safety net)"/>
+                              Content="Also create a system restore point first (recommended as an extra safety net)"/>
                     <Button Style="{StaticResource AccentButton}" Click="Start_Click" Padding="14,6"
                             HorizontalAlignment="Left" Margin="0,12,0,0" AutomationProperties.Name="Choose installer and start">
                         <StackPanel Orientation="Horizontal">
@@ -55,7 +55,7 @@
                 <StackPanel x:Name="InstallingPanel" Visibility="Collapsed">
                     <TextBlock Style="{StaticResource BodyStrongText}" Text="The installer is running – install the program as usual."/>
                     <TextBlock Style="{StaticResource PageSubtitle}"
-                               Text="When the installer has completely finished, click the button below. (If the installer restarts the PC, open Trial Mode again afterwards and click Analyze.)"/>
+                               Text="When the installer has completely finished, click the button below. If it restarts your PC, open Trial Mode again afterwards and click Analyze."/>
                     <Button Style="{StaticResource AccentButton}" Click="Finished_Click" Padding="14,6"
                             HorizontalAlignment="Left" Margin="0,12,0,0" AutomationProperties.Name="Installation finished, analyze">
                         <StackPanel Orientation="Horizontal">
@@ -96,7 +96,7 @@
                     </StackPanel>
                 </Button>
                 <Button Click="Analyze_Click" Padding="12,6" Margin="8,0,0,0" AutomationProperties.Name="Analyze"
-                        ToolTip="For a trial whose installer has finished (e.g. after a restart)">
+                        ToolTip="For a trial whose installer has already finished (for example, after a restart)">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Style="{StaticResource IconText}" Text="&#xE9D9;"/>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Analyze"/>

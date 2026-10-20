@@ -282,7 +282,7 @@
         "Avast Free Antivirus trial"
       ],
       "rating": "Remove",
-      "why": "Antivirus trial – Windows Security already protects you; two antivirus programs slow the PC.",
+      "why": "Antivirus trial – Windows Security already protects you, and two antivirus programs slow the PC down.",
       "tick": false
     },
     {
@@ -302,7 +302,7 @@
         "MyASUS Welcome"
       ],
       "rating": "Remove",
-      "why": "PC maker's welcome/registration/promotion app.",
+      "why": "Welcome, registration or promotion app from the PC maker.",
       "tick": true
     }
   ]

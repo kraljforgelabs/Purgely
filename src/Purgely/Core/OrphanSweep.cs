@@ -260,7 +260,7 @@ public static class OrphanSweep
 
                 if (IsEmpty(dir))
                 {
-                    if (!used.Matches(name)) add(LeftoverKind.Folder, PathUtil.Normalize(dir), 80, "Empty folder – nothing inside, no installed program uses it");
+                    if (!used.Matches(name)) add(LeftoverKind.Folder, PathUtil.Normalize(dir), 80, "Empty folder that no installed program uses");
                     continue;
                 }
                 // Not empty: only in Program Files, only offered (never ticked).

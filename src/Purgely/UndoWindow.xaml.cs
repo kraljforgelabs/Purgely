@@ -40,7 +40,7 @@ public partial class UndoWindow : Window
     {
         if (Selected() is not { } entry) return;
         if (entry.Manifest.Restored &&
-            Dialog.Show(this, "This package was already restored. Restore again?", "Undo center",
+            Dialog.Show(this, "This package has already been restored. Restore it again?", "Undo center",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
             return;
         if (Dialog.Show(this, $"Put back everything removed for \"{entry.Title}\" ({entry.Count} items)?",
