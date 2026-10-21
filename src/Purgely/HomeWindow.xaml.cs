@@ -52,6 +52,7 @@ public partial class HomeWindow : Window
         // A program's icon dropped on the home screen: uninstall that program.
         FileDrop.Enable(this, UninstallItem);
 
+        ContentRendered += (_, _) => StartupLog.Step("home screen shown");
         Loaded += async (_, _) =>
         {
             TileUninstall.Focus();

@@ -12,8 +12,8 @@ startup. Every item comes with a plain explanation, almost everything can be und
 > and tell us what you find.
 
 ## Download
-1. Open **[Releases](https://github.com/kraljforgelabs/Purgely/releases)** and download `Purgely.exe` (it's a single file,
-   nothing to install).
+1. Open **[Releases](https://github.com/kraljforgelabs/Purgely/releases)** and download `Purgely.exe`. It's one file with everything
+   inside – nothing to install, no .NET or anything else needed. The first start takes a few seconds.
 2. Optional: check the download. `SHA256SUMS.txt` next to it lists its fingerprint, and
    `Get-FileHash Purgely.exe` in PowerShell must show the same value.
 3. Start it. Windows asks for administrator rights. Because Purgely isn't code-signed yet, Windows may show

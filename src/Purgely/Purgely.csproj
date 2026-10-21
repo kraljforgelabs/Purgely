@@ -13,7 +13,7 @@
     <DefineConstants Condition="'$(UiTest)' == 'true'">$(DefineConstants);UITEST</DefineConstants>
     <DefineConstants Condition="'$(DropLog)' == 'true'">$(DefineConstants);DROPLOG</DefineConstants>
     <ApplicationIcon>Purgely.ico</ApplicationIcon>
-    <Version>0.9.3</Version>
+    <Version>0.9.4</Version>
     <Product>Purgely</Product>
     <Company>KraljForge Labs</Company>
     <Authors>KraljForge Labs</Authors>
@@ -26,6 +26,8 @@
 
   <ItemGroup>
     <Resource Include="Purgely.ico" />
+    <!-- "Starting…" window – shown by App.OnStartup, only when this copy really starts (not when it hands over to an open one) -->
+    <Resource Include="splash.png" />
     <EmbeddedResource Include="Knowledge\*.json" />
   </ItemGroup>
 

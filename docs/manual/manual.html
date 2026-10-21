@@ -90,7 +90,7 @@ th, td { padding:5pt 7pt; border-bottom:1px solid var(--line); vertical-align:to
   <li>The first time you start it, a short <b>welcome tour</b> (three steps) explains how Purgely works. You can see it again any time in <b>Settings</b> (the gear button at the top right).</li>
 </ol>
 <h3>Requirements</h3>
-<p>Windows 11 (Windows 10 works for most features). For updates and "Move to a new PC", Windows needs <i>App Installer</i> (winget), which is part of Windows 11.</p>
+<p>Windows 11 (Windows 10 works for most features). Nothing else to install: <code>Purgely.exe</code> carries everything it needs, .NET included. The first start takes a few seconds. For updates and "Move to a new PC", Windows needs <i>App Installer</i> (winget), which is part of Windows 11.</p>
 <h3>Your data</h3>
 <p>Purgely keeps its records on your PC only: settings and history in <span class="kbd">%LOCALAPPDATA%\Purgely</span> and <span class="kbd">C:\ProgramData\Purgely</span>, backups in <span class="kbd">Purgely Undo</span> folders. Only administrators can change these folders, so nobody can slip their own changes into a backup. Purgely sends nothing about you anywhere. It goes online when you ask for updates, drivers or a VirusTotal lookup, and once a day it asks GitHub whether a newer Purgely exists (you can turn this off in Settings).</p>
 <h3>Signed in with a standard account?</h3>

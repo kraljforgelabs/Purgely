@@ -31,31 +31,36 @@ public static class SingleInstance
                 if (data.dwData != Magic || data.cbData < 0 || data.cbData > 32767 * 2 || data.cbData % 2 != 0) return IntPtr.Zero;
                 var path = data.cbData == 0 ? "" : Marshal.PtrToStringUni(data.lpData, data.cbData / 2) ?? "";
                 _source.Dispatcher.BeginInvoke(() => onItem(path)); // don't keep the sender waiting
-                return new IntPtr(1);
+                // 1 = here and visible, 2 = running but without any window (stuck while starting, or hidden).
+                var visible = System.Windows.Application.Current?.Windows.OfType<System.Windows.Window>().Any(w => w.IsVisible) == true;
+                return new IntPtr(visible ? 1 : 2);
             });
         }
         catch (Exception) { _source = null; }
     }
 
-    /// <summary>A new copy: give the item to the open Purgely. False when there is none that answers.</summary>
-    public static bool Send(string path)
+    public enum Answer { None, Visible, NoWindow }
+
+    /// <summary>A new copy: give the item to the open Purgely. None when there is none that answers.</summary>
+    public static Answer Send(string path)
     {
         try
         {
             var hwnd = FindWindowEx(HWND_MESSAGE, IntPtr.Zero, null, WindowName);
-            if (hwnd == IntPtr.Zero) return false;
+            if (hwnd == IntPtr.Zero) return Answer.None;
             GetWindowThreadProcessId(hwnd, out var pid);
             AllowSetForegroundWindow(pid); // so the open Purgely may come to the front
             var text = Marshal.StringToHGlobalUni(path);
             try
             {
                 var data = new COPYDATASTRUCT { dwData = Magic, cbData = path.Length * 2, lpData = text };
-                return SendMessageTimeout(hwnd, WM_COPYDATA, IntPtr.Zero, ref data, 0x0002, 5000, out var result) != IntPtr.Zero &&
-                       result == new IntPtr(1);
+                if (SendMessageTimeout(hwnd, WM_COPYDATA, IntPtr.Zero, ref data, 0x0002, 5000, out var result) == IntPtr.Zero)
+                    return Answer.None;
+                return result == new IntPtr(1) ? Answer.Visible : result == new IntPtr(2) ? Answer.NoWindow : Answer.None;
             }
             finally { Marshal.FreeHGlobal(text); }
         }
-        catch (Exception) { return false; }
+        catch (Exception) { return Answer.None; }
     }
 
     [StructLayout(LayoutKind.Sequential)]

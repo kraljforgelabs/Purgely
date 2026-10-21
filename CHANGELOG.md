@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.4 (beta) – 2026-10
+- A small "Purgely – Starting…" window appears as soon as Purgely starts, so a slow first start no longer looks
+  like nothing happened
+- If Purgely can't start, it now says why and writes the details to `%LOCALAPPDATA%\Purgely\crash.log` (to send with a
+  problem report) instead of closing without a word
+- Starting Purgely again while a copy without a window is still running (stuck, or still starting) now says so and
+  explains how to end it, instead of doing nothing
+- A short start-up log (`%LOCALAPPDATA%\Purgely\startup.log` – only steps and times) helps trace "nothing happens"
+  reports
+- One download: `Purgely.exe` has everything inside – no .NET or anything else to install. The smaller
+  "needs .NET 10" file is gone
+
 ## 0.9.3 (beta) – 2026-10
 - **Uninstall by icon** – drop a program's icon (desktop shortcut, Start menu shortcut, .exe or folder) on Purgely,
   drag **Find by window** onto a program's window, or turn on **"Uninstall with Purgely"** in the right-click menu

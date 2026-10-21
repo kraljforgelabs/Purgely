@@ -1,5 +1,6 @@
 # Builds a release when a version tag is pushed (git tag v0.4.0 && git push --tags):
-# tests + safety audit, then a self-contained and a small (.NET required) Purgely.exe, a ZIP and SHA-256 checksums,
+# tests + safety audit, then one self-contained Purgely.exe (no .NET needed – a second, smaller download only confused
+# people), a ZIP and SHA-256 checksums,
 # attached to a GitHub Release. Signing (SignPath Foundation, free for open source) plugs in at the marked step.
 name: Release
 
@@ -33,11 +34,9 @@ jobs:
       - name: Publish
         shell: pwsh
         run: |
-          dotnet publish src/Purgely/Purgely.csproj -c Release -r win-x64 --self-contained true  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o out/full -nologo
-          dotnet publish src/Purgely/Purgely.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o out/small -nologo
+          dotnet publish src/Purgely/Purgely.csproj -c Release -r win-x64 --self-contained true  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o out/full -nologo
           New-Item -ItemType Directory -Force release | Out-Null
           Copy-Item out/full/Purgely.exe  release/Purgely.exe
-          Copy-Item out/small/Purgely.exe release/Purgely-needs-dotnet10.exe
           Copy-Item docs/Purgely-User-Guide.pdf release/ -ErrorAction SilentlyContinue
 
       # - name: Sign (SignPath Foundation) – add once the project is accepted, see SIGNING.md

@@ -13,24 +13,67 @@ public partial class App : Application
 
     private static Mutex? _instance;
 
+    /// <summary>
+    /// Errors before any window exists (or on a background thread) would otherwise close Purgely without a word. They
+    /// are written to %LOCALAPPDATA%\Purgely\crash.log and shown, so "nothing happens" never stays a mystery.
+    /// </summary>
+    static App()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (_, e) => ReportCrash(e.ExceptionObject as Exception);
+    }
+
+    internal static void ReportCrash(Exception? ex)
+    {
+        var log = "";
+        try
+        {
+            var folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Purgely");
+            System.IO.Directory.CreateDirectory(folder);
+            log = System.IO.Path.Combine(folder, "crash.log");
+            StartupLog.Step("crashed: " + ex?.GetType().Name);
+            System.IO.File.AppendAllText(log,
+                $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}  Purgely {typeof(App).Assembly.GetName().Version?.ToString(3)}  " +
+                $"Windows {Environment.OSVersion.Version}  {System.Runtime.InteropServices.RuntimeInformation.OSArchitecture}\n{ex}\n\n");
+        }
+        catch (Exception) { }
+        try
+        {
+            MessageBox.Show(
+                $"Purgely couldn't start:\n\n{ex?.Message}\n\n" +
+                (log.Length > 0 ? $"The details are in {log}. " : "") +
+                "Please report it at github.com/kraljforgelabs/Purgely/issues – with that file it can be fixed quickly.",
+                "Purgely – error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        catch (Exception) { }
+    }
+
     protected override void OnStartup(StartupEventArgs e)
     {
         DispatcherUnhandledException += OnUnhandledException;
         StartTarget = TargetFrom(e.Args);
         // One Purgely at a time: two copies cleaning or restoring at once could get in each other's way.
         _instance = new Mutex(true, @"Local\KraljForgeLabs.Purgely", out var first);
+        StartupLog.Step("started" + (StartTarget is null ? "" : " with an item") + (first ? "" : " – another Purgely is running"));
         if (!first)
         {
             // Hand the item (or just "come to the front") to the Purgely that is already open.
-            if (!SingleInstance.Send(StartTarget ?? ""))
-                MessageBox.Show(StartTarget is null
-                        ? "Purgely is already open."
-                        : "Purgely is already open but isn't answering. Close it and try again.",
+            var answer = SingleInstance.Send(StartTarget ?? "");
+            StartupLog.Step("handed over to the running Purgely: " + answer);
+            if (answer != SingleInstance.Answer.Visible)
+                MessageBox.Show(answer == SingleInstance.Answer.NoWindow
+                        ? "Purgely is already running, but its window isn't open yet – it may still be starting, or it got stuck.\n\n" +
+                          "Wait a few seconds. If no window appears, open Task Manager (Ctrl+Shift+Esc) → Details, end \"Purgely.exe\" " +
+                          "and start Purgely again."
+                        : "Purgely is already running but isn't answering.\n\n" +
+                          "Open Task Manager (Ctrl+Shift+Esc) → Details, end \"Purgely.exe\" and start Purgely again.",
                     "Purgely", MessageBoxButton.OK, MessageBoxImage.Information);
             Environment.Exit(0);
         }
+        // A small "Starting…" window until the home screen is up (fades out on its own).
+        try { new SplashScreen("splash.png").Show(autoClose: true, topMost: false); } catch (Exception) { }
         base.OnStartup(e);
         SingleInstance.Listen(OnItemFromAnotherCopy);
+        StartupLog.Step("ready, opening the home screen");
         // Housekeeping in the background: keep Purgely's data folders administrators-only, apply the Timeline setting.
         _ = Task.Run(() =>
         {
@@ -41,7 +84,7 @@ public partial class App : Application
                 var keep = Core.AppSettings.Current.TimelineKeepDays;
                 if (keep is 30 or 90 or 365) Core.Timeline.ClearHistory(keep); // only the choices offered in Settings
             }
-            catch (Exception) { }
+            catch (Exception ex) { StartupLog.Step("housekeeping failed: " + ex.GetType().Name); }
         });
     }
 
