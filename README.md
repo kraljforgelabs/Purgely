@@ -8,6 +8,8 @@ One free tool for Windows 11 that keeps a PC clean and up to date: uninstall pro
 clean leftovers and installer junk, remove bloatware and Windows ads, update programs and drivers, and control
 startup. Every item comes with a plain explanation, almost everything can be undone, and there are no ads.
 
+![Purgely in action – programs, leftovers explained, bloatware, ads and the Undo center](docs/purgely-demo.gif)
+
 > **Public beta (0.9).** Purgely works and is tested, but it hasn't met many PCs yet. Please read [BETA.md](BETA.md)
 > and tell us what you find.
 
@@ -15,7 +17,8 @@ startup. Every item comes with a plain explanation, almost everything can be und
 1. Open **[Releases](https://github.com/kraljforgelabs/Purgely/releases)** and download `Purgely.exe`. It's one file with everything
    inside – nothing to install, no .NET or anything else needed. The first start takes a few seconds.
 2. Optional: check the download. `SHA256SUMS.txt` next to it lists its fingerprint, and
-   `Get-FileHash Purgely.exe` in PowerShell must show the same value.
+   `Get-FileHash Purgely.exe` in PowerShell must show the same value. Scanned by 68 antivirus engines, none flagged it:
+   [VirusTotal (0.9.4)](https://www.virustotal.com/gui/file/a58ef1756e3d2b7d56769b6713b5cd5e9578b74cdf8f2d3ee02d66ae60ed94ad).
 3. Start it. Windows asks for administrator rights. Because Purgely isn't code-signed yet, Windows may show
    "Windows protected your PC" – click *More info → Run anyway*.
 
