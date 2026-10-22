@@ -1,7 +1,8 @@
 # Publishing Purgely on winget
 
-Planned for 1.0, after the public beta and once releases are signed (see `SIGNING.md`) – winget's
-validation and SmartScreen both go much smoother with a signed `Purgely.exe`.
+First submitted with 0.9.4 – one self-contained `Purgely.exe`, published as a winget *portable* package
+(`winget install KraljForgeLabs.Purgely`). The ready manifests are in `manifests/k/KraljForgeLabs/Purgely/<version>/`.
+Check them with `winget validate --manifest <that folder>` before submitting.
 
 After a GitHub Release exists (see `.github/workflows/release.yml`):
 

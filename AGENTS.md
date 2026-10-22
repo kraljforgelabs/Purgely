@@ -71,9 +71,9 @@ Purgely deletes and changes things on real Windows PCs. A wrong delete can break
   (Program Files, ProgramData, WindowsApps, LocalAppData\Programs) without a clear match answer NotFound/Ambiguous and
   let the user pick in the list. A folder is "portable" only when it is usable (SafePaths), not a library, holds no
   installed program and has one main .exe.
-- Elevated windows accept drops only through WM_DROPFILES (+ WM_COPYGLOBALDATA) – never open other messages
-  (WM_COPYDATA) to lower-integrity processes. A dropped or right-clicked item only starts the normal uninstall with
-  its questions.
+- Elevated windows accept drops only through WM_DROPFILES, with WM_COPYGLOBALDATA and WM_COPYDATA let through on those
+  windows only (Windows needs all three; the windows don't act on WM_COPYDATA). The single-instance message window keeps
+  its default filter. A dropped or right-clicked item only starts the normal uninstall with its questions.
 - The right-click entry is opt-in, all-or-nothing, under HKCU only, points only at a local Purgely.exe, is removed by
   "Remove Purgely", and follows a moved Purgely.exe only when the old one is gone.
 - One Purgely instance at a time (named mutex).
