@@ -22,6 +22,18 @@ startup. Every item comes with a plain explanation, almost everything can be und
 3. Start it. Windows asks for administrator rights. Because Purgely isn't code-signed yet, Windows may show
    "Windows protected your PC" – click *More info → Run anyway*.
 
+### If Purgely.exe doesn't open
+Windows sometimes stops a downloaded program without saying anything. Try these, in order:
+1. **Unblock the file:** right-click `Purgely.exe` → *Properties* → tick **Unblock** at the bottom → *OK*. Start it again.
+2. **Smart App Control:** in *Windows Security → App & browser control → Smart App Control*, check whether it is **On**.
+   While Purgely isn't code-signed yet, it can block unsigned programs without any message. (It can't be turned back on
+   once it is off, so decide for yourself – the file is checked against its published SHA-256.)
+3. **Antivirus:** look at your antivirus' protection history for `Purgely.exe` and allow it if it was held back.
+4. **See the message:** open *Command Prompt*, drag `Purgely.exe` into the window and press Enter. Any error text
+   appears there.
+5. Still nothing? Open `%LOCALAPPDATA%\Purgely` (Win+R). If `startup.log` or `crash.log` is there, attach it to an
+   [issue](https://github.com/kraljforgelabs/Purgely/issues) – and if neither exists, tell us that too, it narrows it down.
+
 The [user guide (PDF)](docs/Purgely-User-Guide.pdf) explains every feature. Website:
 https://kraljforgelabs.github.io/Purgely/
 
